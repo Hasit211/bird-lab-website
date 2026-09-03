@@ -1,7 +1,7 @@
 /* Footer */
 .footer {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
   position: relative;
   overflow: hidden;
 }
@@ -13,7 +13,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23646cff" fill-opacity="0.02"><rect width="30" height="30" rx="15"/></g></svg>') repeat;
+  background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%234f46e5" fill-opacity="0.02"><rect width="30" height="30" rx="15"/></g></svg>') repeat;
   opacity: 0.5;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .footer-section h4 {
-  color: #ffffff;
+  color: #0f172a;
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 20px;
@@ -41,7 +41,7 @@
   bottom: -8px;
   width: 40px;
   height: 2px;
-  background: linear-gradient(135deg, #646cff 0%, #00ffff 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   border-radius: 1px;
 }
 
@@ -54,11 +54,11 @@
 }
 
 .footer-logo h3 {
-  color: #ffffff;
+  color: #0f172a;
   font-size: 1.8rem;
   font-weight: 700;
   margin: 0;
-  background: linear-gradient(135deg, #646cff 0%, #00ffff 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -66,11 +66,11 @@
 
 .logo-icon {
   font-size: 2rem;
-  filter: drop-shadow(0 0 10px rgba(100, 108, 255, 0.5));
+  filter: drop-shadow(0 0 10px rgba(79, 70, 229, 0.3));
 }
 
 .footer-description {
-  color: #a0a0a0;
+  color: #475569;
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 25px;
@@ -88,20 +88,20 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
   border-radius: 10px;
-  color: #a0a0a0;
+  color: #475569;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .footer-social a:hover {
-  background: rgba(100, 108, 255, 0.2);
-  border-color: #646cff;
-  color: #646cff;
+  background: rgba(79, 70, 229, 0.08);
+  border-color: #4f46e5;
+  color: #4f46e5;
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(100, 108, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
 }
 
 .footer-social a svg {
@@ -121,7 +121,7 @@
 }
 
 .footer-links a {
-  color: #a0a0a0;
+  color: #475569;
   text-decoration: none;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -136,12 +136,12 @@
   bottom: -2px;
   width: 0;
   height: 1px;
-  background: #646cff;
+  background: #4f46e5;
   transition: width 0.3s ease;
 }
 
 .footer-links a:hover {
-  color: #646cff;
+  color: #4f46e5;
   transform: translateX(5px);
 }
 
@@ -160,7 +160,7 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  color: #a0a0a0;
+  color: #475569;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -168,14 +168,14 @@
 .footer-contact .contact-item svg {
   width: 16px;
   height: 16px;
-  color: #646cff;
+  color: #4f46e5;
   margin-top: 2px;
   flex-shrink: 0;
 }
 
 /* Footer Bottom */
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
   padding: 30px 0;
   position: relative;
   z-index: 2;
@@ -190,7 +190,7 @@
 }
 
 .copyright p {
-  color: #a0a0a0;
+  color: #475569;
   font-size: 13px;
   margin: 0;
 }
@@ -202,14 +202,14 @@
 }
 
 .footer-bottom-links a {
-  color: #a0a0a0;
+  color: #475569;
   text-decoration: none;
   font-size: 13px;
   transition: color 0.3s ease;
 }
 
 .footer-bottom-links a:hover {
-  color: #646cff;
+  color: #4f46e5;
 }
 
 .back-to-top {
@@ -217,21 +217,21 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
   border-radius: 25px;
-  color: #a0a0a0;
+  color: #475569;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .back-to-top:hover {
-  background: rgba(100, 108, 255, 0.2);
-  border-color: #646cff;
-  color: #646cff;
+  background: rgba(79, 70, 229, 0.08);
+  border-color: #4f46e5;
+  color: #4f46e5;
   transform: translateY(-2px);
 }
 

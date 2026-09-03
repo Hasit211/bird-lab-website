@@ -88,7 +88,7 @@
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f1f5f9;
 }
 
 .modal-image {
@@ -269,14 +269,14 @@
 
 .research-tag {
   padding: 0.4rem 0.8rem;
-  background: linear-gradient(135deg, rgba(100, 108, 255, 0.2), rgba(0, 255, 255, 0.2)); /* Use gradient */
-  color: var(--text-primary); /* Changed text color */
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(8, 145, 178, 0.08));
+  color: var(--text-primary);
   border-radius: 16px;
   font-size: 0.8rem;
   font-weight: 500;
   cursor: default;
   transition: transform 0.2s ease;
-  border: 1px solid rgba(100, 108, 255, 0.3); /* Add border */
+  border: 1px solid rgba(79, 70, 229, 0.2);
 }
 
 .research-tag:hover {
@@ -294,7 +294,7 @@
   gap: 0.75rem;
   align-items: flex-start;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05); /* Changed background */
+  background: #f8fafc;
   border-radius: 10px;
   border-left: 3px solid var(--primary, #2563eb);
 }
@@ -325,15 +325,15 @@
   align-items: flex-start;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05); /* Changed background */
+  background: #f8fafc;
   border-radius: 8px;
   transition: background-color 0.2s ease;
-  border: 1px solid var(--border-light); /* Add border */
+  border: 1px solid var(--border-light);
 }
 
 .publication-item:hover,
 .achievement-item:hover {
-  background: rgba(255, 255, 255, 0.08); /* Hover background */
+  background: #eef2f7;
 }
 
 .achievement-icon {
@@ -372,13 +372,13 @@
 }
 
 .expandable-card-item {
-  background: rgba(255, 255, 255, 0.03);
+  background: #ffffff;
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  background-clip: padding-box;
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -387,10 +387,11 @@
   gap: 2.5rem;
   align-items: start;
   min-height: 280px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
 }
 
 .expandable-card-item:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 20px 40px rgba(79, 70, 229, 0.12);
   border-color: var(--primary, #2563eb);
   transform: translateY(-2px);
 }
@@ -512,7 +513,7 @@
   color: var(--text-secondary);
   margin: 0.5rem 0;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.02);
+  background: #f8fafc;
   border-radius: 8px;
   border-left: 3px solid var(--accent, #10b981);
 }
@@ -590,12 +591,12 @@
 
 .research-preview-tag {
   padding: 0.3rem 0.7rem;
-  background: linear-gradient(135deg, rgba(100, 108, 255, 0.15), rgba(0, 255, 255, 0.15));
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(8, 145, 178, 0.08));
   color: var(--primary);
   border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 500;
-  border: 1px solid rgba(100, 108, 255, 0.3);
+  border: 1px solid rgba(79, 70, 229, 0.2);
   transition: all 0.3s ease;
 }
 
@@ -607,7 +608,7 @@
 
 .more-tag {
   padding: 0.4rem 0.8rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f1f5f9;
   color: var(--text-secondary);
   border-radius: 16px;
   font-size: 0.85rem;
@@ -624,7 +625,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f8fafc;
   border-radius: 12px;
   border-left: 3px solid var(--primary, #2563eb);
 }

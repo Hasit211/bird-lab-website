@@ -2,11 +2,17 @@ import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TracingBeam } from '../ui/TracingBeam';
+import { useSheetTab } from '../../hooks/useSheetTab';
+import { useContent } from '../../hooks/useContent';
+import { transformCourses } from '../../services/sheets/transforms';
+import { TABS } from '../../config/sheets';
 import './Lectures.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const COURSES_DATA = [
+// Shown if the Google Sheet "Courses" tab is unreachable. Edit courses in the
+// sheet, not here — this is only the safety net.
+const FALLBACK_COURSES = [
   {
     id: 1,
     code: "CSL7570",
@@ -64,8 +70,12 @@ const COURSES_DATA = [
 ];
 
 const Lectures = () => {
-  const [courses] = useState(COURSES_DATA);
-  const [filteredCourses, setFilteredCourses] = useState(COURSES_DATA);
+  const t = useContent();
+  const { data: courses } = useSheetTab(TABS.courses, {
+    transform: transformCourses,
+    fallback: FALLBACK_COURSES,
+  });
+  const [filteredCourses, setFilteredCourses] = useState(courses);
   const [selectedType, setSelectedType] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const lecturesRef = useRef(null);
@@ -122,13 +132,20 @@ const Lectures = () => {
     return type === 'postgraduate' ? '#00ffff' : '#646cff';
   };
 
+  // Department options are derived from the data so new departments added in the
+  // sheet show up in the filter automatically.
+  const departments = [...new Set(courses.map((c) => c.department).filter(Boolean))];
+
   return (
     <section id="lectures" className="lectures-section">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Courses & Curriculum</h2>
+          <h2 className="section-title">{t('lectures.title', 'Courses & Curriculum')}</h2>
           <p className="section-subtitle">
-            Explore our comprehensive course offerings in robotics, mechatronics, and related technologies
+            {t(
+              'lectures.subtitle',
+              'Explore our comprehensive course offerings in robotics, mechatronics, and related technologies'
+            )}
           </p>
         </div>
 
@@ -155,10 +172,9 @@ const Lectures = () => {
               className="filter-select"
             >
               <option value="all">All Departments</option>
-              <option value="AIDE">AIDE</option>
-              <option value="IDRP-RMS">IDRP-RMS</option>
-              <option value="MedTech">MedTech</option>
-              <option value="ME">ME</option>
+              {departments.map((dept) => (
+                <option key={dept} value={dept}>{dept}</option>
+              ))}
             </select>
           </div>
         </div>

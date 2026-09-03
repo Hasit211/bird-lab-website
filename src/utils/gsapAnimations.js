@@ -16,7 +16,7 @@ export const initPageAnimations = () => {
   
   tl.set('body', { opacity: 1 })
     .from('.header', { y: -120, opacity: 0, duration: 1, ease: "power3.out" })
-    .from('.hero-content > *', { 
+    .from('.section-header, .welcome-content', { 
       y: 50, 
       opacity: 0, 
       duration: 0.8, 
@@ -255,11 +255,11 @@ export const mobileMenuOpen = (menu) => {
   
   tl.set(menu, { display: 'flex' })
     .fromTo(menu,
-      { x: '100%' },
+      { x: '-100%' },
       { x: '0%', duration: 0.4, ease: "power3.out" }
     )
     .fromTo(menu.querySelectorAll('.nav-item'),
-      { x: 50, opacity: 0 },
+      { x: -50, opacity: 0 },
       { x: 0, opacity: 1, duration: 0.3, stagger: 0.1, ease: "power2.out" },
       "-=0.2"
     );
@@ -271,10 +271,10 @@ export const mobileMenuClose = (menu) => {
   const tl = gsap.timeline();
   
   tl.to(menu.querySelectorAll('.nav-item'),
-      { x: 50, opacity: 0, duration: 0.2, stagger: 0.05 }
+      { x: -50, opacity: 0, duration: 0.2, stagger: 0.05 }
     )
     .to(menu,
-      { x: '100%', duration: 0.3, ease: "power3.in" },
+      { x: '-100%', duration: 0.3, ease: "power3.in" },
       "-=0.1"
     )
     .set(menu, { display: 'none' });

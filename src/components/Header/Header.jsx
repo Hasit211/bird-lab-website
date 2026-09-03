@@ -2,19 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_ITEMS } from '../../utils/constants';
 import { mobileMenuOpen, mobileMenuClose } from '../../utils/gsapAnimations';
+import hamburgerIcon from '../../assets/align-left-svgrepo-com.svg';
+import closeIcon from '../../assets/design-svgrepo-com.svg';
 import './Header.css';
 
 const Header = () => {
-    const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
-
-    useEffect(() => {
-        const handleScroll = () => setIsScrolled(window.scrollY > 50);
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     const toggleMobileMenu = () => {
         const menu = document.querySelector('.mobile-nav');
@@ -26,91 +20,70 @@ const Header = () => {
         setIsMobileMenuOpen(prev => !prev);
     };
 
-  const scrollToSection = (sectionId) => {
-    // Only scroll to sections that exist on the home page
-    const homeSections = ['hero', 'welcome', 'research'];
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+            document.body.classList.add('menu-open');
+        } else {
+            document.body.style.overflow = '';
+            document.body.classList.remove('menu-open');
+        }
+        return () => {
+            document.body.style.overflow = '';
+            document.body.classList.remove('menu-open');
+        };
+    }, [isMobileMenuOpen]);
 
-    if (location.pathname === '/' && sectionId && homeSections.includes(sectionId)) {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
-
-    const renderDesktopLinks = () => {
-        return NAV_ITEMS.map((item) => (
-            <Link
-                key={item.label}
-                to={item.href}
-                className={`nav-link ${location.pathname === item.href ? 'active' : ''}`}
-                onClick={() => {
-                    if (item.href === '/' || (location.pathname === '/' && item.section)) {
-                        scrollToSection(item.section);
-                    }
-                }}
-            >
-                {item.label}
-            </Link>
-        ));
+    const isCurrentPage = (item) => {
+        const itemPath = item.href === '/' ? '/' : item.href;
+        const currentPath = location.pathname === '/' ? '/' : location.pathname;
+        return itemPath === currentPath;
     };
 
     const renderMobileLinks = () => {
-        return NAV_ITEMS.map(item => (
-            <Link
-                key={item.label}
-                to={item.href}
-                className="nav-item"
-                onClick={() => {
-                    toggleMobileMenu();
-                }}
-            >
-                {item.label}
-            </Link>
-        ));
+        return NAV_ITEMS
+            // Hide the page the user is currently on from the sidebar.
+            .filter(item => !isCurrentPage(item))
+            .map(item => (
+                <Link
+                    key={item.label}
+                    to={item.href}
+                    className="nav-item"
+                    onClick={() => {
+                        toggleMobileMenu();
+                    }}
+                >
+                    {item.label}
+                </Link>
+            ));
     };
 
     return (
-        <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
-            <div className="container">
-                <div className="header-content">
-                    <Link to="/" className="logo">
-                        <div className="logo-icon">
-                            <img
-                                src="/logo.jpeg"
-                                alt="Bird Lab Logo"
-                                style={{ height: 40, width: 40 }}
-                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            />
-                        </div>
-                        <span className="logo-text">BIRDLab</span>
-                    </Link>
+        <>
+            <button
+                className={`mobile-menu-toggle ${isMobileMenuOpen ? 'hidden' : ''}`}
+                onClick={toggleMobileMenu}
+                aria-expanded={isMobileMenuOpen}
+                aria-label="Open menu"
+                aria-controls="site-sidebar"
+            >
+                <img className="menu-icon" src={hamburgerIcon} alt="" aria-hidden="true" />
+            </button>
 
-                    <nav className="desktop-nav" aria-label="Primary">
-                        {renderDesktopLinks()}
-                    </nav>
-
-                    <button
-                        className="mobile-menu-toggle"
-                        onClick={toggleMobileMenu}
-                        aria-expanded={isMobileMenuOpen}
-                        aria-label="Toggle menu"
-                    >
-                        <span className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`}>
-                            <span />
-                            <span />
-                            <span />
-                        </span>
-                    </button>
-                </div>
-            </div>
-
-            <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`} aria-hidden={!isMobileMenuOpen}>
+            <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu} />
+            <div className="mobile-nav" id="site-sidebar" aria-hidden={!isMobileMenuOpen}>
                 <div className="mobile-nav-content">
+                    <button
+                        className="mobile-nav-close"
+                        onClick={toggleMobileMenu}
+                        aria-label="Close menu"
+                    >
+                        <img className="close-icon" src={closeIcon} alt="" aria-hidden="true" />
+                    </button>
                     {renderMobileLinks()}
                 </div>
             </div>
-        </header>
+        </>
     );
 };
 

@@ -1,7 +1,7 @@
 /* Facilities Section */
 .facilities-section {
   padding: 120px 0;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1e 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
   position: relative;
   min-height: 100vh;
 }
@@ -16,9 +16,9 @@
 .section-title {
   font-size: 3.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #646cff 0%, #00ffff 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -26,7 +26,7 @@
 
 .section-subtitle {
   font-size: 1.2rem;
-  color: #a0a0a0;
+  color: #475569;
   max-width: 700px;
   margin: 0 auto;
   line-height: 1.6;
@@ -42,28 +42,29 @@
 }
 
 .filter-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  color: #334155;
   padding: 12px 24px;
   border-radius: 25px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .filter-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(100, 108, 255, 0.4);
+  background: #ffffff;
+  border-color: rgba(79, 70, 229, 0.4);
+  color: #4f46e5;
   transform: translateY(-2px);
 }
 
 .filter-btn.active {
-  background: linear-gradient(135deg, #646cff, #00ffff);
-  border-color: #00ffff;
+  background: linear-gradient(135deg, #4f46e5, #0891b2);
+  border-color: #0891b2;
   color: #ffffff;
-  box-shadow: 0 8px 20px rgba(100, 108, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
 }
 
 /* Facilities Grid */
@@ -75,20 +76,20 @@
 }
 
 .facility-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.4s ease;
   position: relative;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
 }
 
 .facility-card:hover {
   transform: translateY(-10px);
-  border-color: rgba(100, 108, 255, 0.4);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(79, 70, 229, 0.3);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
 }
 
 .facility-image-container {
@@ -132,7 +133,7 @@
 }
 
 .facility-category {
-  background: rgba(100, 108, 255, 0.9);
+  background: rgba(79, 70, 229, 0.9);
   color: white;
   padding: 0.4rem 1rem;
   border-radius: 20px;
@@ -155,7 +156,7 @@
 .facility-name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #0f172a;
   margin: 0;
 }
 
@@ -166,7 +167,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(15, 23, 42, 0.92);
   z-index: 999999;
   display: flex;
   align-items: center;
@@ -177,14 +178,14 @@
 
 .lightbox-content {
   position: relative;
-  background: rgba(15, 15, 30, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
   border-radius: 20px;
   max-width: 1400px;
   width: 100%;
   max-height: 90vh;
   overflow: hidden;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px rgba(15, 23, 42, 0.4);
 }
 
 .lightbox-close {
@@ -193,8 +194,8 @@
   right: 1.5rem;
   width: 48px;
   height: 48px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.1);
+  border: 1px solid rgba(15, 23, 42, 0.15);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -202,11 +203,11 @@
   cursor: pointer;
   z-index: 10;
   transition: all 0.3s ease;
-  color: white;
+  color: #0f172a;
 }
 
 .lightbox-close:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.2);
   transform: rotate(90deg);
 }
 
@@ -224,7 +225,7 @@
 }
 
 .lightbox-image-section {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(15, 23, 42, 0.04);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -241,19 +242,19 @@
 .lightbox-specs-section {
   padding: 3rem;
   overflow-y: auto;
-  background: rgba(20, 20, 40, 0.5);
+  background: #f8fafc;
 }
 
 .lightbox-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 1rem;
 }
 
 .lightbox-category-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #646cff, #00ffff);
+  background: linear-gradient(135deg, #4f46e5, #0891b2);
   color: white;
   padding: 0.5rem 1.5rem;
   border-radius: 20px;
@@ -263,7 +264,7 @@
 }
 
 .lightbox-description {
-  color: #d0d0d0;
+  color: #475569;
   line-height: 1.8;
   margin-bottom: 2rem;
   font-size: 1rem;
@@ -276,10 +277,10 @@
 .specs-heading {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #00ffff;
+  color: #0891b2;
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+  border-bottom: 2px solid rgba(8, 145, 178, 0.2);
 }
 
 .specs-list {
@@ -291,26 +292,26 @@
 .spec-item {
   display: flex;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-left: 3px solid #00ffff;
+  background: #ffffff;
+  border-left: 3px solid #0891b2;
   border-radius: 8px;
   transition: all 0.3s ease;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
 }
 
 .spec-item:hover {
-  background: rgba(255, 255, 255, 0.06);
   transform: translateX(5px);
 }
 
 .spec-label {
   font-weight: 600;
-  color: #a0a0a0;
+  color: #64748b;
   min-width: 200px;
   flex-shrink: 0;
 }
 
 .spec-value {
-  color: #ffffff;
+  color: #0f172a;
   flex: 1;
 }
 

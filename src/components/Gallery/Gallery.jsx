@@ -2,7 +2,10 @@ import { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { GALLERY_ITEMS } from '../../utils/constants'; // Keep if GALLERY_ITEMS is still needed for appleCardsData
+import { useSheetTab } from '../../hooks/useSheetTab';
+import { useContent } from '../../hooks/useContent';
+import { transformCollaborations } from '../../services/sheets/transforms';
+import { TABS } from '../../config/sheets';
 import './Gallery.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -177,79 +180,38 @@ function Card({ card, index }) {
   );
 }
 
-// DummyContent and data
-function DummyContent() {
-  return (
-    <>
-    </>
-  );
-}
-
-const appleCardsData = [
-  {
-    category: "Collaboration",
-    title: "Sogang", // Updated title
-    src: "/assets/Sogang.png",
-    content: <DummyContent />,
-  },
-  {
-    category: "Collaboration",
-    title: "Khalifa University", // Updated title
-    src: "/assets/KhalifaUniversity.png",
-    content: <DummyContent />,
-  },
-  {
-    category: "Collaboration",
-    title: "IIT Delhi", // Updated title
-    src: "/assets/IITD.png",
-    content: <DummyContent />,
-  },
-  {
-    category: "Collaboration",
-    title: "IIT Gandhinagar", // Updated title
-    src: "/assets/IITGN.png",
-    content: <DummyContent />,
-  },
-  {
-    category: "Collaboration",
-    title: "University of Siena", // Updated title
-    src: "/assets/UniversityOfSiena.png",
-    content: <DummyContent />,
-  },
-  {
-    category: "Collaboration",
-    title: "KAIST", // Updated title
-    src: "/assets/KAIST.png",
-    content: <DummyContent />,
-  },
-  {
-    category: "Collaboration",
-    title: "CNU, Korea", // Updated title
-    src: "/assets/CNU.png",
-    content: <DummyContent />,
-  },
-  {
-    category: "Industry Collaboration",
-    title: "Jaipur Foot", // Updated title
-    src: "/assets/JaipurFoot.png",
-    content: <DummyContent />,
-  },
+// Shown if the Google Sheet "Collaborations" tab is unreachable. Edit
+// collaborations in the sheet, not here — this is only the safety net.
+const FALLBACK_COLLABORATIONS = [
+  { category: "Collaboration", title: "Sogang", src: "/assets/Sogang.png" },
+  { category: "Collaboration", title: "Khalifa University", src: "/assets/KhalifaUniversity.png" },
+  { category: "Collaboration", title: "IIT Delhi", src: "/assets/IITD.png" },
+  { category: "Collaboration", title: "IIT Gandhinagar", src: "/assets/IITGN.png" },
+  { category: "Collaboration", title: "University of Siena", src: "/assets/UniversityOfSiena.png" },
+  { category: "Collaboration", title: "KAIST", src: "/assets/KAIST.png" },
+  { category: "Collaboration", title: "CNU, Korea", src: "/assets/CNU.png" },
+  { category: "Industry Collaboration", title: "Jaipur Foot", src: "/assets/JaipurFoot.png" },
 ];
 
-const appleCards = appleCardsData.map((card, index) => (
-  <Card key={card.src} card={card} index={index} />
-));
-
 const Gallery = () => {
+  const t = useContent();
   const galleryRef = useRef(null);
+  const { data: collaborations } = useSheetTab(TABS.collaborations, {
+    transform: transformCollaborations,
+    fallback: FALLBACK_COLLABORATIONS,
+  });
+
+  const appleCards = collaborations.map((card, index) => (
+    <Card key={index} card={card} index={index} />
+  ));
 
   return (
     <section id="gallery" className="gallery-section" ref={galleryRef}>
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Collaboration</h2>
+          <h2 className="section-title">{t('gallery.title', 'Collaboration')}</h2>
           <p className="section-subtitle">
-            Explore our laboratory, projects, and research in action
+            {t('gallery.subtitle', 'Explore our laboratory, projects, and research in action')}
           </p>
         </div>
         {/* Apple Cards Carousel Integration */}

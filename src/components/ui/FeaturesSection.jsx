@@ -1,44 +1,48 @@
 import React, { useEffect, useRef } from 'react';
+import { useContent } from '../../hooks/useContent';
 import './FeaturesSection.css';
 
 const FeaturesSection = () => {
+  const t = useContent();
   return (
     <div className="features-section">
       <div className="features-container">
         <h4 className="features-title">
-          Advanced Research Capabilities
+          {t('features.title', 'Advanced Research Capabilities')}
         </h4>
         <p className="features-subtitle">
-          From autonomous systems to AI-powered robotics, our laboratory leads innovation 
-          in cutting-edge research and development.
+          {t(
+            'features.subtitle',
+            'From autonomous systems to AI-powered robotics, our laboratory leads innovation in cutting-edge research and development.'
+          )}
         </p>
       </div>
 
       <div className="bento-grid">
         <BentoGridItem
-          title="Advanced Robotics Research"
-          description="Cutting-edge research in autonomous systems, machine learning, and bio-inspired robotics."
+          title={t('features.item1.title', 'Advanced Robotics Research')}
+          description={t('features.item1.desc', 'Cutting-edge research in autonomous systems, machine learning, and bio-inspired robotics.')}
           header={<SkeletonOne />}
           className="bento-item-large"
           icon="🤖"
         />
         <BentoGridItem
-          title="AI-Powered Vision Systems"
-          description="Computer vision and deep learning solutions for real-world applications."
+          title={t('features.item2.title', 'AI-Powered Vision Systems')}
+          description={t('features.item2.desc', 'Computer vision and deep learning solutions for real-world applications.')}
           header={<SkeletonTwo />}
           className="bento-item-medium"
           icon="👁️"
         />
         <BentoGridItem
-          title="Research Publications"
-          description="Discover our latest research findings and breakthrough innovations in robotics."
+          title={t('features.item3.title', 'Research Publications')}
+          description={t('features.item3.desc', 'Discover our latest research findings and breakthrough innovations in robotics.')}
           header={<SkeletonThree />}
           className="bento-item-medium"
           icon="📄"
         />
         <BentoGridItem
-          title="Global Collaboration"
-          description="Partnering with institutions worldwide to advance robotics research and innovation."
+          title={t('features.item4.title', 'Global Collaboration')}
+          description={t('features.item4.desc', 'Partnering with institutions worldwide to advance robotics research and innovation.')}
           header={<SkeletonFour />}
           className="bento-item-wide"
           icon="🌍"

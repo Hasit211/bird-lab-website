@@ -1,11 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { staggerAnimation } from '../../utils/gsapAnimations';
 import { RESEARCH_AREAS } from '../../utils/constants';
+import { useSheetTab } from '../../hooks/useSheetTab';
+import { useContent } from '../../hooks/useContent';
+import { transformResearchAreas } from '../../services/sheets/transforms';
+import { TABS } from '../../config/sheets';
 import ResearchModal from '../ResearchModal/ResearchModal';
 import './Research.css';
 
 const Research = () => {
+  const t = useContent();
   const sectionRef = useRef(null);
+  const { data: researchAreas } = useSheetTab(TABS.researchAreas, {
+    transform: transformResearchAreas,
+    fallback: RESEARCH_AREAS,
+  });
   const [selectedResearchArea, setSelectedResearchArea] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedCards, setExpandedCards] = useState({});
@@ -32,20 +41,23 @@ const Research = () => {
       const cards = sectionRef.current.querySelectorAll('.research-card');
       staggerAnimation(cards);
     }
-  }, []);
+  }, [researchAreas]);
 
   return (
     <section id="research" className="section research" ref={sectionRef}>
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Research Areas</h2>
+          <h2 className="section-title">{t('research.title', 'Research Areas')}</h2>
           <p className="section-subtitle">
-            Exploring cutting-edge technologies and methodologies to advance the field of robotics
+            {t(
+              'research.subtitle',
+              'Exploring cutting-edge technologies and methodologies to advance the field of robotics'
+            )}
           </p>
         </div>
 
         <div className="research-grid">
-          {RESEARCH_AREAS.map((area, index) => (
+          {researchAreas.map((area, index) => (
             <div key={index} className="research-card">
               <div className="card-header">
                 <div className="research-icon">
@@ -85,24 +97,25 @@ const Research = () => {
         <div className="research-highlight">
           <div className="highlight-content">
             <div className="highlight-text">
-              <h3>Current Focus: Bio-Inspired Autonomous Systems</h3>
+              <h3>{t('research.highlight.title', 'Current Focus: Bio-Inspired Autonomous Systems')}</h3>
               <p>
-                Our latest research initiative combines principles from biology and artificial intelligence 
-                to create robots that can adapt and learn from their environment, much like living organisms. 
-                This interdisciplinary approach is opening new frontiers in robotics.
+                {t(
+                  'research.highlight.text',
+                  'Our latest research initiative combines principles from biology and artificial intelligence to create robots that can adapt and learn from their environment, much like living organisms. This interdisciplinary approach is opening new frontiers in robotics.'
+                )}
               </p>
               <div className="highlight-stats">
                 <div className="stat-item">
-                  <span className="stat-value">5</span>
-                  <span className="stat-label">Active Projects</span>
+                  <span className="stat-value">{t('research.highlight.stat1.value', '5')}</span>
+                  <span className="stat-label">{t('research.highlight.stat1.label', 'Active Projects')}</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-value">$2M</span>
-                  <span className="stat-label">Funding Secured</span>
+                  <span className="stat-value">{t('research.highlight.stat2.value', '$2M')}</span>
+                  <span className="stat-label">{t('research.highlight.stat2.label', 'Funding Secured')}</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-value">3</span>
-                  <span className="stat-label">Industry Partners</span>
+                  <span className="stat-value">{t('research.highlight.stat3.value', '3')}</span>
+                  <span className="stat-label">{t('research.highlight.stat3.label', 'Industry Partners')}</span>
                 </div>
               </div>
             </div>

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { staggerAnimation } from '../../utils/gsapAnimations';
 import { getTeamData } from '../../services/googleSheets';
+import { useContent } from '../../hooks/useContent';
 import ExpandableCard from '../ExpandableCard/ExpandableCard';
 import './People.css';
 
 const People = () => {
+  const t = useContent();
   const sectionRef = useRef(null);
   const [teamData, setTeamData] = useState({
     professor: [],
@@ -50,9 +52,9 @@ const People = () => {
       <section id="people" className="section people" ref={sectionRef}>
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Our Team</h2>
+            <h2 className="section-title">{t('people.title', 'Our Team')}</h2>
             <p className="section-subtitle">
-              Meet the brilliant minds driving innovation in robotics research
+              {t('people.subtitle', 'Meet the brilliant minds driving innovation in robotics research')}
             </p>
           </div>
           <div className="loading-spinner">
@@ -71,9 +73,9 @@ const People = () => {
       <section id="people" className="section people" ref={sectionRef}>
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Our Team</h2>
+            <h2 className="section-title">{t('people.title', 'Our Team')}</h2>
             <p className="section-subtitle">
-              Meet the brilliant minds driving innovation in robotics research
+              {t('people.subtitle', 'Meet the brilliant minds driving innovation in robotics research')}
             </p>
           </div>
           <div className="error-message">
@@ -103,9 +105,9 @@ const People = () => {
     <section id="people" className="section people" ref={sectionRef}>
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Our Team</h2>
+          <h2 className="section-title">{t('people.title', 'Our Team')}</h2>
           <p className="section-subtitle">
-            Meet the brilliant minds driving innovation in robotics research
+            {t('people.subtitle', 'Meet the brilliant minds driving innovation in robotics research')}
           </p>
         </div>
 
@@ -202,15 +204,16 @@ const People = () => {
         {/* Join Us Section */}
         <div className="join-us-section">
           <div className="join-us-content">
-            <h3>Join Our Team</h3>
+            <h3>{t('people.join.title', 'Join Our Team')}</h3>
             <p>
-              We're always looking for passionate researchers and students to join our team. 
-              Explore opportunities to work on cutting-edge robotics projects and contribute 
-              to groundbreaking research.
+              {t(
+                'people.join.text',
+                "We're always looking for passionate researchers and students to join our team. Explore opportunities to work on cutting-edge robotics projects and contribute to groundbreaking research."
+              )}
             </p>
             <div className="join-us-actions">
-              <button className="btn-primary">View Open Positions</button>
-              <button className="btn-secondary">Contact Us</button>
+              <button className="btn-primary">{t('people.join.btnPrimary', 'View Open Positions')}</button>
+              <button className="btn-secondary">{t('people.join.btnSecondary', 'Contact Us')}</button>
             </div>
           </div>
           <div className="join-us-visual">

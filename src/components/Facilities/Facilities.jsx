@@ -1,18 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FACILITIES } from '../../utils/constants';
+import { useSheetTab } from '../../hooks/useSheetTab';
+import { useContent } from '../../hooks/useContent';
+import { transformFacilities } from '../../services/sheets/transforms';
+import { TABS } from '../../config/sheets';
 import './Facilities.css';
 
 const Facilities = () => {
+  const t = useContent();
+  const { data: facilities } = useSheetTab(TABS.facilities, {
+    transform: transformFacilities,
+    fallback: FACILITIES,
+  });
   const [selectedFacility, setSelectedFacility] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const facilitiesRef = useRef(null);
 
-  const categories = ['all', ...new Set(FACILITIES.map(f => f.category))];
+  const categories = ['all', ...new Set(facilities.map(f => f.category))];
 
   const filteredFacilities = selectedCategory === 'all'
-    ? FACILITIES
-    : FACILITIES.filter(f => f.category === selectedCategory);
+    ? facilities
+    : facilities.filter(f => f.category === selectedCategory);
 
   useEffect(() => {
     if (selectedFacility) {
@@ -34,9 +43,9 @@ const Facilities = () => {
     <section id="facilities" className="facilities-section">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Lab Facilities</h2>
+          <h2 className="section-title">{t('facilities.title', 'Lab Facilities')}</h2>
           <p className="section-subtitle">
-            State-of-the-art equipment and infrastructure for cutting-edge research
+            {t('facilities.subtitle', 'State-of-the-art equipment and infrastructure for cutting-edge research')}
           </p>
         </div>
 

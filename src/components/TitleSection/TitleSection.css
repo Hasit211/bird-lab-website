@@ -1,0 +1,101 @@
+/* Title Section - Animated BIRDLabs hero heading */
+
+.title-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 4rem 1.5rem;
+  /* Light blue fade at the top mixing smoothly into pure white at the bottom. */
+  background: linear-gradient(180deg, #bae6fd 0%, #f0f9ff 50%, #ffffff 100%);
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ */
+/* TYPOGRAPHY TUNING                                                   */
+/*                                                                     */
+/* font-size : clamp() keeps the word readable on every viewport.      */
+/*             Adjust the middle value for the overall scale.          */
+/* gradient  : the whole word fades from light blue into green.        */
+/*             Edit the stops below to restyle the fade.               */
+/* ------------------------------------------------------------------ */
+.title-headline {
+  display: inline-block;
+  /* Keep the title above the Vanta Birds canvas (z-index 0). */
+  position: relative;
+  z-index: 1;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 900;
+  font-size: clamp(3.25rem, 11vw, 9rem);
+  line-height: 1;
+  margin-bottom: 0;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+}
+
+/* The gradient lives on each letter span (NOT the parent) so it survives
+   GSAP transforms on the letters - clipping on the parent breaks in Chrome
+   once children are transformed. Each letter renders a slice of an 800%-wide
+   gradient; `--pos` (set inline from JSX) slides the slice so the whole word
+   reads as one continuous light-blue -> green fade. */
+.title-headline .letter {
+  display: inline-block;
+  will-change: transform, opacity;
+  background-image: linear-gradient(
+    90deg,
+    #1d4ed8 0%,
+    #00e5ff 25%,
+    #ff2ed0 50%,
+    #a21caf 100%
+  );
+  background-size: 800% 100%;
+  background-repeat: no-repeat;
+  background-position: var(--pos, 0%) 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Fallback for browsers that cannot clip a background to text. */
+@supports not (-webkit-background-clip: text) {
+  .title-headline .letter {
+    color: #ff2ed0;
+    -webkit-text-fill-color: #ff2ed0;
+    background-image: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* SUBHEADING                                                          */
+/*                                                                     */
+/* Same font + centring as the heading, black, and 20% of the title's  */
+/* clamp() size (3.25rem -> 0.65rem, 11vw -> 2.2vw, 9rem -> 1.8rem).   */
+/* Hidden until GSAP reveals it after the title animation completes.   */
+/* ------------------------------------------------------------------ */
+.title-subheading {
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.65rem, 2.2vw, 1.8rem);
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: #000000;
+  max-width: 90%;
+  opacity: 0; /* hidden until shown by GSAP */
+}
+
+/* Small screens: prevent the thin clamp() from overflowing. */
+@media (max-width: 380px) {
+  .title-headline {
+    font-size: 3.25rem;
+    letter-spacing: 0rem;
+  }
+}

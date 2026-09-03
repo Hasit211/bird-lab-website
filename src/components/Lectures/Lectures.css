@@ -1,7 +1,7 @@
 /* Lectures Section */
 .lectures-section {
   padding: 120px 0;
-  background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
   position: relative;
   overflow: hidden;
 }
@@ -13,7 +13,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23646cff" fill-opacity="0.04"><rect width="20" height="20" rx="10"/></g></svg>') repeat;
+  background: url('data:image/svg+xml,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%234f46e5" fill-opacity="0.03"><rect width="20" height="20" rx="10"/></g></svg>') repeat;
   opacity: 0.6;
 }
 
@@ -27,9 +27,9 @@
 .section-title {
   font-size: 3.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #646cff 0%, #00ffff 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -37,7 +37,7 @@
 
 .section-subtitle {
   font-size: 1.2rem;
-  color: #a0a0a0;
+  color: #475569;
   max-width: 700px;
   margin: 0 auto;
   line-height: 1.6;
@@ -62,7 +62,7 @@
 }
 
 .filter-group label {
-  color: #a0a0a0;
+  color: #64748b;
   font-size: 14px;
   font-weight: 500;
   text-transform: uppercase;
@@ -71,26 +71,26 @@
 
 .filter-select {
   padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border: 2px solid rgba(15, 23, 42, 0.12);
   border-radius: 25px;
-  color: #ffffff;
+  color: #0f172a;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
   min-width: 150px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #646cff;
-  box-shadow: 0 0 15px rgba(100, 108, 255, 0.3);
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 }
 
 .filter-select option {
-  background: #1a1a2e;
-  color: #ffffff;
+  background: #ffffff;
+  color: #0f172a;
 }
 
 /* TracingBeam Integration */
@@ -118,15 +118,15 @@
 }
 
 .lecture-type-badge {
-  background: rgba(100, 108, 255, 0.2);
-  color: #646cff;
+  background: rgba(79, 70, 229, 0.08);
+  color: #4f46e5;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: 1px solid rgba(100, 108, 255, 0.3);
+  border: 1px solid rgba(79, 70, 229, 0.2);
 }
 
 .lecture-status-badge {
@@ -140,26 +140,26 @@
 }
 
 .lecture-status-badge.upcoming {
-  background: rgba(0, 255, 255, 0.2);
-  color: #00ffff;
-  border-color: rgba(0, 255, 255, 0.3);
+  background: rgba(8, 145, 178, 0.1);
+  color: #0e7490;
+  border-color: rgba(8, 145, 178, 0.25);
 }
 
 .lecture-status-badge.past {
-  background: rgba(160, 160, 160, 0.2);
-  color: #a0a0a0;
-  border-color: rgba(160, 160, 160, 0.3);
+  background: rgba(100, 116, 139, 0.12);
+  color: #64748b;
+  border-color: rgba(100, 116, 139, 0.25);
 }
 
 .lecture-content-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   padding: 32px;
-  backdrop-filter: blur(10px);
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
 }
 
 .lecture-content-card::before {
@@ -169,7 +169,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.05), transparent);
   transition: left 0.6s ease;
 }
 
@@ -179,9 +179,8 @@
 
 .lecture-content-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(100, 108, 255, 0.3);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(79, 70, 229, 0.3);
+  box-shadow: 0 15px 30px rgba(15, 23, 42, 0.12);
 }
 
 .lecture-header {
@@ -193,19 +192,19 @@
 }
 
 .lecture-date {
-  color: #ffffff;
+  color: #0f172a;
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 6px;
 }
 
 .lecture-time {
-  color: #a0a0a0;
+  color: #64748b;
   font-size: 14px;
 }
 
 .lecture-title {
-  color: #ffffff;
+  color: #0f172a;
   font-size: 1.6rem;
   font-weight: 600;
   line-height: 1.3;
@@ -214,7 +213,7 @@
 }
 
 .lecture-content-card:hover .lecture-title {
-  color: #00ffff;
+  color: #0891b2;
 }
 
 .lecture-meta-info {
@@ -229,7 +228,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #b0b0b0;
+  color: #475569;
   font-size: 15px;
 }
 
@@ -237,12 +236,12 @@
 .lecture-location svg {
   width: 18px;
   height: 18px;
-  color: #646cff;
+  color: #4f46e5;
   flex-shrink: 0;
 }
 
 .lecture-description {
-  color: #a0a0a0;
+  color: #475569;
   line-height: 1.6;
   margin-bottom: 28px;
   font-size: 15px;
@@ -259,16 +258,16 @@
   align-items: center;
   gap: 10px;
   padding: 14px 28px;
-  border: 2px solid transparent;
+  border: 2px solid rgba(15, 23, 42, 0.12);
   border-radius: 25px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  backdrop-filter: blur(10px);
+  background: #ffffff;
+  color: #334155;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .action-btn svg {
@@ -277,17 +276,19 @@
 }
 
 .register-btn:hover {
-  background: linear-gradient(135deg, #00ffff 0%, #06b6d4 100%);
-  border-color: #00ffff;
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+  border-color: #0891b2;
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(8, 145, 178, 0.2);
 }
 
 .video-btn:hover {
-  background: linear-gradient(135deg, #646cff 0%, #7c3aed 100%);
-  border-color: #646cff;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  border-color: #4f46e5;
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(100, 108, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
 }
 
 /* Remove old timeline styles since we're using TracingBeam */
@@ -300,39 +301,39 @@
   .lectures-section {
     padding: 80px 0;
   }
-  
+
   .section-title {
     font-size: 2.5rem;
   }
-  
+
   .lectures-filters {
     flex-direction: column;
     align-items: center;
     gap: 20px;
   }
-  
+
   .filter-group {
     width: 100%;
     max-width: 200px;
   }
-  
+
   .lectures-tracing-beam {
     padding: 0 16px;
   }
-  
+
   .lecture-content-card {
     padding: 24px;
   }
-  
+
   .lecture-badge {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .lecture-meta-info {
     gap: 10px;
   }
-  
+
   .lecture-title {
     font-size: 1.4rem;
   }
@@ -342,19 +343,19 @@
   .section-title {
     font-size: 2rem;
   }
-  
+
   .lectures-tracing-beam {
     padding: 0 12px;
   }
-  
+
   .lecture-content-card {
     padding: 20px;
   }
-  
+
   .lecture-title {
     font-size: 1.3rem;
   }
-  
+
   .action-btn {
     padding: 12px 24px;
     font-size: 13px;

@@ -1,58 +1,60 @@
-// Google Sheets API service
+// People data from the Google Sheet "People" tab.
+//
+// Keyless: reads the sheet via the public CSV endpoint (services/sheets/client),
+// so no API key ships in the bundle. Photos come from the sheet's `Photo`
+// column (plain image URL or Google Drive share link); if that's blank we fall
+// back to a bundled /assets/<name>.png, and finally to a neutral placeholder.
 import { FALLBACK_TEAM_DATA } from '../utils/fallbackData';
+import { fetchTabRows, resolveImageUrl, PLACEHOLDER_IMG } from './sheets/client';
+import { TABS } from '../config/sheets';
 
-const SHEET_ID = '1rfeP7ny6xYqEe-5fVLqKpXLHGI2rGeQ8oZK0us6ADtE';
-const SHEET_NAME = 'People';
-const API_KEY = import.meta.env.VITE_GOOGLE_SHEETS_API_KEY;
+const emptyTeam = () => ({
+  professor: [],
+  postdoc: [],
+  phd: [],
+  juniorResearcher: [],
+  masters: [],
+  webmaster: [],
+  alumni: [],
+  graduateStudent: [],
+  others: [],
+});
 
-/**
- * Fetch data from Google Sheets
- * @param {string} range - The range to fetch (e.g., 'A1:Z100')
- * @returns {Promise<Array>} Array of row data
- */
-export const fetchSheetData = async (range = 'A:Z') => {
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${range}?key=${API_KEY}`;
-    
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    return data.values || [];
-  } catch (error) {
-    console.error('Error fetching Google Sheets data:', error);
-    throw error;
-  }
+// Bundled-asset path derived from a person's name (back-compat fallback for
+// people who don't yet have a Photo value in the sheet).
+const nameToAssetPath = (name) => {
+  if (!name) return PLACEHOLDER_IMG;
+  const filename = name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/gi, '')
+    .replace(/\s+/g, '-')
+    .trim();
+  return filename ? `/assets/${filename}.png` : PLACEHOLDER_IMG;
 };
 
 /**
- * Transform raw sheet data into structured team data
- * @param {Array} rawData - Raw data from Google Sheets
+ * Fetch the raw People rows (2D string array, row 0 = headers).
+ * @returns {Promise<string[][]>}
+ */
+export const fetchSheetData = async () => fetchTabRows(TABS.people);
+
+/**
+ * Transform raw sheet rows into structured team data.
+ * @param {string[][]} rawData - rows from the People tab (row 0 = headers)
  * @returns {Object} Structured team data
  */
 export const transformSheetData = (rawData) => {
   if (!rawData || rawData.length === 0) {
-    return { 
-      professor: [], 
-      postdoc: [], 
-      phd: [], 
-      juniorResearcher: [], 
-      masters: [], 
-      webmaster: [], 
-      alumni: [], 
-      graduateStudent: [], 
-      others: [] 
-    };
+    return emptyTeam();
   }
 
   // First row is headers
   const headers = rawData[0];
   const rows = rawData.slice(1);
-  
-  // Map headers to indices for easier access
+
+  // Map headers to indices for easier access. Education columns repeat the
+  // "Institutaion"/"Year" headers, so those are resolved positionally (the
+  // column immediately after the degree column, and two after).
   const headerMap = {
     title: headers.indexOf('Title'),
     name: headers.indexOf('Name'),
@@ -61,21 +63,21 @@ export const transformSheetData = (rawData) => {
     email: headers.indexOf('Email'),
     postAffiliation: headers.indexOf('Post & Current Affiliation'),
     linkedin: headers.indexOf('Linkedin'),
-    
+
     // Education columns - PhD
     phdDegree: headers.indexOf('Education (PhD)'),
-    phdInstitution: headers.findIndex(h => h && h.includes('Education (PhD)')) + 1,
-    phdYear: headers.findIndex(h => h && h.includes('Education (PhD)')) + 2,
-    
-    // Education columns - Masters  
+    phdInstitution: headers.findIndex((h) => h && h.includes('Education (PhD)')) + 1,
+    phdYear: headers.findIndex((h) => h && h.includes('Education (PhD)')) + 2,
+
+    // Education columns - Masters
     mastersDegree: headers.indexOf('Education (MTech/MS)'),
-    mastersInstitution: headers.findIndex(h => h && h.includes('Education (MTech/MS)')) + 1,
-    mastersYear: headers.findIndex(h => h && h.includes('Education (MTech/MS)')) + 2,
-    
+    mastersInstitution: headers.findIndex((h) => h && h.includes('Education (MTech/MS)')) + 1,
+    mastersYear: headers.findIndex((h) => h && h.includes('Education (MTech/MS)')) + 2,
+
     // Education columns - Bachelors
     bachelorsDegree: headers.indexOf('Education (BTech/BE)'),
-    bachelorsInstitution: headers.findIndex(h => h && h.includes('Education (BTech/BE)')) + 1,
-    bachelorsYear: headers.findIndex(h => h && h.includes('Education (BTech/BE)')) + 2
+    bachelorsInstitution: headers.findIndex((h) => h && h.includes('Education (BTech/BE)')) + 1,
+    bachelorsYear: headers.findIndex((h) => h && h.includes('Education (BTech/BE)')) + 2,
   };
 
   // Helper function to safely get cell value
@@ -86,40 +88,23 @@ export const transformSheetData = (rawData) => {
   // Helper function to parse research interests
   const parseResearch = (researchString) => {
     if (!researchString) return [];
-    return researchString.split(/[,;]/).map(item => item.trim()).filter(item => item);
+    return researchString
+      .split(/[,;]/)
+      .map((item) => item.trim())
+      .filter((item) => item);
   };
 
-  // Helper function to process image URL from local assets
-  const processImageUrl = (imageUrl, personName) => {
-    if (!personName) return '/api/placeholder/300/300';
-    
-    // Create a standardized filename from the person's name
-    const filename = personName
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/gi, '')
-      .replace(/\s+/g, '-')
-      .trim();
-
-    console.log(`Processing image for ${personName}: ${filename}`);
-    
-    // For Vite, we need to import the image or use a dynamic import
-    // For now, we'll create the path that works with Vite's asset handling
-    // The assets will need to be moved to public folder or properly imported
-    try {
-      // Try to construct the path for assets in public folder
-      return `/assets/${filename}.png`;
-    } catch (error) {
-      console.warn(`Image not found for ${personName}, using placeholder`);
-      return '/api/placeholder/300/300';
-    }
-  };
+  // Resolve a person's photo: the Photo column (URL / Drive link / filename)
+  // drives it; blank falls back to the name-based bundled asset.
+  const processImageUrl = (imageUrl, personName) =>
+    resolveImageUrl(imageUrl, { fallback: nameToAssetPath(personName) });
 
   // Helper function to build education info
   const buildEducation = (row, degreeIndex, instIndex, yearIndex) => {
     const degree = getCellValue(row, degreeIndex);
-    const institution = getCellValue(row, instIndex); 
+    const institution = getCellValue(row, instIndex);
     const year = getCellValue(row, yearIndex);
-    
+
     if (degree || institution || year) {
       return { degree, institution, year };
     }
@@ -129,56 +114,59 @@ export const transformSheetData = (rawData) => {
   // Helper function to create bio from available data
   const createBio = (person) => {
     const parts = [];
-    
+
     if (person.postAffiliation) {
       parts.push(`Currently at ${person.postAffiliation}.`);
     }
-    
+
     if (person.research && person.research.length > 0) {
       parts.push(`Specializes in ${person.research.join(', ')}.`);
     }
-    
+
     if (person.education?.phd?.institution) {
       parts.push(`Completed PhD from ${person.education.phd.institution}.`);
     }
-    
-    return parts.length > 0 ? parts.join(' ') : `${person.title} with expertise in various research areas.`;
+
+    return parts.length > 0
+      ? parts.join(' ')
+      : `${person.title} with expertise in various research areas.`;
   };
 
-  const transformedData = {
-    professor: [],
-    postdoc: [],
-    phd: [],
-    juniorResearcher: [],
-    masters: [],
-    webmaster: [],
-    alumni: [],
-    graduateStudent: [],
-    others: []
-  };
+  const transformedData = emptyTeam();
 
   rows.forEach((row) => {
     if (!row || row.length === 0) return;
 
     const title = getCellValue(row, headerMap.title).toLowerCase().trim();
     const name = getCellValue(row, headerMap.name);
-    
+
     if (!name) return; // Skip rows without names
 
+    const image = processImageUrl(getCellValue(row, headerMap.photo), name);
     const person = {
       name,
       title: getCellValue(row, headerMap.title),
-      image: processImageUrl(getCellValue(row, headerMap.photo), name),
-      Photo: processImageUrl(getCellValue(row, headerMap.photo), name),
+      image,
+      Photo: image,
       research: parseResearch(getCellValue(row, headerMap.research)),
       email: getCellValue(row, headerMap.email),
       postAffiliation: getCellValue(row, headerMap.postAffiliation),
       linkedin: getCellValue(row, headerMap.linkedin),
       education: {
         phd: buildEducation(row, headerMap.phdDegree, headerMap.phdInstitution, headerMap.phdYear),
-        masters: buildEducation(row, headerMap.mastersDegree, headerMap.mastersInstitution, headerMap.mastersYear),
-        bachelors: buildEducation(row, headerMap.bachelorsDegree, headerMap.bachelorsInstitution, headerMap.bachelorsYear)
-      }
+        masters: buildEducation(
+          row,
+          headerMap.mastersDegree,
+          headerMap.mastersInstitution,
+          headerMap.mastersYear
+        ),
+        bachelors: buildEducation(
+          row,
+          headerMap.bachelorsDegree,
+          headerMap.bachelorsInstitution,
+          headerMap.bachelorsYear
+        ),
+      },
     };
 
     // Add bio
@@ -210,33 +198,25 @@ export const transformSheetData = (rawData) => {
 };
 
 /**
- * Get team data from Google Sheets
+ * Get team data from Google Sheets (keyless). Falls back to bundled data if the
+ * sheet is unreachable or returns nothing usable.
  * @returns {Promise<Object>} Structured team data
  */
 export const getTeamData = async () => {
-  // Check if API key is configured
-  if (!API_KEY || API_KEY === 'your_google_sheets_api_key_here') {
-    console.warn('Google Sheets API key not configured, using fallback data');
-    return FALLBACK_TEAM_DATA;
-  }
-
   try {
     const rawData = await fetchSheetData();
     const transformedData = transformSheetData(rawData);
-    
-    // If no data was retrieved, use fallback
-    if (transformedData.professor.length === 0 && 
-        transformedData.postdoc.length === 0 && 
-        transformedData.phd.length === 0 &&
-        transformedData.masters.length === 0) {
+
+    // If no people were parsed, use fallback so the page never renders empty.
+    const total = Object.values(transformedData).reduce((sum, list) => sum + list.length, 0);
+    if (total === 0) {
       console.warn('No data retrieved from Google Sheets, using fallback data');
       return FALLBACK_TEAM_DATA;
     }
-    
+
     return transformedData;
   } catch (error) {
     console.error('Error getting team data, using fallback:', error);
     return FALLBACK_TEAM_DATA;
   }
 };
-

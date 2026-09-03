@@ -1,61 +1,83 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { staggerAnimation } from '../../utils/gsapAnimations';
+import { useSheetTab } from '../../hooks/useSheetTab';
+import { useContent } from '../../hooks/useContent';
+import { transformEvents } from '../../services/sheets/transforms';
+import { deriveEventStatus } from '../../utils/eventStatus';
+import { TABS } from '../../config/sheets';
 import './Events.css';
 
+// Shown if the Google Sheet "Events" tab is unreachable. Edit events in the
+// sheet, not here — this is only the safety net.
+//
+// Note there's no hardcoded "Upcoming"/"Past" here: status is derived from each
+// event's date (see deriveEventStatus), so it can't fall out of sync with reality.
+const FALLBACK_EVENTS = [
+  {
+    id: 1,
+    title: "International Robotics Conference 2025",
+    date: "March 15-17, 2025",
+    location: "IIT Jodhpur, India",
+    description: "Join us for our annual robotics conference featuring keynote speakers, workshops, and demonstrations of cutting-edge bio-inspired robotics research.",
+    image: "https://via.placeholder.com/600x400/646cff/ffffff?text=Robotics+Conference",
+    category: "Conference"
+  },
+  {
+    id: 2,
+    title: "Workshop on Wearable Robotics",
+    date: "February 10, 2025",
+    location: "BIRD Lab, IIT Jodhpur",
+    description: "Hands-on workshop covering the latest developments in wearable robotics, exoskeletons, and bio-signal controlled systems.",
+    image: "https://via.placeholder.com/600x400/10b981/ffffff?text=Wearable+Robotics",
+    category: "Workshop"
+  },
+  {
+    id: 3,
+    title: "Guest Lecture: Dr. Sarah Chen",
+    date: "January 28, 2025",
+    location: "Online",
+    description: "Distinguished lecture on 'Future of Bio-Inspired Mechanisms' by Dr. Sarah Chen from MIT.",
+    image: "https://via.placeholder.com/600x400/f59e0b/ffffff?text=Guest+Lecture",
+    category: "Lecture"
+  },
+  {
+    id: 4,
+    title: "BIRD Lab Open House 2024",
+    date: "December 5, 2024",
+    location: "BIRD Lab, IIT Jodhpur",
+    description: "Successfully hosted our annual open house event showcasing student projects, research demonstrations, and lab tours.",
+    image: "https://via.placeholder.com/600x400/8b5cf6/ffffff?text=Open+House",
+    category: "Event"
+  },
+  {
+    id: 5,
+    title: "ICRA 2024 Participation",
+    date: "May 13-17, 2024",
+    location: "Yokohama, Japan",
+    description: "Our team presented 3 papers at the International Conference on Robotics and Automation, receiving best paper award for work on reconfigurable robotics.",
+    image: "https://via.placeholder.com/600x400/ef4444/ffffff?text=ICRA+2024",
+    category: "Conference"
+  }
+];
+
 const Events = () => {
+  const t = useContent();
   const sectionRef = useRef(null);
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: "International Robotics Conference 2025",
-      date: "March 15-17, 2025",
-      location: "IIT Jodhpur, India",
-      description: "Join us for our annual robotics conference featuring keynote speakers, workshops, and demonstrations of cutting-edge bio-inspired robotics research.",
-      image: "https://via.placeholder.com/600x400/646cff/ffffff?text=Robotics+Conference",
-      category: "Conference",
-      status: "Upcoming"
-    },
-    {
-      id: 2,
-      title: "Workshop on Wearable Robotics",
-      date: "February 10, 2025",
-      location: "BIRD Lab, IIT Jodhpur",
-      description: "Hands-on workshop covering the latest developments in wearable robotics, exoskeletons, and bio-signal controlled systems.",
-      image: "https://via.placeholder.com/600x400/10b981/ffffff?text=Wearable+Robotics",
-      category: "Workshop",
-      status: "Upcoming"
-    },
-    {
-      id: 3,
-      title: "Guest Lecture: Dr. Sarah Chen",
-      date: "January 28, 2025",
-      location: "Online",
-      description: "Distinguished lecture on 'Future of Bio-Inspired Mechanisms' by Dr. Sarah Chen from MIT.",
-      image: "https://via.placeholder.com/600x400/f59e0b/ffffff?text=Guest+Lecture",
-      category: "Lecture",
-      status: "Upcoming"
-    },
-    {
-      id: 4,
-      title: "BIRD Lab Open House 2024",
-      date: "December 5, 2024",
-      location: "BIRD Lab, IIT Jodhpur",
-      description: "Successfully hosted our annual open house event showcasing student projects, research demonstrations, and lab tours.",
-      image: "https://via.placeholder.com/600x400/8b5cf6/ffffff?text=Open+House",
-      category: "Event",
-      status: "Past"
-    },
-    {
-      id: 5,
-      title: "ICRA 2024 Participation",
-      date: "May 13-17, 2024",
-      location: "Yokohama, Japan",
-      description: "Our team presented 3 papers at the International Conference on Robotics and Automation, receiving best paper award for work on reconfigurable robotics.",
-      image: "https://via.placeholder.com/600x400/ef4444/ffffff?text=ICRA+2024",
-      category: "Conference",
-      status: "Past"
-    }
-  ]);
+  const { data: rawEvents } = useSheetTab(TABS.events, {
+    transform: transformEvents,
+    fallback: FALLBACK_EVENTS,
+  });
+
+  // Work out Upcoming vs Past from each event's date at load time — a stale date
+  // always reads as "Past" without anyone editing a status field. An explicit
+  // Status in the sheet overrides the date when the professor sets one.
+  const events = useMemo(
+    () => rawEvents.map((event) => ({
+      ...event,
+      status: deriveEventStatus(event.date, event.status),
+    })),
+    [rawEvents]
+  );
 
   const [filter, setFilter] = useState('All');
 
@@ -64,7 +86,7 @@ const Events = () => {
       const cards = sectionRef.current.querySelectorAll('.event-card');
       staggerAnimation(cards);
     }
-  }, [filter]);
+  }, [filter, events]);
 
   const filteredEvents = filter === 'All'
     ? events
@@ -76,9 +98,9 @@ const Events = () => {
     <section id="events" className="section events" ref={sectionRef}>
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Recent Events</h2>
+          <h2 className="section-title">{t('events.title', 'Recent Events')}</h2>
           <p className="section-subtitle">
-            Stay updated with our latest conferences, workshops, and academic activities
+            {t('events.subtitle', 'Stay updated with our latest conferences, workshops, and academic activities')}
           </p>
         </div>
 

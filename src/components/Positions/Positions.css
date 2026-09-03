@@ -1,7 +1,7 @@
 /* Positions Section */
 .positions-section {
   padding: 120px 0;
-  background: linear-gradient(135deg, #16213e 0%, #0f0f1e 50%, #1a1a2e 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
   position: relative;
   overflow: hidden;
 }
@@ -13,7 +13,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%2300ffff" fill-opacity="0.02"><path d="M60 60L90 30L60 0L30 30z"/></g></svg>') repeat;
+  background: url('data:image/svg+xml,<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%230891b2" fill-opacity="0.03"><path d="M60 60L90 30L60 0L30 30z"/></g></svg>') repeat;
   opacity: 0.8;
 }
 
@@ -27,9 +27,9 @@
 .section-title {
   font-size: 3.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #00ffff 0%, #646cff 100%);
+  background: linear-gradient(135deg, #0891b2 0%, #4f46e5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -37,7 +37,7 @@
 
 .section-subtitle {
   font-size: 1.2rem;
-  color: #a0a0a0;
+  color: #475569;
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -60,7 +60,7 @@
 }
 
 .filter-group label {
-  color: #a0a0a0;
+  color: #64748b;
   font-size: 14px;
   font-weight: 500;
   text-transform: uppercase;
@@ -69,26 +69,26 @@
 
 .filter-select {
   padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border: 2px solid rgba(15, 23, 42, 0.12);
   border-radius: 25px;
-  color: #ffffff;
+  color: #0f172a;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
   min-width: 200px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #00ffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  border-color: #0891b2;
+  box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.12);
 }
 
 .filter-select option {
-  background: #1a1a2e;
-  color: #ffffff;
+  background: #ffffff;
+  color: #0f172a;
 }
 
 /* Positions Grid */
@@ -101,14 +101,14 @@
 }
 
 .position-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   padding: 30px;
-  backdrop-filter: blur(10px);
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
 }
 
 .position-card::before {
@@ -118,7 +118,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.05), transparent);
   transition: left 0.6s ease;
 }
 
@@ -128,14 +128,14 @@
 
 .position-card:hover {
   transform: translateY(-10px);
-  border-color: rgba(0, 255, 255, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(8, 145, 178, 0.35);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.14);
 }
 
 .position-card.expanded {
   transform: translateY(-10px);
-  border-color: rgba(0, 255, 255, 0.4);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  border-color: rgba(8, 145, 178, 0.4);
+  box-shadow: 0 25px 50px rgba(15, 23, 42, 0.18);
 }
 
 .position-header {
@@ -161,8 +161,8 @@
 }
 
 .deadline-warning {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 11px;
@@ -174,15 +174,15 @@
 
 @keyframes glow {
   from {
-    box-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 5px rgba(245, 158, 11, 0.2);
   }
   to {
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.35);
   }
 }
 
 .position-title {
-  color: #ffffff;
+  color: #0f172a;
   font-size: 1.4rem;
   font-weight: 600;
   line-height: 1.3;
@@ -191,11 +191,11 @@
 }
 
 .position-card:hover .position-title {
-  color: #00ffff;
+  color: #0891b2;
 }
 
 .position-department {
-  color: #a0a0a0;
+  color: #64748b;
   font-size: 14px;
   font-weight: 500;
 }
@@ -211,21 +211,21 @@
   align-items: flex-start;
   gap: 12px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f8fafc;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(15, 23, 42, 0.06);
 }
 
 .summary-item svg {
   width: 20px;
   height: 20px;
-  color: #00ffff;
+  color: #0891b2;
   margin-top: 2px;
   flex-shrink: 0;
 }
 
 .summary-label {
-  color: #a0a0a0;
+  color: #64748b;
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
@@ -234,7 +234,7 @@
 }
 
 .summary-value {
-  color: #ffffff;
+  color: #0f172a;
   font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
@@ -247,21 +247,22 @@
   justify-content: center;
   gap: 10px;
   padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border: 2px solid rgba(15, 23, 42, 0.12);
   border-radius: 25px;
-  color: #ffffff;
+  color: #334155;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
   margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .expand-btn:hover {
-  border-color: #00ffff;
-  background: rgba(0, 255, 255, 0.1);
+  border-color: #0891b2;
+  background: rgba(8, 145, 178, 0.06);
+  color: #0891b2;
   transform: translateY(-2px);
 }
 
@@ -296,7 +297,7 @@
 }
 
 .details-section h4 {
-  color: #00ffff;
+  color: #0891b2;
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 15px;
@@ -309,7 +310,7 @@
   content: '';
   width: 4px;
   height: 20px;
-  background: linear-gradient(135deg, #00ffff 0%, #646cff 100%);
+  background: linear-gradient(135deg, #0891b2 0%, #4f46e5 100%);
   border-radius: 2px;
 }
 
@@ -320,7 +321,7 @@
 }
 
 .details-section li {
-  color: #b0b0b0;
+  color: #475569;
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 8px;
@@ -330,15 +331,15 @@
 
 .details-section li::before {
   content: '▸';
-  color: #646cff;
+  color: #4f46e5;
   position: absolute;
   left: 0;
   font-weight: bold;
 }
 
 .contact-info {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.06);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 25px;
@@ -348,14 +349,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #b0b0b0;
+  color: #475569;
   font-size: 14px;
 }
 
 .contact-item svg {
   width: 18px;
   height: 18px;
-  color: #00ffff;
+  color: #0891b2;
 }
 
 .apply-btn {
@@ -365,7 +366,7 @@
   justify-content: center;
   gap: 10px;
   padding: 15px 30px;
-  background: linear-gradient(135deg, #00ffff 0%, #646cff 100%);
+  background: linear-gradient(135deg, #0891b2 0%, #4f46e5 100%);
   border: none;
   border-radius: 25px;
   color: #ffffff;
@@ -378,9 +379,9 @@
 }
 
 .apply-btn:hover {
-  background: linear-gradient(135deg, #646cff 0%, #00ffff 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(0, 255, 255, 0.4);
+  box-shadow: 0 15px 30px rgba(8, 145, 178, 0.25);
 }
 
 .apply-btn svg {
@@ -391,7 +392,7 @@
 .no-results {
   text-align: center;
   padding: 60px 20px;
-  color: #a0a0a0;
+  color: #64748b;
   font-size: 1.1rem;
   line-height: 1.6;
 }
@@ -405,26 +406,26 @@
   .positions-section {
     padding: 80px 0;
   }
-  
+
   .section-title {
     font-size: 2.5rem;
   }
-  
+
   .positions-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .position-card {
     padding: 25px;
   }
-  
+
   .position-meta {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .summary-item {
     padding: 12px;
   }
@@ -434,15 +435,15 @@
   .section-title {
     font-size: 2rem;
   }
-  
+
   .position-card {
     padding: 20px;
   }
-  
+
   .position-title {
     font-size: 1.2rem;
   }
-  
+
   .filter-select {
     min-width: 180px;
   }

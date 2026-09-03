@@ -3,11 +3,29 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import emailjs from '@emailjs/browser';
 import { CONTACT_INFO } from '../../utils/constants';
+import { useContent } from '../../hooks/useContent';
 import './Contact.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
+  const t = useContent();
+  // Contact details come from the `Content` sheet tab; CONTACT_INFO is the fallback.
+  const address = {
+    building: t('contact.address.building', CONTACT_INFO.address.building),
+    street: t('contact.address.street', CONTACT_INFO.address.street),
+    city: t('contact.address.city', CONTACT_INFO.address.city),
+    country: t('contact.address.country', CONTACT_INFO.address.country),
+  };
+  const phone = t('contact.phone', CONTACT_INFO.phone);
+  const email = t('contact.email', CONTACT_INFO.email);
+  const officeHours = t('contact.officeHours', CONTACT_INFO.officeHours);
+  const contactName = t('contact.banner.contactName', 'Dr. Bhivraj Suthar');
+  const contactEmail = t('contact.banner.contactEmail', 'bhivraj@iitj.ac.in');
+  // Social links: only render when a URL is present (blank in the sheet hides it).
+  const linkedin = t('social.linkedin', '');
+  const youtube = t('social.youtube', CONTACT_INFO.social.youtube || '');
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -125,17 +143,17 @@ const Contact = () => {
 
   const openMap = () => {
     // Open Google Maps with the lab location
-    const address = encodeURIComponent(`${CONTACT_INFO.address.building}, ${CONTACT_INFO.address.street}, ${CONTACT_INFO.address.city}`);
-    window.open(`https://maps.google.com/?q=${address}`, '_blank');
+    const query = encodeURIComponent(`${address.building}, ${address.street}, ${address.city}`);
+    window.open(`https://maps.google.com/?q=${query}`, '_blank');
   };
 
   return (
     <section id="contact" className="contact-section">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Contact Us & Open Positions</h2>
+          <h2 className="section-title">{t('contact.title', 'Contact Us & Open Positions')}</h2>
           <p className="section-subtitle">
-            Get in touch with our research team for collaborations, questions, or opportunities
+            {t('contact.subtitle', 'Get in touch with our research team for collaborations, questions, or opportunities')}
           </p>
         </div>
 
@@ -148,13 +166,18 @@ const Contact = () => {
               </svg>
             </div>
             <div className="banner-text">
-              <h3>Open Research Positions Available</h3>
-              <p>We are accepting applications for <strong>Undergraduate Internships, Master's/Ph.D. Programs, Post-Doctoral Positions, and Research Positions</strong>. Use the form below to apply or inquire about opportunities.</p>
+              <h3>{t('contact.banner.title', 'Open Research Positions Available')}</h3>
+              <p>
+                {t(
+                  'contact.banner.text',
+                  "We are accepting applications for Undergraduate Internships, Master's/Ph.D. Programs, Post-Doctoral Positions, and Research Positions. Use the form below to apply or inquire about opportunities."
+                )}
+              </p>
               <div className="banner-contact">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
-                <span>Contact: Dr. Bhivraj Suthar - <a href="mailto:bhivraj@iitj.ac.in">bhivraj@iitj.ac.in</a></span>
+                <span>Contact: {contactName} - <a href={`mailto:${contactEmail}`}>{contactEmail}</a></span>
               </div>
             </div>
           </div>
@@ -164,8 +187,8 @@ const Contact = () => {
           {/* Contact Form */}
           <div ref={formRef} className="contact-form-container">
             <div className="form-header">
-              <h3>Send us a Message</h3>
-              <p>We'll get back to you as soon as possible</p>
+              <h3>{t('contact.form.title', 'Send us a Message')}</h3>
+              <p>{t('contact.form.subtitle', "We'll get back to you as soon as possible")}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="contact-form">
@@ -278,8 +301,8 @@ const Contact = () => {
           {/* Contact Information */}
           <div ref={infoRef} className="contact-info-container">
             <div className="info-header">
-              <h3>Get in Touch</h3>
-              <p>Find us at our campus location or reach out directly</p>
+              <h3>{t('contact.info.title', 'Get in Touch')}</h3>
+              <p>{t('contact.info.subtitle', 'Find us at our campus location or reach out directly')}</p>
             </div>
 
             <div className="contact-info">
@@ -292,10 +315,10 @@ const Contact = () => {
                 <div className="contact-details">
                   <h4>Address</h4>
                   <p>
-                    {CONTACT_INFO.address.building}<br/>
-                    {CONTACT_INFO.address.street}<br/>
-                    {CONTACT_INFO.address.city}<br/>
-                    {CONTACT_INFO.address.country}
+                    {address.building}<br/>
+                    {address.street}<br/>
+                    {address.city}<br/>
+                    {address.country}
                   </p>
                   <button onClick={openMap} className="map-btn">
                     View on Map
@@ -311,8 +334,8 @@ const Contact = () => {
                 </div>
                 <div className="contact-details">
                   <h4>Phone</h4>
-                  <p>{CONTACT_INFO.phone}</p>
-                  <p className="office-hours">{CONTACT_INFO.officeHours}</p>
+                  <p>{phone}</p>
+                  <p className="office-hours">{officeHours}</p>
                 </div>
               </div>
 
@@ -324,7 +347,7 @@ const Contact = () => {
                 </div>
                 <div className="contact-details">
                   <h4>Email</h4>
-                  <p>{CONTACT_INFO.email}</p>
+                  <p>{email}</p>
                 </div>
               </div>
 
@@ -337,31 +360,23 @@ const Contact = () => {
                 <div className="contact-details">
                   <h4>Follow Us</h4>
                   <div className="social-links">
-                    {/*<a href={CONTACT_INFO.social.twitter} target="_blank" rel="noopener noreferrer">*/}
-                    {/*  <svg viewBox="0 0 24 24" fill="currentColor">*/}
-                    {/*    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>*/}
-                    {/*  </svg>*/}
-                    {/*  Twitter*/}
-                    {/*</a>*/}
-                    <a href={CONTACT_INFO.social.linkedin} target="_blank" rel="noopener noreferrer">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
-                        <circle cx="4" cy="4" r="2"/>
-                      </svg>
-                      LinkedIn
-                    </a>
-                    {/*<a href={CONTACT_INFO.social.github} target="_blank" rel="noopener noreferrer">*/}
-                    {/*  <svg viewBox="0 0 24 24" fill="currentColor">*/}
-                    {/*    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>*/}
-                    {/*  </svg>*/}
-                    {/*  GitHub*/}
-                    {/*</a>*/}
-                    <a href={CONTACT_INFO.social.youtube} target="_blank" rel="noopener noreferrer">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M23 6.5a2.5 2.5 0 00-2.5-2.5H3.5A2.5 2.5 0 001 6.5v11A2.5 2.5 0 003.5 20h17a2.5 2.5 0 002.5-2.5v-11zM9 16V8l7 4-7 4z"/>
-                      </svg>
-                      YouTube
-                    </a>
+                    {linkedin && (
+                      <a href={linkedin} target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+                          <circle cx="4" cy="4" r="2"/>
+                        </svg>
+                        LinkedIn
+                      </a>
+                    )}
+                    {youtube && (
+                      <a href={youtube} target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M23 6.5a2.5 2.5 0 00-2.5-2.5H3.5A2.5 2.5 0 001 6.5v11A2.5 2.5 0 003.5 20h17a2.5 2.5 0 002.5-2.5v-11zM9 16V8l7 4-7 4z"/>
+                        </svg>
+                        YouTube
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

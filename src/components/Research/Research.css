@@ -1,5 +1,5 @@
 .research {
-  background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
   position: relative;
   padding: 120px 0;
 }
@@ -11,10 +11,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 25% 25%, rgba(100, 108, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
-    url('data:image/svg+xml,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%2300ffff" fill-opacity="0.03"><polygon points="40 0 80 40 40 80 0 40"/></g></svg>') repeat;
+  background:
+    radial-gradient(circle at 25% 25%, rgba(79, 70, 229, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(8, 145, 178, 0.05) 0%, transparent 50%),
+    url('data:image/svg+xml,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%230891b2" fill-opacity="0.03"><polygon points="40 0 80 40 40 80 0 40"/></g></svg>') repeat;
   opacity: 0.6;
   pointer-events: none;
 }
@@ -29,9 +29,9 @@
 .section-title {
   font-size: 3.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #646cff 0%, #00ffff 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -39,7 +39,7 @@
 
 .section-subtitle {
   font-size: 1.2rem;
-  color: #a0a0a0;
+  color: #475569;
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.6;
@@ -55,16 +55,16 @@
 }
 
 .research-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
   padding: 2rem;
   transition: all 0.4s ease;
   position: relative;
   overflow: visible;
-  backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
 }
 
 .research-card::before {
@@ -74,9 +74,10 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #646cff, #00ffff);
+  background: linear-gradient(90deg, #4f46e5, #0891b2);
   transform: scaleX(0);
   transition: transform 0.4s ease;
+  border-radius: 20px 20px 0 0;
 }
 
 .research-card:hover::before {
@@ -85,8 +86,8 @@
 
 .research-card:hover {
   transform: translateY(-10px);
-  border-color: rgba(100, 108, 255, 0.4);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(79, 70, 229, 0.35);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.14);
 }
 
 .card-header {
@@ -114,13 +115,12 @@
 
 .icon-emoji {
   font-size: 1.8rem;
-  filter: brightness(1.2);
 }
 
 .research-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #0f172a;
   margin: 0;
 }
 
@@ -129,7 +129,7 @@
 }
 
 .research-description {
-  color: #d0d0d0;
+  color: #475569;
   line-height: 1.8;
   margin-bottom: 1rem;
   font-size: 0.95rem;
@@ -145,8 +145,8 @@
 
 .show-more-btn {
   background: transparent;
-  color: #00ffff;
-  border: 1px solid rgba(0, 255, 255, 0.3);
+  color: #0891b2;
+  border: 1px solid rgba(8, 145, 178, 0.25);
   padding: 0.5rem 1.25rem;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -160,10 +160,10 @@
 }
 
 .show-more-btn:hover {
-  background: rgba(0, 255, 255, 0.1);
-  border-color: #00ffff;
+  background: rgba(8, 145, 178, 0.08);
+  border-color: #0891b2;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.12);
 }
 
 .show-more-btn svg {
@@ -179,7 +179,7 @@
 .tech-stack h4 {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 0.75rem;
 }
 
@@ -190,33 +190,33 @@
 }
 
 .tech-tag {
-  background: rgba(100, 108, 255, 0.2);
-  color: #00ffff;
+  background: rgba(79, 70, 229, 0.08);
+  color: #0891b2;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
-  border: 1px solid rgba(100, 108, 255, 0.3);
+  border: 1px solid rgba(79, 70, 229, 0.2);
   transition: all 0.3s ease;
 }
 
 .tech-tag:hover {
-  background: rgba(100, 108, 255, 0.3);
+  background: rgba(79, 70, 229, 0.12);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(100, 108, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(79, 70, 229, 0.1);
 }
 
 /* Projects Section Styles */
 .projects-section {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border);
 }
 
 .projects-section h4 {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 1rem;
 }
 
@@ -230,12 +230,12 @@
 }
 
 .project-item {
-  background: rgba(0, 255, 255, 0.05);
-  border-left: 3px solid #00ffff;
+  background: rgba(8, 145, 178, 0.04);
+  border-left: 3px solid #0891b2;
   padding: 0;
   border-radius: 0 8px 8px 0;
   font-size: 0.9rem;
-  color: #e0e0e0;
+  color: #334155;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -249,13 +249,13 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, #00ffff, #646cff);
+  background: linear-gradient(180deg, #0891b2, #4f46e5);
   transition: width 0.3s ease;
 }
 
 .project-item:hover {
-  background: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.15);
+  background: rgba(8, 145, 178, 0.08);
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.12);
 }
 
 .project-item:hover::before {
@@ -263,7 +263,7 @@
 }
 
 .project-item.expanded {
-  background: rgba(0, 255, 255, 0.12);
+  background: rgba(8, 145, 178, 0.1);
 }
 
 .project-header {
@@ -277,13 +277,13 @@
 .project-name {
   flex: 1;
   font-weight: 500;
-  color: #00ffff;
+  color: #0891b2;
 }
 
 .expand-icon {
   width: 20px;
   height: 20px;
-  color: #00ffff;
+  color: #0891b2;
   transition: transform 0.3s ease;
   flex-shrink: 0;
 }
@@ -294,10 +294,10 @@
 
 .project-description {
   padding: 0 1rem 0.75rem 1rem;
-  color: #a0a0a0;
+  color: #475569;
   font-size: 0.85rem;
   line-height: 1.6;
-  border-top: 1px solid rgba(0, 255, 255, 0.15);
+  border-top: 1px solid rgba(8, 145, 178, 0.15);
   margin-top: 0.5rem;
   padding-top: 0.75rem;
   animation: slideDown 0.3s ease;
@@ -321,8 +321,8 @@
 
 .learn-more-btn {
   background: transparent;
-  color: #646cff;
-  border: 2px solid rgba(100, 108, 255, 0.5);
+  color: #4f46e5;
+  border: 2px solid rgba(79, 70, 229, 0.3);
   padding: 0.75rem 1.5rem;
   border-radius: 25px;
   font-weight: 600;
@@ -333,15 +333,14 @@
   gap: 0.5rem;
   width: 100%;
   justify-content: center;
-  backdrop-filter: blur(10px);
 }
 
 .learn-more-btn:hover {
-  background: linear-gradient(135deg, #646cff 0%, #00ffff 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   color: white;
-  border-color: #646cff;
+  border-color: #4f46e5;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(100, 108, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
 }
 
 .learn-more-btn svg {
@@ -353,14 +352,14 @@
 }
 
 .research-highlight {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(79, 70, 229, 0.15);
   border-radius: 24px;
   padding: 3rem;
   position: relative;
   z-index: 2;
-  backdrop-filter: blur(10px);
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
 }
 
 .research-highlight::before {
@@ -370,7 +369,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #646cff, #00ffff, #646cff);
+  background: linear-gradient(90deg, #4f46e5, #0891b2, #4f46e5);
 }
 
 .highlight-content {
@@ -383,16 +382,16 @@
 .highlight-text h3 {
   font-size: 2rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #646cff, #00ffff);
+  background: linear-gradient(135deg, #4f46e5, #0891b2);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .highlight-text p {
-  color: #a0a0a0;
+  color: #475569;
   line-height: 1.6;
   margin-bottom: 2rem;
   font-size: 1.1rem;
@@ -407,29 +406,29 @@
 .stat-item {
   text-align: center;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f8fafc;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(15, 23, 42, 0.06);
   transition: all 0.3s ease;
 }
 
 .stat-item:hover {
-  background: rgba(100, 108, 255, 0.1);
+  background: rgba(79, 70, 229, 0.06);
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(100, 108, 255, 0.2);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
 }
 
 .stat-value {
   display: block;
   font-size: 1.8rem;
   font-weight: 800;
-  color: #00ffff;
+  color: #0891b2;
   margin-bottom: 0.5rem;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: #a0a0a0;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -501,7 +500,7 @@
   .highlight-content {
     gap: 2rem;
   }
-  
+
   .highlight-text h3 {
     font-size: 1.75rem;
   }
@@ -511,31 +510,31 @@
   .research-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .highlight-content {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  
+
   .highlight-stats {
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
   }
-  
+
   .research-highlight {
     padding: 2rem;
   }
-  
+
   .research-card {
     padding: 1.5rem;
   }
-  
+
   .card-header {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
   }
-  
+
   .research-title {
     font-size: 1.25rem;
   }
@@ -546,19 +545,19 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .tech-tags {
     justify-content: center;
   }
-  
+
   .stat-value {
     font-size: 1.5rem;
   }
-  
+
   .highlight-text h3 {
     font-size: 1.5rem;
   }
-  
+
   .research-icon {
     width: 50px;
     height: 50px;

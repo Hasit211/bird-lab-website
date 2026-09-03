@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import Header from './components/Header/Header';
-import Hero from './components/Hero/Hero';
+import TitleSection from './components/TitleSection/TitleSection';
 import Welcome from './components/Welcome/Welcome';
 import Research from './components/Research/Research';
 import People from './components/People/People';
@@ -16,6 +16,7 @@ import Contact from './components/Contact/Contact';
 import Footer from './components/Footer/Footer';
 import Facilities from './components/Facilities/Facilities';
 import Events from './components/Events/Events';
+import { ContentProvider } from './context/ContentProvider';
 
 import './App.css';
 
@@ -25,7 +26,7 @@ gsap.registerPlugin(ScrollTrigger);
 function HomePage() {
   return (
     <>
-      <Hero />
+      <TitleSection />
       <Welcome />
     </>
   );
@@ -42,24 +43,26 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/people" element={<People />} />
-            <Route path="/research" element={<Research />} />
-            <Route path="/publications" element={<Publications />} />
-            <Route path="/lectures" element={<Lectures />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/positions" element={<Positions />} />
-            <Route path="/facilities" element={<Facilities />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/contact" element={<Contact />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <ContentProvider>
+        <div className="App">
+          <Header />
+          <main>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/people" element={<People />} />
+              <Route path="/research" element={<Research />} />
+              <Route path="/publications" element={<Publications />} />
+              <Route path="/lectures" element={<Lectures />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/positions" element={<Positions />} />
+              <Route path="/facilities" element={<Facilities />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/contact" element={<Contact />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </ContentProvider>
     </Router>
   );
 }

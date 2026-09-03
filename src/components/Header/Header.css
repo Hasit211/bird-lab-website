@@ -1,307 +1,164 @@
-/* Header */
-.header {
+/* Header / navigation - hamburger button + right side sidebar */
+
+/* ------------------------------------------------------------------ */
+/* Floating hamburger toggle (top-left, no top bar / logo)             */
+/* ------------------------------------------------------------------ */
+.mobile-menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The button is the clickable hitbox - make the icon fill it and keep
+   the whole 48x48 area interactive so it is easy to target. */
+.menu-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+}
+
+/* Hide the hamburger while the sidebar (which carries the close/X icon)
+   is open - the two toggle controls swap visibility. Removed from layout
+   (display:none) so it can never be seen or clicked while the menu is open,
+   guaranteeing the two never coexist on repeated open/close cycles. */
+.mobile-menu-toggle.hidden {
+    display: none;
+}
+
+    .mobile-menu-toggle:hover {
+        background: rgba(255, 255, 255, 1);
+        border-color: rgba(79, 70, 229, 0.3);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.15);
+    }
+
+    .mobile-menu-toggle:active {
+        transform: scale(0.96);
+    }
+
+/* ------------------------------------------------------------------ */
+/* Full-screen dimming overlay behind the sidebar                      */
+/* ------------------------------------------------------------------ */
+.mobile-nav-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000; /* Reduced z-index */
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(24px) saturate(180%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                border-bottom-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.3s ease,
-                transform 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-    .header.scrolled {
-        background: rgba(12, 12, 18, 0.95);
-        border-bottom-color: rgba(255, 255, 255, 0.12);
-        box-shadow: 0 4px 32px rgba(0, 0, 0, 0.2);
-    }
-
-/* Lower header z-index when modal is open to ensure modal appears above */
-body.modal-open .header {
-  z-index: 1 !important;
-  opacity: 0.5;
-  transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              border-bottom-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.4s ease,
-              transform 0.4s ease;
-}
-
-body.modal-open .header.scrolled {
-  z-index: 1 !important;
-  opacity: 0.5;
-}
-
-body.modal-open .mobile-nav {
-  z-index: 1 !important;
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 0;
-    transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.header.scrolled .header-content {
-    padding: 14px 0;
-}
-
-/* Logo */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 8px 12px 8px 0;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-    .logo:hover {
-        transform: translateY(-1px);
-        background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(79, 172, 254, 0.2);
-        box-shadow: 0 4px 16px rgba(79, 172, 254, 0.15);
-    }
-
-.logo-icon {
-    width: 42px;
-    height: 42px;
-    color: #4facfe;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 0 8px rgba(79, 172, 254, 0.3));
-}
-
-.logo:hover .logo-icon {
-    color: #00d4ff;
-    filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.4));
-    transform: scale(1.05);
-}
-
-.logo-text {
-    font-size: 1.65rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #4facfe 0%, #00d4ff 50%, #ffffff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 30px rgba(79, 172, 254, 0.3);
-}
-
-/* Desktop Navigation */
-.desktop-nav {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 8px;
-    backdrop-filter: blur(12px);
-}
-
-.nav-link {
-    color: rgba(255, 255, 255, 0.75);
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    padding: 12px 20px;
-    border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    white-space: nowrap;
-    background: transparent;
-    border: 1px solid transparent;
-}
-
-    .nav-link::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 212, 255, 0.1));
-        border-radius: 12px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .nav-link:hover {
-        color: #ffffff;
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(79, 172, 254, 0.2);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(79, 172, 254, 0.15);
-    }
-
-        .nav-link:hover::before {
-            opacity: 1;
-        }
-
-    .nav-link.active {
-        color: #ffffff;
-        background: linear-gradient(135deg, rgba(79, 172, 254, 0.15), rgba(0, 212, 255, 0.15));
-        border-color: rgba(79, 172, 254, 0.3);
-        box-shadow: 0 2px 8px rgba(79, 172, 254, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-/* Dropdown styles */
-.nav-dropdown-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.nav-dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    min-width: 200px;
-    background: rgba(10, 10, 10, 0.98);
-    border-radius: 12px;
-    padding: 8px;
-    display: none;
-    flex-direction: column;
-    gap: 6px;
-    border: 1px solid rgba(255,255,255,0.06);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.45);
-    z-index: 1200;
-}
-
-.nav-dropdown-wrapper:hover .nav-dropdown {
-    display: flex;
-}
-
-.dropdown-item {
-    padding: 10px 14px;
-    border-radius: 10px;
-    color: rgba(255,255,255,0.9);
-    background: transparent;
-    display: block;
-    text-decoration: none;
-}
-
-    .dropdown-item:hover {
-        background: rgba(255,255,255,0.04);
-        transform: translateX(4px);
-    }
-
-/* Mobile Menu Toggle */
-.mobile-menu-toggle {
-    display: none;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    padding: 12px;
-    border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(12px);
-}
-
-    .mobile-menu-toggle:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(79, 172, 254, 0.3);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(79, 172, 254, 0.15);
-    }
-
-.hamburger {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    width: 24px;
-    height: 18px;
-    position: relative;
-}
-
-    .hamburger span {
-        width: 100%;
-        height: 2.5px;
-        background: linear-gradient(135deg, #4facfe, #00d4ff);
-        border-radius: 2px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        transform-origin: center;
-        box-shadow: 0 0 4px rgba(79, 172, 254, 0.3);
-    }
-
-    .hamburger.open span:nth-child(1) {
-        transform: rotate(45deg) translate(6px, 6px);
-        background: linear-gradient(135deg, #00d4ff, #4facfe);
-    }
-
-    .hamburger.open span:nth-child(2) {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-
-    .hamburger.open span:nth-child(3) {
-        transform: rotate(-45deg) translate(6px, -6px);
-        background: linear-gradient(135deg, #00d4ff, #4facfe);
-    }
-
-/* Mobile Navigation */
-.mobile-nav {
-    position: fixed;
-    top: 70px; /* Start below the header (adjust if header height changes) */
-    left: 0;
-    right: 0;
-    height: calc(100vh - 70px); /* Fill the rest of the viewport height */
-    background: rgba(10, 10, 10, 0.98);
-    backdrop-filter: blur(20px);
-    z-index: 999; /* Below header (1000) */
-    transform: translateX(100%); /* Start off-screen to the right */
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(2px);
+    z-index: 1100;
     opacity: 0;
     visibility: hidden;
-    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease; /* Add transitions */
-    overflow-y: auto; /* Allow scrolling if content overflows */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-    .mobile-nav.open {
-        transform: translateX(0); /* Slide into view */
+    .mobile-nav-overlay.open {
         opacity: 1;
         visibility: visible;
     }
 
+/* ------------------------------------------------------------------ */
+/* Left side sidebar                                                   */
+/* ------------------------------------------------------------------ */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    max-width: 380px;
+    z-index: 1190;
+    transform: translateX(-100%); /* Start off-screen to the left */
+    display: none;                /* GSAP sets display:flex on open */
+}
+
 .mobile-nav-content {
-    padding: 20px 24px 48px; /* Adjusted padding-top */
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 8px 0 40px rgba(15, 23, 42, 0.15);
+    padding: 88px 24px 32px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    align-items: center;
-    min-height: 100%;
-    justify-content: center;
-    max-width: 400px;
-    margin: 0 auto;
+    overflow-y: auto;
 }
 
+/* ------------------------------------------------------------------ */
+/* Close button with the design (X/close) SVG                          */
+/* ------------------------------------------------------------------ */
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 8px;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.04);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The image is square and the button is square - padding creates a small
+   margin around the icon but the entire 44x44 button is the hitbox, so
+   clicking anywhere on/near the icon works. */
+.close-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+}
+
+    .mobile-nav-close:hover {
+        background: rgba(79, 70, 229, 0.08);
+        border-color: rgba(79, 70, 229, 0.3);
+        transform: rotate(90deg);
+    }
+
+    .mobile-nav-close:active {
+        transform: scale(0.94) rotate(90deg);
+    }
+
+/* ------------------------------------------------------------------ */
+/* Sidebar nav items                                                   */
+/* ------------------------------------------------------------------ */
 .mobile-nav .nav-item {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(15, 23, 42, 0.8);
     text-decoration: none;
     font-size: 1.1rem;
     font-weight: 600;
     letter-spacing: -0.01em;
-    padding: 16px 32px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    text-align: center;
     width: 100%;
-    max-width: 280px;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.02);
     position: relative;
     overflow: hidden;
 }
@@ -313,7 +170,7 @@ body.modal-open .mobile-nav {
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+        background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.08), transparent);
         transition: left 0.6s ease;
     }
 
@@ -322,137 +179,35 @@ body.modal-open .mobile-nav {
     }
 
     .mobile-nav .nav-item:hover {
-        color: #ffffff;
-        border-color: rgba(79, 172, 254, 0.3);
-        background: rgba(79, 172, 254, 0.1);
+        color: #4f46e5;
+        border-color: rgba(79, 70, 229, 0.3);
+        background: rgba(255, 255, 255, 0.9);
         transform: translateY(-2px) scale(1.02);
-        box-shadow: 0 8px 24px rgba(79, 172, 254, 0.2);
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.15);
     }
 
     .mobile-nav .nav-item:active {
         transform: translateY(0) scale(0.98);
     }
 
-/* Professional Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* ------------------------------------------------------------------ */
+/* Blur the page content + title section while the sidebar is open     */
+/* ------------------------------------------------------------------ */
+body.menu-open main,
+body.menu-open > footer,
+body.menu-open .App > footer {
+    filter: blur(6px);
+    pointer-events: none; /* block interaction with blurred content */
+    transition: filter 0.3s ease;
 }
 
-.mobile-nav.open .nav-item {
-    animation: fadeInUp 0.4s ease forwards;
-}
-
-    .mobile-nav.open .nav-item:nth-child(1) {
-        animation-delay: 0.1s;
-    }
-
-    .mobile-nav.open .nav-item:nth-child(2) {
-        animation-delay: 0.15s;
-    }
-
-    .mobile-nav.open .nav-item:nth-child(3) {
-        animation-delay: 0.2s;
-    }
-
-    .mobile-nav.open .nav-item:nth-child(4) {
-        animation-delay: 0.25s;
-    }
-
-    .mobile-nav.open .nav-item:nth-child(5) {
-        animation-delay: 0.3s;
-    }
-
-    .mobile-nav.open .nav-item:nth-child(6) {
-        animation-delay: 0.35s;
-    }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .desktop-nav {
-        display: none;
-    }
-
-    .mobile-menu-toggle {
-        display: block;
-    }
-
-    .header-content {
-        padding: 16px 0;
-    }
-
-    .header.scrolled .header-content {
-        padding: 12px 0;
-    }
-
-    .logo-text {
-        font-size: 1.4rem;
-    }
-
-    .logo-icon {
-        width: 36px;
-        height: 36px;
-    }
-
-    .logo {
-        padding: 6px 10px;
-    }
-
-    /* Adjust mobile nav top and height for smaller screens */
-    .mobile-nav {
-        top: 60px;
-        /* Adjust based on header height at this breakpoint */
-        height: calc(100vh - 60px);
-    }
-}
-
-@media (max-width: 480px) {
-    .mobile-nav-content {
-        padding: 40px 20px;
-        gap: 10px;
-    }
-
-    .mobile-nav .nav-item {
-        font-size: 1rem;
-        padding: 14px 28px;
-        max-width: 260px;
-    }
-
-    .logo-text {
-        font-size: 1.3rem;
-    }
-
-    .logo-icon {
-        width: 32px;
-        height: 32px;
-    }
-
-    .hamburger {
-        width: 22px;
-        height: 16px;
-    }
-
-    /* Adjust mobile nav top and height for smaller screens */
-    .mobile-nav {
-        top: 50px;
-        /* Adjust based on header height at this breakpoint */
-        height: calc(100vh - 50px);
-    }
-}
-
-/* Enhanced Focus States for Accessibility */
-.nav-link:focus,
+/* ------------------------------------------------------------------ */
+/* Focus states (accessibility)                                        */
+/* ------------------------------------------------------------------ */
 .mobile-nav .nav-item:focus,
 .mobile-menu-toggle:focus,
-.logo:focus {
-    outline: 2px solid #4facfe;
+.mobile-nav-close:focus {
+    outline: 2px solid #4f46e5;
     outline-offset: 2px;
 }
 
@@ -461,23 +216,24 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Additional professional touches */
-.header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.3), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        top: 16px;
+        left: 16px;
+        width: 44px;
+        height: 44px;
+    }
 }
 
-.header.scrolled::after {
-    opacity: 1;
-}
+@media (max-width: 480px) {
+    .mobile-nav-content {
+        padding: 80px 18px 24px;
+        gap: 10px;
+    }
 
-.hamburger.open span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -6px);
+    .mobile-nav .nav-item {
+        font-size: 1rem;
+        padding: 14px 16px;
+    }
 }
