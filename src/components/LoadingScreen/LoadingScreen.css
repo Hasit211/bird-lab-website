@@ -1,0 +1,61 @@
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh; /* fixes mobile browsers where 100vh leaves a gap under the URL bar */
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* crops each image to fill the screen, no matter its original ratio */
+  object-position: center;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.loading-image.active {
+  opacity: 1;
+}
+
+/* Button styles — centered in the middle of the screen, visible immediately
+   and for the whole duration of the loading screen */
+.enter-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1rem 2rem;
+  background: #006d77;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 10000;
+  opacity: 1;
+  visibility: visible;
+  transition: background 0.3s;
+}
+
+.enter-button:hover {
+  background: #005f65;
+}
