@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { CONTACT_INFO, NAV_ITEMS } from '../../utils/constants';
 import { useContent } from '../../hooks/useContent';
 import './Footer.css';
@@ -60,7 +61,7 @@ const Footer = () => {
             <ul className="footer-links">
               {NAV_ITEMS.map((item, index) => (
                 <li key={index}>
-                  <a href={item.href}>{item.label}</a>
+                  <Link to={item.href} onClick={scrollToTop}>{item.label}</Link>
                 </li>
               ))}
             </ul>
@@ -70,11 +71,11 @@ const Footer = () => {
           <div className="footer-section">
             <h4>Research Areas</h4>
             <ul className="footer-links">
-              <li><a href="/research#bio-mechanisms">{t('footer.research1', 'Bio-inspired Mechanisms')}</a></li>
-              <li><a href="/research#wearable">{t('footer.research2', 'Wearable & Collaborative Robotics')}</a></li>
-              <li><a href="/research#reconfigurable">{t('footer.research3', 'Reconfigurable and Growing Robotics')}</a></li>
-              <li><a href="/research#tele-robotics">{t('footer.research4', 'Tele-Robotics and Haptics')}</a></li>
-              <li><a href="/research#applied-ai">{t('footer.research5', 'Applied AI in Robotics')}</a></li>
+              <li><Link to="/research" onClick={scrollToTop}>{t('footer.research1', 'Bio-inspired Mechanisms')}</Link></li>
+              <li><Link to="/research" onClick={scrollToTop}>{t('footer.research2', 'Wearable & Collaborative Robotics')}</Link></li>
+              <li><Link to="/research" onClick={scrollToTop}>{t('footer.research3', 'Reconfigurable and Growing Robotics')}</Link></li>
+              <li><Link to="/research" onClick={scrollToTop}>{t('footer.research4', 'Tele-Robotics and Haptics')}</Link></li>
+              <li><Link to="/research" onClick={scrollToTop}>{t('footer.research5', 'Applied AI in Robotics')}</Link></li>
             </ul>
           </div>
 

@@ -35,7 +35,6 @@ function HomePage() {
 
 // All app logic lives here, INSIDE <Router>, so useNavigate() has context.
 function AppContent() {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -46,12 +45,8 @@ function AppContent() {
     ScrollTrigger.refresh();
   }, []);
 
-  // Only way off the loading screen: the user clicks the button in
-  // LoadingScreen, which calls this. No auto-timer — the image loop and
-  // the button both stay live for as long as the user wants.
   const finishLoading = () => {
     setIsLoading(false);
-    navigate('/', { replace: true });
   };
 
   return (

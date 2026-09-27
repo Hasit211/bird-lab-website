@@ -19,11 +19,6 @@ const Research = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedCards, setExpandedCards] = useState({});
 
-  const openModal = (area) => {
-    setSelectedResearchArea(area);
-    setIsModalOpen(true);
-  };
-
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedResearchArea(null);
