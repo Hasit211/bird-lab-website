@@ -93,68 +93,224 @@ export function transformEvents(rows) {
   });
 }
 
-/** Collaborations tab: Name, Category, Image, (optional) URL. */
+const COLLAB_IMAGE_MAP = {
+  'iit delhi': '/assets/IITD.png',
+  'iit gandhinagar': '/assets/IITGN.png',
+  'university of siena': '/assets/UniversityOfSiena.png',
+  'siena': '/assets/UniversityOfSiena.png',
+  'khalifa': '/assets/KhalifaUniversity.png',
+  'kaist': '/assets/KAIST.png',
+  'cnu': '/assets/CNU.png',
+  'jaipur foot': '/assets/JaipurFoot.png',
+  'sogang': '/assets/Sogang.png',
+};
+
+export function resolveCollaborationLogo(title, rawImage) {
+  const resolved = resolveImageUrl(rawImage, { fallback: '' });
+  if (resolved && resolved !== PLACEHOLDER_IMG) return resolved;
+
+  const key = String(title || '').toLowerCase().trim();
+  for (const [name, path] of Object.entries(COLLAB_IMAGE_MAP)) {
+    if (key.includes(name)) return path;
+  }
+  return PLACEHOLDER_IMG;
+}
+
+/** Collaborations tab: Name, Category, Image, (optional) URL OR freeform National/International. */
 export function transformCollaborations(rows) {
-  return mapRows(rows, (row, at) => {
-    const title = cell(row, at('Name')) || cell(row, at('Title'));
-    if (!title) return null;
-    return {
-      title,
-      category: cell(row, at('Category')) || 'Collaboration',
-      src: resolveImageUrl(cell(row, at('Image'))),
-      url: cell(row, at('URL')),
-    };
-  });
+  if (!rows || rows.length === 0) return [];
+  const at = headerIndex(rows[0]);
+  const nameIdx = at('Name') !== -1 ? at('Name') : at('Title');
+
+  if (nameIdx !== -1 && at('Category') !== -1) {
+    return rows.slice(1).map((row) => {
+      const title = cell(row, nameIdx);
+      if (!title) return null;
+      return {
+        title,
+        category: cell(row, at('Category')) || 'Collaboration',
+        src: resolveCollaborationLogo(title, cell(row, at('Image'))),
+        url: cell(row, at('URL')),
+      };
+    }).filter(Boolean);
+  }
+
+  // Freeform National / International layout (as in user sheet)
+  const result = [];
+  let currentRegion = 'National';
+  let currentType = 'Academia';
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const col0 = cell(row, 0);
+    const col1 = cell(row, 1);
+    const col2 = cell(row, 2);
+
+    if (col0.toLowerCase().includes('national')) currentRegion = 'National';
+    if (col0.toLowerCase().includes('international')) currentRegion = 'International';
+    if (col1.toLowerCase().includes('academia')) currentType = 'Academia';
+
+    if (col1 && !col1.toLowerCase().includes('academia') && !col1.toLowerCase().includes('partner')) {
+      result.push({
+        title: col1,
+        category: `${currentRegion} ${currentType}`,
+        src: resolveCollaborationLogo(col1, ''),
+        url: '',
+      });
+    }
+
+    if (col2 && !col2.toLowerCase().includes('industry')) {
+      result.push({
+        title: col2,
+        category: `${currentRegion} Industry`,
+        src: resolveCollaborationLogo(col2, ''),
+        url: '',
+      });
+    }
+  }
+  return result;
 }
 
-/** Positions tab: Title, Type, Department, Summary, Details, Email, Contact, Status. */
+/** Positions tab: Title, Type, Department, Summary, Details, Email, Contact, Status OR freeform. */
 export function transformPositions(rows) {
-  return mapRows(rows, (row, at, i) => {
-    const title = cell(row, at('Title'));
-    if (!title) return null;
-    return {
-      id: i + 1,
-      title,
-      type: cell(row, at('Type')) || 'Available',
-      department: cell(row, at('Department')),
-      summary: cell(row, at('Summary')),
-      details: cell(row, at('Details')),
-      email: cell(row, at('Email')),
-      contact: cell(row, at('Contact')),
-      status: cell(row, at('Status')),
-    };
+  if (!rows || rows.length === 0) return [];
+  const at = headerIndex(rows[0]);
+  const titleIdx = at('Title');
+
+  if (titleIdx !== -1) {
+    return mapRows(rows, (row, at, i) => {
+      const title = cell(row, titleIdx);
+      if (!title) return null;
+      return {
+        id: i + 1,
+        title,
+        type: cell(row, at('Type')) || 'Available',
+        department: cell(row, at('Department')),
+        summary: cell(row, at('Summary')),
+        details: cell(row, at('Details')),
+        email: cell(row, at('Email')),
+        contact: cell(row, at('Contact')),
+        status: cell(row, at('Status')),
+      };
+    });
+  }
+
+  // Paragraph/freeform style as in Open Positions tab
+  const textLines = [];
+  rows.forEach((row) => {
+    row.forEach((c) => {
+      const trimmed = String(c ?? '').trim();
+      if (trimmed && trimmed.toLowerCase() !== 'open positions') {
+        textLines.push(trimmed);
+      }
+    });
   });
+
+  if (textLines.length > 0) {
+    return [{
+      id: 1,
+      title: 'Open Positions',
+      type: 'Available',
+      department: 'Robotics & Intelligent Systems',
+      summary: textLines[0],
+      details: textLines.slice(1).join(' '),
+      email: 'bhivraj@iitj.ac.in',
+      contact: 'Dr. Bhivraj Suthar',
+      status: 'Open',
+    }];
+  }
+
+  return [];
 }
 
-/** Courses tab: Code, Title, Credits, Department, Level, Description. */
+/** Courses tab: Code, Title, Credits, Department, Level, Description OR Lectures format. */
 export function transformCourses(rows) {
-  return mapRows(rows, (row, at, i) => {
-    const title = cell(row, at('Title'));
-    if (!title) return null;
+  if (!rows || rows.length < 2) return [];
+  const at = headerIndex(rows[0]);
+  const titleIdx = at('Title') !== -1 ? at('Title') : at('Course Name');
+  const codeIdx = at('Code') !== -1 ? at('Code') : at('Course code');
+  const deptIdx = at('Department') !== -1 ? at('Department') : at('Course offered by');
+  const levelIdx = at('Level') !== -1 ? at('Level') : at('Course offered year and semester');
+  const descIdx = at('Description') !== -1 ? at('Description') : at('Course topics');
+  const creditsIdx = at('Credits');
+
+  return rows.slice(1).map((row, i) => {
+    const title = cell(row, titleIdx);
+    if (!title || title.includes('Only put highligted text')) return null;
     return {
       id: i + 1,
-      code: cell(row, at('Code')),
+      code: cell(row, codeIdx),
       title,
-      credits: cell(row, at('Credits')),
-      department: cell(row, at('Department')),
-      // Level ("Undergraduate"/"Postgraduate") -> lowercase type used by filters.
-      type: cell(row, at('Level')).toLowerCase() || 'postgraduate',
-      description: cell(row, at('Description')),
+      credits: cell(row, creditsIdx),
+      department: cell(row, deptIdx),
+      type: (cell(row, levelIdx) || 'postgraduate').toLowerCase(),
+      description: cell(row, descIdx),
     };
-  });
+  }).filter(Boolean);
 }
 
-/** ResearchAreas tab: Icon, Title, Description. */
+const VERTICAL_ICONS = ['🧬', '🦾', '🛸', '🕹️', '🧠', '🔬', '🤖'];
+
+/** ResearchAreas tab: Icon, Title, Description OR Research tab format. */
 export function transformResearchAreas(rows) {
-  return mapRows(rows, (row, at) => {
-    const title = cell(row, at('Title'));
-    if (!title) return null;
-    return {
-      icon: cell(row, at('Icon')) || '🔬',
-      title,
-      description: cell(row, at('Description')),
-    };
-  });
+  if (!rows || rows.length === 0) return [];
+  const at = headerIndex(rows[0]);
+  const titleIdx = at('Title');
+
+  // Standard table format with "Title" column in row 0
+  if (titleIdx !== -1 && at('Description') !== -1) {
+    return mapRows(rows, (row, at, i) => {
+      const title = cell(row, titleIdx);
+      if (!title) return null;
+      return {
+        id: i + 1,
+        icon: cell(row, at('Icon')) || VERTICAL_ICONS[i % VERTICAL_ICONS.length],
+        title,
+        description: cell(row, at('Description')),
+        projects: splitList(cell(row, at('Projects'))),
+      };
+    });
+  }
+
+  // Parse custom Research tab (Vertical 1..5 layout)
+  const verticals = [];
+  let current = null;
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const col0 = cell(row, 0);
+    const col1 = cell(row, 1);
+    const col2 = cell(row, 2);
+    const col3 = cell(row, 3);
+
+    const isNewVertical = /^vertical\s*\d+/i.test(col0) || (col1 && (!current || col1 !== current.title));
+
+    if (isNewVertical && (col1 || col0)) {
+      if (current) verticals.push(current);
+      current = {
+        id: verticals.length + 1,
+        icon: VERTICAL_ICONS[verticals.length % VERTICAL_ICONS.length],
+        vertical: col0 || `Vertical ${verticals.length + 1}`,
+        title: col1 || col0,
+        description: col2 || '',
+        projects: [],
+      };
+      if (col3) current.projects.push(col3);
+    } else if (current) {
+      if (col2 && !current.description) {
+        current.description = col2;
+      }
+      if (col3) {
+        current.projects.push(col3);
+      }
+    }
+  }
+
+  if (current) {
+    verticals.push(current);
+  }
+
+  return verticals.length > 0 ? verticals : [];
 }
 
 /** Facilities tab: Name, Category, Image, Description, Specs. */
@@ -177,18 +333,11 @@ export function transformFacilities(rows) {
 
 export { headerIndex, cell, splitList, resolveImageUrl, PLACEHOLDER_IMG };
 
-// Required header columns per tab. The hook (useSheetTab) checks these against
-// the fetched header row and falls back to hardcoded data when they're absent —
-// which is how we detect a tab that hasn't been created yet, since Google's
-// gviz endpoint answers an unknown tab name with HTTP 200 + the FIRST sheet's
-// data instead of a 404. Each set pairs the transform's key column with one
-// that's distinctive from the People tab (Title/Name also live there), so a
-// stray People response can't masquerade as another list. These names must be
-// spelled exactly as documented in SHEETS_GUIDE.md.
-transformContent.required = ['Key', 'Text'];
+// Required header columns per tab.
+transformContent.required = [];
 transformEvents.required = ['Title', 'Date'];
-transformCollaborations.required = ['Name', 'Category'];
-transformPositions.required = ['Title', 'Summary'];
-transformCourses.required = ['Title', 'Code'];
-transformResearchAreas.required = ['Title', 'Description'];
+transformCollaborations.required = [];
+transformPositions.required = [];
+transformCourses.required = [['Title', 'Course Name']];
+transformResearchAreas.required = [];
 transformFacilities.required = ['Name', 'Category'];

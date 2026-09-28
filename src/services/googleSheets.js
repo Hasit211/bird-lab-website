@@ -24,12 +24,16 @@ const emptyTeam = () => ({
 // people who don't yet have a Photo value in the sheet).
 const nameToAssetPath = (name) => {
   if (!name) return PLACEHOLDER_IMG;
-  const filename = name
+  const rawClean = String(name).trim();
+  const slug = rawClean
     .toLowerCase()
     .replace(/[^a-z0-9\s]/gi, '')
-    .replace(/\s+/g, '-')
-    .trim();
-  return filename ? `/assets/${filename}.png` : PLACEHOLDER_IMG;
+    .trim()
+    .replace(/\s+/g, '-');
+
+  if (!slug) return PLACEHOLDER_IMG;
+  if (slug === 'parul') return '/assets/-parul.png';
+  return `/assets/${slug}.png`;
 };
 
 /**
