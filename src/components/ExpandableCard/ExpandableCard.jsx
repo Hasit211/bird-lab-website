@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
+import { PLACEHOLDER_IMG } from '../../services/sheets/client';
 import './ExpandableCard.css';
 
 const ExpandableCard = ({ cards }) => {
@@ -38,7 +39,7 @@ const ExpandableCard = ({ cards }) => {
     
     // If we've had an error with this card's image, use placeholder
     if (imageErrors[cardKey]) {
-      return 'https://via.placeholder.com/300x300/e2e8f0/64748b?text=No+Photo';
+      return PLACEHOLDER_IMG;
     }
     
     // Use the processed image URL from the card data
@@ -49,7 +50,7 @@ const ExpandableCard = ({ cards }) => {
     }
     
     // Fallback to placeholder
-    return 'https://via.placeholder.com/300x300/e2e8f0/64748b?text=No+Photo';
+    return PLACEHOLDER_IMG;
   };
 
   const handleImageError = (cardName) => {

@@ -19,16 +19,14 @@ const Research = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedCards, setExpandedCards] = useState({});
 
+  const openModal = (area) => {
+    setSelectedResearchArea(area);
+    setIsModalOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedResearchArea(null);
-  };
-
-  const toggleExpand = (index) => {
-    setExpandedCards(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
   };
 
   useEffect(() => {
@@ -53,35 +51,52 @@ const Research = () => {
 
         <div className="research-grid">
           {researchAreas.map((area, index) => (
-            <div key={index} className="research-card">
+            <div
+              key={index}
+              className="research-card"
+              onClick={() => openModal(area)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="card-header">
                 <div className="research-icon">
-                  <span className="icon-emoji">{area.icon}</span>
+                  <span className="icon-emoji">{area.icon || '🤖'}</span>
                 </div>
-                <h3 className="research-title">{area.title}</h3>
+                <div className="header-text-container">
+                  {area.vertical && <span className="vertical-badge">{area.vertical}</span>}
+                  <h3 className="research-title">{area.title}</h3>
+                </div>
               </div>
               
               <div className="card-content">
-                <p className={`research-description ${!expandedCards[index] ? 'collapsed' : ''}`}>
-                  {area.description}
-                </p>
+                {area.description && (
+                  <p className="research-description">
+                    {area.description}
+                  </p>
+                )}
+
+                {area.projects && area.projects.length > 0 && (
+                  <div className="projects-container">
+                    <span className="projects-label">Projects & Focus Areas:</span>
+                    <div className="projects-pills">
+                      {area.projects.map((proj, pIdx) => (
+                        <span key={pIdx} className="project-pill">
+                          {proj}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <button
-                  className={`show-more-btn ${expandedCards[index] ? 'expanded' : ''}`}
-                  onClick={() => toggleExpand(index)}
+                  className="explore-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openModal(area);
+                  }}
                 >
-                  {expandedCards[index] ? 'Show Less' : 'Show More'}
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
+                  <span>Explore Projects & Demos</span>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>

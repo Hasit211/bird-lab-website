@@ -15,15 +15,16 @@ export const SHEET_ID = '1rfeP7ny6xYqEe-5fVLqKpXLHGI2rGeQ8oZK0us6ADtE';
 // Tab (worksheet) names. These MUST match the tab names in the Google Sheet
 // exactly, including capitalization. See SHEETS_GUIDE.md for the columns each
 // tab expects.
+// Tab (worksheet) names. Supports both exact guide names and common sheet tab aliases.
 export const TABS = {
-  content: 'Content', // Page | Key | Text  (all headings/paragraphs on the site)
-  people: 'People',
-  events: 'Events',
-  collaborations: 'Collaborations',
-  positions: 'Positions',
-  courses: 'Courses',
-  researchAreas: 'ResearchAreas',
-  facilities: 'Facilities',
+  content: ['Welcome', 'Content'],
+  people: ['People'],
+  events: ['Events'],
+  collaborations: ['Collaborations'],
+  positions: ['Open Positions', 'Positions'],
+  courses: ['Lectures', 'Courses'],
+  researchAreas: ['Research', 'ResearchAreas'],
+  facilities: ['Facilities'],
 };
 
 // How long a fetched tab is considered "fresh" in localStorage before the site

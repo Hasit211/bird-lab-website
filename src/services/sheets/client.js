@@ -23,9 +23,10 @@ export const PLACEHOLDER_IMG =
 
 // Build the keyless CSV URL for a tab. headers=1 is REQUIRED — without it gviz
 // mis-merges the leading rows and the header row comes back mangled.
+// _t=timestamp prevents HTTP browser caching so updates in Google Sheets reflect immediately.
 const buildCsvUrl = (tab) =>
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
-  `?tqx=out:csv&headers=1&sheet=${encodeURIComponent(tab)}`;
+  `?tqx=out:csv&headers=1&sheet=${encodeURIComponent(tab)}&_t=${Date.now()}`;
 
 /**
  * Parse CSV text into a 2D array of strings.
@@ -96,23 +97,43 @@ export function parseCsv(text) {
 }
 
 /**
- * Fetch a tab and return its rows as a 2D string array (row 0 = headers).
- * Throws on network error, non-2xx, or a non-CSV (HTML error) response.
- * @param {string} tab
+ * Fetch a tab (or list of candidate tab names) and return its rows as a 2D string array.
+ * @param {string | string[]} tab
  * @returns {Promise<string[][]>}
  */
 export async function fetchTabRows(tab) {
-  const res = await fetch(buildCsvUrl(tab), { redirect: 'follow' });
-  if (!res.ok) {
-    throw new Error(`Sheet tab "${tab}" returned HTTP ${res.status}`);
+  const candidateTabs = Array.isArray(tab) ? tab : [tab];
+  let lastErr = null;
+
+  for (let idx = 0; idx < candidateTabs.length; idx++) {
+    const t = candidateTabs[idx];
+    try {
+      const res = await fetch(buildCsvUrl(t), { redirect: 'follow', cache: 'no-cache' });
+      if (!res.ok) {
+        throw new Error(`Sheet tab "${t}" returned HTTP ${res.status}`);
+      }
+      const text = await res.text();
+      if (text.trimStart().startsWith('<')) {
+        throw new Error(`Sheet tab "${t}" is not accessible (check name/sharing)`);
+      }
+      const rows = parseCsv(text);
+      
+      // Check if Google served the default first tab fallback because `t` doesn't exist
+      const firstCell = String((rows[0] && rows[0][0]) ?? '').trim().toLowerCase();
+      const isGoogleFallback = firstCell.includes('logo image') || firstCell.includes('*please add');
+      
+      if (isGoogleFallback && idx < candidateTabs.length - 1) {
+        // Try next candidate tab in list
+        continue;
+      }
+
+      return rows;
+    } catch (err) {
+      lastErr = err;
+    }
   }
-  const text = await res.text();
-  // gviz returns an HTML page when the sheet isn't accessible or the tab name
-  // is wrong. Guard against silently parsing that as data.
-  if (text.trimStart().startsWith('<')) {
-    throw new Error(`Sheet tab "${tab}" is not accessible (check name/sharing)`);
-  }
-  return parseCsv(text);
+
+  throw lastErr || new Error(`Failed to fetch sheet data for tab: ${JSON.stringify(tab)}`);
 }
 
 /** Raised when a tab's columns don't match what a transform expects. */
@@ -124,33 +145,39 @@ export class SheetShapeError extends Error {
 }
 
 /**
- * Throw a SheetShapeError unless the header row (rows[0]) contains every name
- * in `required`. This is the load-bearing guard for "fall back when a tab
- * doesn't exist yet": Google's gviz endpoint returns HTTP 200 with the FIRST
- * sheet's data when you request a tab name that doesn't exist, so a not-yet-
- * created tab would otherwise parse to an empty list and wrongly suppress the
- * hardcoded fallback. Validating the columns distinguishes "real but empty tab"
- * from "wrong/absent tab".
- * @param {string} tab
+ * Throw a SheetShapeError unless the header row (rows[0]) contains required columns.
+ * `required` can contain strings or arrays of candidate strings (e.g. ['Title', ['Code', 'Course code']]).
+ * @param {string | string[]} tab
  * @param {string[][]} rows
- * @param {string[]} [required]
+ * @param {Array<string | string[]>} [required]
  */
 export function assertHeaders(tab, rows, required) {
   if (!required || required.length === 0) return;
   const header = (rows && rows[0]) || [];
   const present = new Set(header.map((h) => String(h ?? '').trim()));
-  const missing = required.filter((h) => !present.has(h));
+  const missing = [];
+
+  for (const item of required) {
+    if (Array.isArray(item)) {
+      if (!item.some((cand) => present.has(cand))) {
+        missing.push(`(${item.join(' | ')})`);
+      }
+    } else if (!present.has(item)) {
+      missing.push(item);
+    }
+  }
+
   if (missing.length) {
+    const tabName = Array.isArray(tab) ? tab.join('/') : tab;
     throw new SheetShapeError(
-      `Sheet tab "${tab}" is missing column(s) [${missing.join(', ')}] — it likely ` +
-        `hasn't been created yet (Google serves another sheet for unknown tab names). Using fallback.`
+      `Sheet tab "${tabName}" is missing column(s) [${missing.join(', ')}] — using fallback.`
     );
   }
 }
 
 // ---- localStorage cache (raw rows, so transforms can evolve safely) --------
 
-const cacheKeyFor = (tab) => `birdlab:sheet:${SHEET_ID}:${tab}`;
+const cacheKeyFor = (tab) => `birdlab:v4:sheet:${SHEET_ID}:${Array.isArray(tab) ? tab.join('_') : tab}`;
 
 /**
  * Read cached rows for a tab.
@@ -179,17 +206,22 @@ export function writeCache(tab, rows) {
 
 // ---- image resolution ------------------------------------------------------
 
-// Pull a Drive file id out of the common share-link shapes.
+// Pull a Drive file id out of the common share-link shapes or raw ID strings.
 function extractDriveId(url) {
-  if (!/drive\.google\.com|docs\.google\.com/.test(url)) return null;
+  if (!url) return null;
+  const str = String(url).trim();
   const patterns = [
     /\/file\/d\/([a-zA-Z0-9_-]+)/, // .../file/d/<id>/view
     /[?&]id=([a-zA-Z0-9_-]+)/, //     ...open?id=<id>  /  uc?id=<id>
     /\/d\/([a-zA-Z0-9_-]+)/, //       generic /d/<id>
+    /lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/,
   ];
   for (const re of patterns) {
-    const m = url.match(re);
+    const m = str.match(re);
     if (m) return m[1];
+  }
+  if (/^[a-zA-Z0-9_-]{25,50}$/.test(str)) {
+    return str;
   }
   return null;
 }
@@ -197,7 +229,7 @@ function extractDriveId(url) {
 /**
  * Turn whatever the professor pasted in an image cell into a usable <img src>.
  * - empty            -> the provided fallback (or a neutral placeholder)
- * - Google Drive link -> direct thumbnail URL
+ * - Google Drive link -> direct high-res CDN image URL
  * - http(s) URL       -> passed through
  * - protocol-relative -> https:-prefixed
  * - bare filename/path -> served from /assets (back-compat with bundled images)
@@ -210,7 +242,7 @@ export function resolveImageUrl(raw, { fallback = PLACEHOLDER_IMG } = {}) {
   if (!v) return fallback || PLACEHOLDER_IMG;
 
   const driveId = extractDriveId(v);
-  if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1000`;
+  if (driveId) return `https://lh3.googleusercontent.com/d/${driveId}`;
 
   if (/^https?:\/\//i.test(v)) return v;
   if (v.startsWith('//')) return `https:${v}`;

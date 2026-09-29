@@ -51,9 +51,7 @@ export function useSheetTab(tab, { transform, fallback }) {
   useEffect(() => {
     let cancelled = false;
 
-    const cached = validCache(tab, transform);
-    if (cached && cached.fresh) return; // fresh AND valid — skip the network
-
+    // Always fetch fresh data in the background (stale-while-revalidate)
     (async () => {
       try {
         const rows = await fetchTabRows(tab);
