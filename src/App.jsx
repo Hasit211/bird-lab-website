@@ -17,6 +17,7 @@ import Footer from './components/Footer/Footer';
 import Facilities from './components/Facilities/Facilities';
 import Events from './components/Events/Events';
 import { ContentProvider } from './context/ContentProvider';
+import { SheetDataProvider } from './context/SheetDataProvider';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 
 import './App.css';
@@ -50,6 +51,7 @@ function AppContent() {
   };
 
   return (
+    <SheetDataProvider>
     <ContentProvider>
       <div className="App">
         {isLoading ? (
@@ -76,6 +78,7 @@ function AppContent() {
         )}
       </div>
     </ContentProvider>
+    </SheetDataProvider>
   );
 }
 

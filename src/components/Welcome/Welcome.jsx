@@ -93,6 +93,26 @@ const Welcome = () => {
             </div>
           </div>
 
+          {/* Key Lab Metrics Strip */}
+          <div className="lab-metrics-strip">
+            <div className="metric-item">
+              <span className="metric-number"><span className="counter" data-target="5">0</span>+</span>
+              <span className="metric-label">Research Verticals</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-number"><span className="counter" data-target="24">0</span>+</span>
+              <span className="metric-label">Researchers & Scholars</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-number"><span className="counter" data-target="15">0</span>+</span>
+              <span className="metric-label">Patents & Publications</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-number"><span className="counter" data-target="8">0</span>+</span>
+              <span className="metric-label">Global & National Partners</span>
+            </div>
+          </div>
+
           <FeaturesSection />
 
         </div>

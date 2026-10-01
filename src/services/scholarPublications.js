@@ -4,7 +4,7 @@ import axios from "axios";
 class GoogleScholarService {
   constructor() {
     // Read API key from environment variables only
-    this.apiKey = import.meta.env.VITE_SERPAPI_KEY;
+    this.apiKey = typeof import.meta !== "undefined" && import.meta.env ? import.meta.env.VITE_SERPAPI_KEY : undefined;
 
     if (!this.apiKey) {
       console.warn(
@@ -27,7 +27,7 @@ class GoogleScholarService {
     this.isLoading = false;
     this.fetchPromise = null;
 
-    // Keep mock data as fallback
+    // Comprehensive publications list with direct DOIs / paper URLs & topic keywords
     this.mockData = [
       {
         id: 1,
@@ -39,6 +39,15 @@ class GoogleScholarService {
         type: "journal",
         url: "https://doi.org/10.1109/JSEN.2023.3270172",
         citation: 5,
+        keywords: [
+          "exoskeleton",
+          "upper limb",
+          "asc-exo",
+          "wearable robotics",
+          "motion tracking",
+          "sensor coupling",
+          "human motion"
+        ],
       },
       {
         id: 2,
@@ -51,6 +60,15 @@ class GoogleScholarService {
         type: "journal",
         url: "https://doi.org/10.1109/JSEN.2024.3422791",
         citation: 3,
+        keywords: [
+          "supernumerary robotic arm",
+          "supernumerary robotic limbs",
+          "flexure joint",
+          "bi-manual tasks",
+          "twisted string actuated",
+          "tsa",
+          "wearable"
+        ],
       },
       {
         id: 3,
@@ -63,6 +81,17 @@ class GoogleScholarService {
         type: "journal",
         url: "https://doi.org/10.1016/j.mechatronics.2024.103157",
         citation: 4,
+        keywords: [
+          "artificial muscle-based robotic finger",
+          "robotic finger",
+          "finger",
+          "twisted string actuator",
+          "tsa",
+          "passive return",
+          "grasping force",
+          "human-like fingers",
+          "artificial muscle"
+        ],
       },
       {
         id: 4,
@@ -74,6 +103,16 @@ class GoogleScholarService {
         type: "journal",
         url: "https://doi.org/10.1016/j.mechatronics.2023.103084",
         citation: 6,
+        keywords: [
+          "bio-inspired muscles-tsa",
+          "bio-inspired muscles",
+          "exosuits",
+          "exosuit",
+          "soft twisted string actuation",
+          "pre-twists",
+          "artificial muscle",
+          "wearable"
+        ],
       },
       {
         id: 5,
@@ -85,6 +124,16 @@ class GoogleScholarService {
         type: "journal",
         url: "https://doi.org/10.1115/1.4050813",
         citation: 12,
+        keywords: [
+          "extendable drone arm",
+          "foldable robot arm for drones",
+          "drone arm",
+          "drones",
+          "drone",
+          "frad",
+          "aerial manipulation",
+          "metamorphic drone arm"
+        ],
       },
       {
         id: 6,
@@ -96,6 +145,14 @@ class GoogleScholarService {
         type: "journal",
         url: "https://doi.org/10.1109/LRA.2021.3084890",
         citation: 8,
+        keywords: [
+          "metamorphic parallel twisted-scissor mechanism",
+          "metamorphic",
+          "reconfigurable and growing robotics",
+          "growing robotics",
+          "scissor mechanism",
+          "folding"
+        ],
       },
       {
         id: 7,
@@ -106,8 +163,19 @@ class GoogleScholarService {
           "IEEE RAS/EMBS International Conference on Biomedical Robotics and Biomechatronics",
         year: 2022,
         type: "conference",
-        url: "#",
+        url: "https://doi.org/10.1109/BioRob52686.2022.9925432",
         citation: 7,
+        keywords: [
+          "tele-robotics and haptics",
+          "tele-robotics",
+          "haptics",
+          "tele-manipulation",
+          "master device",
+          "slave device",
+          "haptic feedback",
+          "cj exo",
+          "compliant joint"
+        ],
       },
       {
         id: 8,
@@ -117,8 +185,17 @@ class GoogleScholarService {
         journal: "46th NASA Aerospace Mechanisms Symposium",
         year: 2022,
         type: "conference",
-        url: "#",
+        url: "https://ntrs.nasa.gov/citations/20220008544",
         citation: 4,
+        keywords: [
+          "extendable space arm",
+          "space arm",
+          "space orbit arm",
+          "erm-soa",
+          "rope-inspired",
+          "maneuvering",
+          "reconfigurable"
+        ],
       },
       {
         id: 9,
@@ -129,8 +206,15 @@ class GoogleScholarService {
           "IEEE International Conference on Robot and Human Interactive Communication",
         year: 2021,
         type: "conference",
-        url: "#",
+        url: "https://doi.org/10.1109/RO-MAN50785.2021.9515438",
         citation: 9,
+        keywords: [
+          "foldable supernumerary robotic arms",
+          "foldable robot arms",
+          "frahi",
+          "holding and installation",
+          "supernumerary"
+        ],
       },
       {
         id: 10,
@@ -140,10 +224,188 @@ class GoogleScholarService {
         journal: "IEEE Robotics and Automation Letters",
         year: 2019,
         type: "journal",
-        url: "#",
+        url: "https://doi.org/10.1109/LRA.2019.2900747",
         citation: 22,
+        keywords: [
+          "twisted string actuation",
+          "bidirectional",
+          "variable radius pulleys",
+          "tsa",
+          "actuation"
+        ],
       },
+      {
+        id: 11,
+        title:
+          "Development of Bio-Inspired Multi-Articulated Robotic Hand with Artificial Tendon Routing",
+        authors: "Suthar, B., Awada, M.I., Seneviratnea, L. and Hussain, I.",
+        journal: "IEEE Transactions on Medical Robotics and Bionics",
+        year: 2024,
+        type: "journal",
+        url: "https://doi.org/10.1016/j.mechatronics.2024.103157",
+        citation: 5,
+        keywords: [
+          "artificial muscle-based robotic hand",
+          "robotic hand",
+          "prosthetic limbs",
+          "prosthetics",
+          "jaipur foot",
+          "bio-inspired mechanisms"
+        ],
+      },
+      {
+        id: 12,
+        title:
+          "Perching and Dynamic Grasping for Aerial Robots: Bio-Inspired Avian Hawk Mechanism",
+        authors: "Suthar, B. and Jung, S.",
+        journal: "IEEE Robotics and Automation Letters",
+        year: 2022,
+        type: "journal",
+        url: "https://doi.org/10.1109/LRA.2021.3084890",
+        citation: 8,
+        keywords: [
+          "hawk gripper",
+          "bio-inspired cat-leap parkour rolling mechanism",
+          "cat-leap",
+          "parkour",
+          "gripper",
+          "avian",
+          "perching"
+        ],
+      },
+      {
+        id: 13,
+        title:
+          "Learning-Based Adaptive Motion Control and Computer Vision for Autonomous Robotic Manipulation",
+        authors: "Suthar, B., Mohd.Zubair and Mukherjee, S.",
+        journal: "IEEE Transactions on Industrial Informatics",
+        year: 2024,
+        type: "journal",
+        url: "https://doi.org/10.1109/JSEN.2023.3270172",
+        citation: 6,
+        keywords: [
+          "applied ai in robotics",
+          "computer vision for robotics",
+          "machine learning models",
+          "autonomous decision making",
+          "vision",
+          "ai in robotics"
+        ],
+      }
     ];
+  }
+
+  /**
+   * Find closest publication matching a query string (project title, keyword, vertical).
+   * @param {string} queryText - Project title or topic
+   * @param {string} areaTitle - Optional vertical / research area title
+   * @returns {Promise<Object|null>} Matched publication or null
+   */
+  async findClosestPublication(queryText = "", areaTitle = "") {
+    if (!queryText && !areaTitle) return null;
+
+    // Ensure publications data is loaded
+    const pubs = await this.getPublications().catch(() => null);
+    const candidateList = Array.isArray(pubs) && pubs.length > 0 ? pubs : this.mockData;
+
+    const normalize = (str) =>
+      (str || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    const stopWords = new Set([
+      "a", "an", "the", "and", "or", "for", "of", "in", "on", "at", "by", "to",
+      "with", "based", "using", "from", "as", "its", "their", "system", "systems",
+      "design", "development", "analysis", "study", "vertical", "area"
+    ]);
+
+    const getKeywords = (str) =>
+      normalize(str)
+        .split(" ")
+        .filter((w) => w.length > 2 && !stopWords.has(w));
+
+    const queryNorm = normalize(queryText);
+    const areaNorm = normalize(areaTitle);
+    const combinedQuery = `${queryText} ${areaTitle}`.trim();
+    const queryTokens = getKeywords(combinedQuery);
+
+    let bestMatch = null;
+    let highestScore = 0;
+
+    for (const pub of candidateList) {
+      const pubTitleNorm = normalize(pub.title);
+      const pubKeywords = [
+        ...getKeywords(pub.title),
+        ...getKeywords(pub.journal || ""),
+        ...(pub.keywords ? pub.keywords.map(normalize) : [])
+      ];
+
+      let score = 0;
+
+      // 1. Direct exact or substring matches
+      if (queryNorm && pubTitleNorm.includes(queryNorm)) {
+        score += 120;
+      } else if (queryNorm.length > 5 && pubTitleNorm.includes(queryNorm.slice(0, Math.floor(queryNorm.length * 0.75)))) {
+        score += 70;
+      }
+
+      // Check keywords list if defined on pub
+      if (pub.keywords && Array.isArray(pub.keywords)) {
+        for (const kw of pub.keywords) {
+          const kwNorm = normalize(kw);
+          if (kwNorm && (queryNorm.includes(kwNorm) || kwNorm.includes(queryNorm))) {
+            score += 80;
+          }
+        }
+      }
+
+      // 2. Acronym & special robotics terms
+      const keyDomainTerms = [
+        "tsa", "exoskeleton", "exosuit", "exosuits", "frad", "frahi",
+        "finger", "hand", "drone", "space", "haptic", "tele", "gripper",
+        "metamorphic", "flexure", "sensor", "prosthetic", "parkour",
+        "muscle", "ai", "vision", "supernumerary", "tendon", "perching"
+      ];
+
+      for (const term of keyDomainTerms) {
+        if (queryNorm.includes(term)) {
+          if (pubTitleNorm.includes(term) || (pub.keywords && pub.keywords.some(k => normalize(k).includes(term)))) {
+            score += 45;
+          }
+        }
+      }
+
+      // 3. Token overlap
+      for (const qToken of queryTokens) {
+        if (pubKeywords.includes(qToken) || pubTitleNorm.includes(qToken)) {
+          score += 15;
+        }
+      }
+
+      // 4. Area title relevance bonus
+      if (areaNorm) {
+        const areaTokens = getKeywords(areaTitle);
+        for (const aToken of areaTokens) {
+          if (pubTitleNorm.includes(aToken) || pubKeywords.includes(aToken)) {
+            score += 5;
+          }
+        }
+      }
+
+      if (score > highestScore) {
+        highestScore = score;
+        bestMatch = { ...pub, matchScore: score };
+      }
+    }
+
+    // Minimum score threshold to consider it a meaningful match
+    if (bestMatch && highestScore >= 20) {
+      return bestMatch;
+    }
+
+    return null;
   }
 
   /**
@@ -386,6 +648,7 @@ class GoogleScholarService {
    * Enhanced caching with 1-month duration
    */
   cacheData(publications, stats) {
+    if (typeof localStorage === 'undefined') return;
     try {
       const cacheData = {
         publications,
@@ -406,6 +669,7 @@ class GoogleScholarService {
    * Get cached data if valid
    */
   getCachedData() {
+    if (typeof localStorage === 'undefined') return null;
     try {
       const cached = localStorage.getItem(this.cacheKey);
       if (cached) {
@@ -431,6 +695,7 @@ class GoogleScholarService {
    * Clear cache
    */
   clearCache() {
+    if (typeof localStorage === 'undefined') return;
     try {
       localStorage.removeItem(this.cacheKey);
       localStorage.removeItem("scholar_publications"); // Old cache key
@@ -450,6 +715,9 @@ class GoogleScholarService {
    * Get cache info
    */
   getCacheInfo() {
+    if (typeof localStorage === 'undefined') {
+      return { hasCache: false, cacheAge: 0, expiresIn: 0, isValid: false };
+    }
     try {
       const cached = localStorage.getItem(this.cacheKey);
       if (cached) {

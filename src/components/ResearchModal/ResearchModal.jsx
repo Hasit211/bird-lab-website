@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import closeCircleIcon from '../../assets/close-circle-svgrepo-com.svg';
+import googleScholarService from '../../services/scholarPublications';
 import './ResearchModal.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -24,9 +27,11 @@ const DEMO_PROJECT_INFO = {
 };
 
 const ResearchModal = ({ isOpen, onClose, researchArea }) => {
+  const navigate = useNavigate();
   const modalRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const [activeProject, setActiveProject] = useState(0);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     if (isOpen && researchArea && scrollContainerRef.current) {
@@ -44,6 +49,7 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      setActiveProject(0);
     } else {
       document.body.style.overflow = '';
     }
@@ -56,6 +62,12 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+
+  const getProjectName = (proj) => {
+    if (!proj) return '';
+    if (typeof proj === 'object') return proj.name || proj.title || '';
+    return String(proj);
   };
 
   const getProjectImage = (projectName, areaTitle) => {
@@ -134,7 +146,7 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
   const isRealProjects = researchArea.projects && researchArea.projects.length > 0;
   const projects = isRealProjects
     ? researchArea.projects
-    : PLACEHOLDER_PROJECTS.map(p => p.name);
+    : PLACEHOLDER_PROJECTS;
 
   // Use real or demo technologies
   const technologies = (researchArea.technologies && researchArea.technologies.length > 0)
@@ -143,35 +155,91 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
 
   // Helper for project thumbnail
   const getThumb = (project, area) => {
-    const placeholder = PLACEHOLDER_PROJECTS.find(p => p.name === project);
+    if (typeof project === 'object' && project.image) return project.image;
+    const name = getProjectName(project);
+    const placeholder = PLACEHOLDER_PROJECTS.find(p => p.name === name);
     if (placeholder) return placeholder.image;
-    return getProjectImage(project, area);
+    return getProjectImage(name, area);
   };
 
   // Helper for project info (real or demo)
   const getProjectInfo = (project, area) => {
-    const isPlaceholder = PLACEHOLDER_PROJECTS.some(p => p.name === project);
+    const name = getProjectName(project);
+    const isPlaceholder = PLACEHOLDER_PROJECTS.some(p => p.name === name);
+    const customUrl = (typeof project === 'object' && project.url) ? project.url : '';
+    const customImg = (typeof project === 'object' && project.image) ? project.image : '';
+    const customDesc = (typeof project === 'object' && project.description) ? project.description : '';
+
     if (isPlaceholder) {
       return {
-        image: PLACEHOLDER_PROJECTS.find(p => p.name === project).image,
-        title: project,
-        description: DEMO_PROJECT_INFO.description,
+        image: PLACEHOLDER_PROJECTS.find(p => p.name === name)?.image || '/assets/image.png',
+        title: name,
+        url: customUrl,
+        description: customDesc || DEMO_PROJECT_INFO.description,
         status: DEMO_PROJECT_INFO.status,
         teamSize: DEMO_PROJECT_INFO.teamSize,
         duration: DEMO_PROJECT_INFO.duration
       };
     }
     return {
-      image: getProjectImage(project, area),
-      title: project,
-      description: getProjectDescription(project, area),
+      image: customImg || getProjectImage(name, area),
+      title: name,
+      url: customUrl,
+      description: customDesc || getProjectDescription(name, area),
       status: "Active Research",
       teamSize: "3-5 Researchers",
       duration: "2-3 Years"
     };
   };
 
-  const projectInfo = getProjectInfo(projects[activeProject], researchArea.title);
+  const projectInfo = getProjectInfo(projects[activeProject] || projects[0], researchArea.title);
+
+  const handleViewPublications = async (e) => {
+    if (e) e.preventDefault();
+    setIsRedirecting(true);
+
+    const isExternal = (u) => typeof u === 'string' && /^https?:\/\//i.test(u) && u !== '#';
+
+    // 1. If project has direct publication or PDF URL from Google Sheets
+    if (projectInfo.url && isExternal(projectInfo.url)) {
+      window.open(projectInfo.url, '_blank', 'noopener,noreferrer');
+      setIsRedirecting(false);
+      return;
+    }
+
+    // 2. Search closest matching publication from Google Scholar publications
+    try {
+      const match = await googleScholarService.findClosestPublication(
+        projectInfo.title,
+        researchArea.title
+      );
+
+      const pubUrl = match?.url || match?.pdf;
+      if (pubUrl && isExternal(pubUrl)) {
+        window.open(pubUrl, '_blank', 'noopener,noreferrer');
+        setIsRedirecting(false);
+        return;
+      }
+
+      if (match && match.title) {
+        // Direct search on Google Scholar for the closest matched paper
+        window.open(
+          `https://scholar.google.com/scholar?q=${encodeURIComponent(match.title)}`,
+          '_blank',
+          'noopener,noreferrer'
+        );
+        setIsRedirecting(false);
+        return;
+      }
+    } catch (err) {
+      console.warn('Error matching publication for project:', err);
+    }
+
+    // 3. Fallback: redirect to website publications tab filtered by project name
+    setIsRedirecting(false);
+    onClose();
+    navigate(`/publications?search=${encodeURIComponent(projectInfo.title)}`);
+  };
 
   return (
     <AnimatePresence>
@@ -195,19 +263,16 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
             {/* Modal Header */}
             <div className="modal-header redesigned">
               <div className="modal-title-section redesigned">
-                <div className="modal-icon redesigned">
-                  <span>{researchArea.icon || '🔬'}</span>
-                </div>
                 <div>
+                  {researchArea.vertical && (
+                    <span className="vertical-badge modal-vertical-badge">{researchArea.vertical}</span>
+                  )}
                   <h2 className="modal-title redesigned">{researchArea.title || 'Research Area'}</h2>
                   <p className="modal-subtitle redesigned">{researchArea.description || 'Research description not available'}</p>
                 </div>
               </div>
-              <button className="modal-close redesigned" onClick={onClose} aria-label="Close">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                  <circle cx="14" cy="14" r="13" stroke="#00ffff" strokeWidth="2" fill="rgba(0,0,0,0.2)" />
-                  <path d="M18 10L10 18M10 10l8 8" stroke="#00ffff" strokeWidth="2.2" strokeLinecap="round"/>
-                </svg>
+              <button className="modal-close redesigned" onClick={onClose} aria-label="Close" title="Close modal">
+                <img src={closeCircleIcon} alt="Close" className="modal-close-icon-img" />
               </button>
             </div>
             {/* Split Layout */}
@@ -216,20 +281,23 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
               <aside className="modal-sidebar">
                 <h4 className="sidebar-title">Projects</h4>
                 <div className="sidebar-projects-list">
-                  {projects.map((project, idx) => (
-                    <button
-                      key={idx}
-                      className={`sidebar-project-btn${activeProject === idx ? ' active' : ''}`}
-                      onClick={() => setActiveProject(idx)}
-                    >
-                      <img
-                        src={getThumb(project, researchArea.title)}
-                        alt={project}
-                        className="sidebar-project-thumb"
-                      />
-                      <span className="sidebar-project-name">{project}</span>
-                    </button>
-                  ))}
+                  {projects.map((project, idx) => {
+                    const name = getProjectName(project);
+                    return (
+                      <button
+                        key={idx}
+                        className={`sidebar-project-btn${activeProject === idx ? ' active' : ''}`}
+                        onClick={() => setActiveProject(idx)}
+                      >
+                        <img
+                          src={getThumb(project, researchArea.title)}
+                          alt={name}
+                          className="sidebar-project-thumb"
+                        />
+                        <span className="sidebar-project-name">{name}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </aside>
               {/* Main Content */}
@@ -269,12 +337,21 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
                       </div>
                     </div>
                     <div className="project-actions redesigned">
-                      <button className="action-btn primary redesigned">
-                        View Publications
+                      <button
+                        type="button"
+                        className="action-btn primary redesigned"
+                        onClick={handleViewPublications}
+                        disabled={isRedirecting}
+                      >
+                        {isRedirecting ? 'Opening Publication...' : 'View Publications'}
                       </button>
-                      <button className="action-btn secondary redesigned">
+                      <Link
+                        to="/contact"
+                        className="action-btn secondary redesigned"
+                        onClick={onClose}
+                      >
                         Contact Team
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>

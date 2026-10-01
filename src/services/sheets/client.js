@@ -8,7 +8,7 @@
 // Exposes low-level pieces (fetchTabRows, parseCsv, cache read/write,
 // resolveImageUrl); React state/stale-while-revalidate lives in the hooks.
 
-import { SHEET_ID, CACHE_TTL_MS } from '../../config/sheets';
+import { SHEET_ID, CACHE_TTL_MS } from '../../config/sheets.js';
 
 // Neutral inline placeholder so a missing image never triggers a broken-image
 // icon or a request to a nonexistent path.
@@ -97,43 +97,51 @@ export function parseCsv(text) {
 }
 
 /**
+ * Fetch a single tab name and return its rows. Throws on network/parse errors.
+ * @param {string} tabName
+ * @returns {Promise<string[][]>}
+ */
+async function fetchSingleTab(tabName) {
+  const res = await fetch(buildCsvUrl(tabName), { redirect: 'follow', cache: 'no-cache' });
+  if (!res.ok) {
+    throw new Error(`Sheet tab "${tabName}" returned HTTP ${res.status}`);
+  }
+  const text = await res.text();
+  if (text.trimStart().startsWith('<')) {
+    throw new Error(`Sheet tab "${tabName}" is not accessible (check name/sharing)`);
+  }
+  const rows = parseCsv(text);
+  // Reject if Google silently served a wrong-tab fallback
+  const firstCell = String((rows[0] && rows[0][0]) ?? '').trim().toLowerCase();
+  if (firstCell.includes('logo image') || firstCell.includes('*please add')) {
+    throw new Error(`Sheet tab "${tabName}" returned Google fallback content`);
+  }
+  return rows;
+}
+
+/**
  * Fetch a tab (or list of candidate tab names) and return its rows as a 2D string array.
+ * When multiple candidate names are provided they are fetched IN PARALLEL and the
+ * first successful, valid result wins — eliminating the sequential waterfall that
+ * caused slow loads when the primary tab name didn't match.
  * @param {string | string[]} tab
  * @returns {Promise<string[][]>}
  */
 export async function fetchTabRows(tab) {
   const candidateTabs = Array.isArray(tab) ? tab : [tab];
-  let lastErr = null;
 
-  for (let idx = 0; idx < candidateTabs.length; idx++) {
-    const t = candidateTabs[idx];
-    try {
-      const res = await fetch(buildCsvUrl(t), { redirect: 'follow', cache: 'no-cache' });
-      if (!res.ok) {
-        throw new Error(`Sheet tab "${t}" returned HTTP ${res.status}`);
-      }
-      const text = await res.text();
-      if (text.trimStart().startsWith('<')) {
-        throw new Error(`Sheet tab "${t}" is not accessible (check name/sharing)`);
-      }
-      const rows = parseCsv(text);
-      
-      // Check if Google served the default first tab fallback because `t` doesn't exist
-      const firstCell = String((rows[0] && rows[0][0]) ?? '').trim().toLowerCase();
-      const isGoogleFallback = firstCell.includes('logo image') || firstCell.includes('*please add');
-      
-      if (isGoogleFallback && idx < candidateTabs.length - 1) {
-        // Try next candidate tab in list
-        continue;
-      }
+  // Fire all candidate fetches simultaneously
+  const results = await Promise.allSettled(candidateTabs.map(fetchSingleTab));
 
-      return rows;
-    } catch (err) {
-      lastErr = err;
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      return result.value;
     }
   }
 
-  throw lastErr || new Error(`Failed to fetch sheet data for tab: ${JSON.stringify(tab)}`);
+  // All candidates failed — surface the last rejection reason
+  const lastRejection = results.filter((r) => r.status === 'rejected').at(-1);
+  throw lastRejection?.reason ?? new Error(`Failed to fetch sheet data for tab: ${JSON.stringify(tab)}`);
 }
 
 /** Raised when a tab's columns don't match what a transform expects. */
@@ -215,6 +223,7 @@ function extractDriveId(url) {
     /[?&]id=([a-zA-Z0-9_-]+)/, //     ...open?id=<id>  /  uc?id=<id>
     /\/d\/([a-zA-Z0-9_-]+)/, //       generic /d/<id>
     /lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/,
+    /drive\.google\.com\/thumbnail\?id=([a-zA-Z0-9_-]+)/,
   ];
   for (const re of patterns) {
     const m = str.match(re);
@@ -229,7 +238,7 @@ function extractDriveId(url) {
 /**
  * Turn whatever the professor pasted in an image cell into a usable <img src>.
  * - empty            -> the provided fallback (or a neutral placeholder)
- * - Google Drive link -> direct high-res CDN image URL
+ * - Google Drive link -> high-res thumbnail CDN URL that bypasses CORS/cookie blocks
  * - http(s) URL       -> passed through
  * - protocol-relative -> https:-prefixed
  * - bare filename/path -> served from /assets (back-compat with bundled images)
@@ -242,7 +251,9 @@ export function resolveImageUrl(raw, { fallback = PLACEHOLDER_IMG } = {}) {
   if (!v) return fallback || PLACEHOLDER_IMG;
 
   const driveId = extractDriveId(v);
-  if (driveId) return `https://lh3.googleusercontent.com/d/${driveId}`;
+  if (driveId) {
+    return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
+  }
 
   if (/^https?:\/\//i.test(v)) return v;
   if (v.startsWith('//')) return `https:${v}`;

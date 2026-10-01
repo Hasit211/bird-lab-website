@@ -1,322 +1,183 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useContent } from '../../hooks/useContent';
+import ImageLightbox from './ImageLightbox';
 import './FeaturesSection.css';
+
+const RESEARCH_THRUSTS = [
+  {
+    id: 1,
+    title: 'Bio-Inspired Mechanisms & Artificial Muscles',
+    category: 'Mechanisms & Actuation',
+    description: 'Developing biomimetic actuators, twisted string actuators (TSA), and multi-fingered robotic hands inspired by human neuromuscular anatomy.',
+    image: '/assets/Picture1.png',
+    fallbackImg: '/assets/pic1.jpg',
+    highlights: ['Twisted String Actuators (TSA)', 'Biomimetic Robotic Grippers', 'Parkour Rolling Mechanism']
+  },
+  {
+    id: 2,
+    title: 'Wearable & Assistive Robotics',
+    category: 'Bio-Signal Control',
+    description: 'Engineering intelligent exoskeletons, soft exosuits, and active prosthetics to augment human mobility and aid clinical rehabilitation.',
+    image: '/assets/Picture3.png',
+    fallbackImg: '/assets/Picture2.png',
+    highlights: ['Lower & Upper Body Exoskeletons', 'EMG-Controlled Exosuits', 'Supernumerary Robotic Limbs']
+  },
+  {
+    id: 3,
+    title: 'Reconfigurable & Growing Robotics',
+    category: 'Adaptive Robotics',
+    description: 'Pioneering metamorphic drones, aerial manipulation systems, and continuum soft robotic arms capable of navigation in constrained spaces.',
+    image: '/assets/wing.png',
+    fallbackImg: '/assets/Picture1.png',
+    highlights: ['Foldable Robotic Arms', 'Aerial Manipulation Platforms', 'Bio-inspired Flight Dynamics']
+  },
+  {
+    id: 4,
+    title: 'AI Perception & Autonomous Control',
+    category: 'Perception & Learning',
+    description: 'Integrating vision-language-action models (VLA), visual servoing, and immersive VR simulations for autonomous robotic task execution.',
+    image: '/assets/pic1.jpg',
+    fallbackImg: '/assets/second1.png',
+    highlights: ['Vision-Language-Action Models', 'Immersive VR Teleoperation', 'Real-Time Visual Servoing']
+  }
+];
+
+const COLLABORATORS = [
+  { name: 'IIT Delhi', logo: '/assets/IITD.png', type: 'Academic Partner' },
+  { name: 'IIT Gandhinagar', logo: '/assets/IITGN.png', type: 'Academic Partner' },
+  { name: 'Jaipur Foot', logo: '/assets/JaipurFoot.png', type: 'Clinical & Industry Partner' },
+  { name: 'University of Siena', logo: '/assets/UniversityOfSiena.png', type: 'International Partner' },
+];
 
 const FeaturesSection = () => {
   const t = useContent();
-  return (
-    <div className="features-section">
-      <div className="features-container">
-        <h4 className="features-title">
-          {t('features.title', 'Advanced Research Capabilities')}
-        </h4>
-        <p className="features-subtitle">
-          {t(
-            'features.subtitle',
-            'From autonomous systems to AI-powered robotics, our laboratory leads innovation in cutting-edge research and development.'
-          )}
-        </p>
-      </div>
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
-      <div className="bento-grid">
-        <BentoGridItem
-          title={t('features.item1.title', 'Advanced Robotics Research')}
-          description={t('features.item1.desc', 'Cutting-edge research in autonomous systems, machine learning, and bio-inspired robotics.')}
-          header={<SkeletonOne />}
-          className="bento-item-large"
-          icon="🤖"
-        />
-        <BentoGridItem
-          title={t('features.item2.title', 'AI-Powered Vision Systems')}
-          description={t('features.item2.desc', 'Computer vision and deep learning solutions for real-world applications.')}
-          header={<SkeletonTwo />}
-          className="bento-item-medium"
-          icon="👁️"
-        />
-        <BentoGridItem
-          title={t('features.item3.title', 'Research Publications')}
-          description={t('features.item3.desc', 'Discover our latest research findings and breakthrough innovations in robotics.')}
-          header={<SkeletonThree />}
-          className="bento-item-medium"
-          icon="📄"
-        />
-        <BentoGridItem
-          title={t('features.item4.title', 'Global Collaboration')}
-          description={t('features.item4.desc', 'Partnering with institutions worldwide to advance robotics research and innovation.')}
-          header={<SkeletonFour />}
-          className="bento-item-wide"
-          icon="🌍"
-        />
-      </div>
-    </div>
-  );
-};
-
-const BentoGridItem = ({ className, title, description, header, icon }) => {
-  return (
-    <div className={`bento-grid-item ${className || ''}`}>
-      <div className="bento-header">
-        {header}
-      </div>
-      <div className="bento-content">
-        <div className="bento-icon">{icon}</div>
-        <div className="bento-title">{title}</div>
-        <div className="bento-description">{description}</div>
-      </div>
-    </div>
-  );
-};
-
-const SkeletonOne = () => {
-  const roboticsImages = [
-    "/assets/pic1.jpg",
-    "/assets/Picture3.png",
-    "/assets/Picture1.png",
-    "/assets/Picture2.png",
-  ];
+  const total = RESEARCH_THRUSTS.length;
 
   return (
-    <div className="skeleton-one">
-      <div className="robotics-gallery">
-        <div className="main-image">
-          <img src={roboticsImages[0]} alt="Advanced Robotics Research" />
-          <div className="image-overlay">
-            <div className="overlay-content">
-              <div className="tech-badge">🤖 Autonomous Systems</div>
-              <div className="tech-badge">🧠 Machine Learning</div>
-            </div>
-          </div>
+    <div className="features-section-redesigned">
+      {/* SECTION 1: Research Thrusts Grid */}
+      <section className="research-thrusts-section">
+        <div className="section-header-compact">
+          <span className="section-kicker">Core Capabilities</span>
+          <h3 className="section-headline">
+            {t('features.title', 'Key Research Focus Areas')}
+          </h3>
+          <p className="section-lead">
+            {t(
+              'features.subtitle',
+              'Advancing robotics through nature-inspired design, intelligent bio-signal control, and adaptive autonomy.'
+            )}
+          </p>
         </div>
-        <div className="thumbnail-grid">
-          {roboticsImages.slice(1).map((image, idx) => (
-            <div key={idx} className="thumbnail-item">
-              <img src={image} alt={`Robotics ${idx + 2}`} />
-              <div className="thumbnail-overlay"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
 
-const SkeletonTwo = () => {
-  const visionImages = [
-    "/assets/second1.png",
-    "/assets/first2.png",
-    "/assets/first3.png",
-    "/assets/first5.png",
-    "/assets/BioinspiresTSA.png",
-    "/assets/second1.png"
-  ];
-
-  const aiLabels = ["Computer Vision", "Deep Learning", "Neural Networks", "Object Detection", "Image Processing", "AI Analysis"];
-
-  return (
-    <div className="skeleton-two">
-      <div className="vision-showcase">
-        {visionImages.map((image, idx) => (
-          <div
-            key={`vision-${idx}`}
-            className="vision-item"
-            style={{
-              animationDelay: `${idx * 0.2}s`
-            }}
-          >
-            <div className="vision-image">
-              <img src={image} alt={`AI Vision ${idx + 1}`} />
-              <div className="vision-label">
-                <span className="label-text">{aiLabels[idx]}</span>
+        <div className="thrusts-grid">
+          {RESEARCH_THRUSTS.map((thrust, idx) => (
+            <div key={thrust.id} className="thrust-card">
+              <div
+                className="thrust-image-container"
+                onClick={() => setLightboxIndex(idx)}
+                title="Click to expand full image"
+              >
+                <img
+                  src={thrust.image}
+                  alt={thrust.title}
+                  className="thrust-image"
+                  onError={(e) => {
+                    if (e.target.src !== thrust.fallbackImg) {
+                      e.target.src = thrust.fallbackImg;
+                    }
+                  }}
+                  loading="lazy"
+                />
+                <div className="thrust-image-overlay">
+                  <div className="expand-badge">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="#ffffff" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <polyline points="9 21 3 21 3 15"></polyline>
+                      <line x1="21" y1="3" x2="14" y2="10"></line>
+                      <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                    <span>Click to Enlarge</span>
+                  </div>
+                </div>
+                <div className="thrust-category-tag">{thrust.category}</div>
               </div>
-              <div className="processing-overlay">
-                <div className="scanning-line"></div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
 
-const SkeletonThree = () => {
-  const publications = [
-    {
-      title: "Advanced Neural Networks in Robotics",
-      journal: "Nature Robotics",
-      year: "2024",
-      status: "Published",
-      citations: "127"
-    },
-    {
-      title: "Bio-Inspired Locomotion Systems",
-      journal: "IEEE Transactions",
-      year: "2024", 
-      status: "In Review",
-      citations: "89"
-    },
-    {
-      title: "Autonomous Decision Making",
-      journal: "Science Robotics",
-      year: "2023",
-      status: "Published",
-      citations: "245"
-    }
-  ];
+              <div className="thrust-body">
+                <h4 className="thrust-title">{thrust.title}</h4>
+                <p className="thrust-desc">{thrust.description}</p>
 
-  return (
-    <div className="skeleton-three">
-    </div>
-  );
-};
-
-const SkeletonFour = () => {
-  const collaborations = [
-    { name: "Sogang", country: "South Korea", x: 32, y: 30 },
-    { name: "Khalifa University", country: "UAE", x: 55, y: 30 },
-    { name: "IIT Delhi", country: "India", x: 50, y: 15 },
-    { name: "IIT Gandhinagar", country: "India", x: 65, y: 28 },
-    { name: "University of Siena", country: "Italy", x: 40, y: 35 },
-    { name: "KAIST", country: "South Korea", x: 52, y: 22 }
-  ];
-
-  return (
-    <div className="skeleton-four">
-      <div className="globe-container">
-        <Globe collaborations={collaborations} />
-        <div className="collaboration-markers">
-          {collaborations.map((collab, idx) => (
-            <div
-              key={idx}
-              className="marker"
-              style={{
-                left: `${collab.x}%`,
-                top: `${collab.y}%`,
-                animationDelay: `${idx * 0.5}s`
-              }}
-            >
-              <div className="marker-pulse"></div>
-              <div className="marker-tooltip">
-                <div className="tooltip-title">{collab.name}</div>
-                <div className="tooltip-country">{collab.country}</div>
+                <div className="thrust-highlights">
+                  {thrust.highlights.map((h, i) => (
+                    <span key={i} className="highlight-pill">
+                      <span className="pill-dot"></span>
+                      {h}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
         </div>
-        <div className="connection-lines">
-          {collaborations.map((_, idx) => (
-            <div
-              key={idx}
-              className={`connection-line line-${idx + 1}`}
-              style={{ animationDelay: `${idx * 0.3}s` }}
-            ></div>
+
+        <div className="thrusts-action-bar">
+          <Link to="/research" className="btn-primary-glow">
+            Explore All Research Verticals
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="#ffffff" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </Link>
+        </div>
+      </section>
+
+      {/* SECTION 2: Academic & Industry Collaborations Ribbon */}
+      <section className="collaborations-ribbon-section">
+        <div className="collab-header">
+          <h4 className="collab-title">Collaborations & Research Partners</h4>
+          <p className="collab-subtitle">Partnering with leading global institutions and medical technology innovators</p>
+        </div>
+
+        <div className="collab-logos-grid">
+          {COLLABORATORS.map((collab, index) => (
+            <div key={index} className="collab-card">
+              <div className="collab-logo-wrapper">
+                <img
+                  src={collab.logo}
+                  alt={collab.name}
+                  className="collab-logo"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+              <div className="collab-info">
+                <div className="collab-partner-name">{collab.name}</div>
+                <div className="collab-partner-type">{collab.type}</div>
+              </div>
+            </div>
           ))}
         </div>
-      </div>
+      </section>
+
+      {/* Interactive Lightbox Modal */}
+      {lightboxIndex !== null && (
+        <ImageLightbox
+          isOpen={lightboxIndex !== null}
+          image={RESEARCH_THRUSTS[lightboxIndex]}
+          onClose={() => setLightboxIndex(null)}
+          onPrev={() => setLightboxIndex((prev) => (prev - 1 + total) % total)}
+          onNext={() => setLightboxIndex((prev) => (prev + 1) % total)}
+          hasPrev={total > 1}
+          hasNext={total > 1}
+          currentIndex={lightboxIndex}
+          totalImages={total}
+        />
+      )}
     </div>
-  );
-};
-
-const Globe = ({ collaborations }) => {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    let animationId;
-    let rotation = 0;
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw globe background
-      const gradient = ctx.createRadialGradient(150, 150, 0, 150, 150, 100);
-      gradient.addColorStop(0, 'rgba(79, 172, 254, 0.1)');
-      gradient.addColorStop(1, 'rgba(79, 172, 254, 0.3)');
-      
-      ctx.beginPath();
-      ctx.arc(150, 150, 100, 0, 2 * Math.PI);
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      ctx.strokeStyle = '#4facfe';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      
-      // Draw longitude lines
-      for (let i = 0; i < 8; i++) {
-        const angle = (i * Math.PI) / 4;
-        const radiusX = Math.abs(Math.cos(angle) * 100);
-        ctx.beginPath();
-        ctx.ellipse(150, 150, radiusX, 100, angle + rotation, 0, 2 * Math.PI);
-        ctx.strokeStyle = 'rgba(79, 172, 254, 0.3)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-      
-      // Draw latitude lines (fixed calculation)
-      for (let i = 1; i < 4; i++) {
-        const y = 75 + (i * 25); // Adjusted for better distribution
-        const distance = Math.abs(y - 150);
-        if (distance < 100) { // Only draw if within globe bounds
-          const radiusX = Math.sqrt(10000 - (distance * distance));
-          const radiusY = radiusX * 0.2; // Flatter ellipse for latitude effect
-          
-          if (radiusX > 0 && radiusY > 0) { // Ensure positive radius
-            ctx.beginPath();
-            ctx.ellipse(150, y, radiusX, radiusY, 0, 0, 2 * Math.PI);
-            ctx.strokeStyle = 'rgba(79, 172, 254, 0.2)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      }
-      
-      // Draw connection points
-      const connectionPoints = [
-        { x: 120, y: 120 },
-        { x: 180, y: 130 },
-        { x: 160, y: 180 },
-        { x: 130, y: 170 }
-      ];
-      
-      connectionPoints.forEach((point, idx) => {
-        const pulse = Math.sin(Date.now() * 0.003 + idx) * 0.5 + 0.5;
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, 3 + pulse * 2, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(0, 255, 255, ${0.7 + pulse * 0.3})`;
-        ctx.fill();
-        ctx.strokeStyle = `rgba(79, 172, 254, ${0.8 + pulse * 0.2})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      });
-      
-      rotation += 0.005;
-      animationId = requestAnimationFrame(animate);
-    };
-
-    // Add error handling
-    try {
-      animate();
-    } catch (error) {
-      console.error('Globe animation error:', error);
-    }
-
-    return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      width={300}
-      height={300}
-      className="globe-canvas"
-    />
   );
 };
 

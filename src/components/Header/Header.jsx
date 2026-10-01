@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_ITEMS } from '../../utils/constants';
 import { mobileMenuOpen, mobileMenuClose } from '../../utils/gsapAnimations';
-import hamburgerIcon from '../../assets/align-left-svgrepo-com.svg';
-import closeIcon from '../../assets/design-svgrepo-com.svg';
 import './Header.css';
 
 const Header = () => {
@@ -42,7 +40,6 @@ const Header = () => {
 
     const renderMobileLinks = () => {
         return NAV_ITEMS
-            // Hide the page the user is currently on from the sidebar.
             .filter(item => !isCurrentPage(item))
             .map(item => (
                 <Link
@@ -61,24 +58,33 @@ const Header = () => {
     return (
         <>
             <button
+                type="button"
                 className={`mobile-menu-toggle ${isMobileMenuOpen ? 'hidden' : ''}`}
                 onClick={toggleMobileMenu}
                 aria-expanded={isMobileMenuOpen}
-                aria-label="Open menu"
+                aria-label="Open navigation menu"
                 aria-controls="site-sidebar"
             >
-                <img className="menu-icon" src={hamburgerIcon} alt="" aria-hidden="true" />
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="#0f172a" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
             </button>
 
             <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu} />
             <div className="mobile-nav" id="site-sidebar" aria-hidden={!isMobileMenuOpen}>
                 <div className="mobile-nav-content">
                     <button
+                        type="button"
                         className="mobile-nav-close"
                         onClick={toggleMobileMenu}
-                        aria-label="Close menu"
+                        aria-label="Close navigation menu"
                     >
-                        <img className="close-icon" src={closeIcon} alt="" aria-hidden="true" />
+                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="#0f172a" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
                     </button>
                     {renderMobileLinks()}
                 </div>

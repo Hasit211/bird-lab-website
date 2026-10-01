@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import googleScholarService from '../../services/scholarPublications';
@@ -7,11 +8,13 @@ import './Publications.css';
 gsap.registerPlugin(ScrollTrigger);
 
 const Publications = () => {
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
   const [publications, setPublications] = useState([]);
   const [filteredPubs, setFilteredPubs] = useState([]);
   const [selectedYear, setSelectedYear] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalCitations: 0,

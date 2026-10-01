@@ -28,6 +28,6 @@ export const TABS = {
 };
 
 // How long a fetched tab is considered "fresh" in localStorage before the site
-// revalidates it in the background. Keep this short enough that edits show up
-// quickly, long enough to avoid refetching on every page navigation.
-export const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+// revalidates it in the background. Kept to 30 seconds so edits in Google Sheets
+// show up almost immediately without excessive network traffic.
+export const CACHE_TTL_MS = 30 * 1000; // 30 seconds

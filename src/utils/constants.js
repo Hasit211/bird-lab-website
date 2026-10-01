@@ -62,27 +62,27 @@ export const RESEARCH_AREAS = [
   {
     title: "Bio-inspired Mechanisms",
     description: "Bio-inspired mechanisms that draw principles from nature to design efficient, adaptive, and intelligent systems. By studying the movement, structure, and functionality of living organisms, we aim to create innovative robotic and mechanical designs that mimic natural efficiency and resilience. Our work integrates biology, robotics, and engineering to develop next-generation systems for real-world applications.",
-    icon: "🦋"
+    icon: "BIO"
   },
   {
     title: "Wearable Robotics (Bio-signal-controlled Robotics)",
     description: "Wearable Robotics, focusing on bio-signal-controlled systems that respond to human physiological signals for intuitive interaction. This includes the development of soft actuators, exoskeletons, and exosuits designed to assist and rehabilitate individuals with mobility challenges. By integrating robotics with human bio-signals, we aim to create lightweight, comfortable, and responsive wearable systems that enhance strength, restore movement, and support physical rehabilitation.",
-    icon: "🤝"
+    icon: "WR"
   },
   {
     title: "Reconfigurable and Growing Robotics",
     description: "Reconfigurable and Growing Robotics, exploring systems that can adapt, transform, and extend their structures to meet dynamic tasks. This includes research on metamorphic drone arms, aerial manipulation, and soft robotics, enabling robots to change their shape or functionality in real time. By combining flexibility, modularity, and intelligent control, we aim to develop robots capable of operating in complex and unpredictable environments for applications in exploration, rescue, and adaptive manufacturing.",
-    icon: "🔄"
+    icon: "RGR"
   },
   {
     title: "Tele-Robotics and Haptics",
     description: "Tele-Robotics and Haptics is an emerging field that enables humans to remotely control robots while experiencing realistic touch sensations through advanced technologies such as bi-manual exoskeletons, haptic feedback devices, and haptic displays. It bridges the gap between human perception and robotic control, allowing users to interact with distant or virtual environments as if they were physically present, achieving precise and intuitive manipulation. Our aim is to advance this field through innovations that enhance robot-assisted surgery, space exploration, hazardous environment handling, rehabilitation, and immersive virtual reality systems. We strive to develop intelligent, compact, and responsive tele-robotic and haptic systems that foster seamless human–robot collaboration and transform the way humans interact with machines and digital environments.",
-    icon: "🎮"
+    icon: "TR"
   },
   {
     title: "Applied AI in Robotics",
     description: "Applied AI in Robotics focuses on integrating artificial intelligence algorithms to enhance robotic perception, decision-making, and autonomy. In our lab, we aim to harness AI to create intelligent robotic systems capable of learning from their environment, adapting to new challenges, and making real-time decisions with minimal human intervention, solving real-life problems such as automation in healthcare, disaster response, precision agriculture, and industrial inspection. By combining machine learning, computer vision, and adaptive control, we strive to develop autonomous, efficient, and reliable robots that can operate effectively in complex and unstructured environments.",
-    icon: "🧠"
+    icon: "AI"
   }
 ];
 

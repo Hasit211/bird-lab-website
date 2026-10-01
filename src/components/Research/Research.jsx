@@ -58,9 +58,6 @@ const Research = () => {
               style={{ cursor: 'pointer' }}
             >
               <div className="card-header">
-                <div className="research-icon">
-                  <span className="icon-emoji">{area.icon || '🤖'}</span>
-                </div>
                 <div className="header-text-container">
                   {area.vertical && <span className="vertical-badge">{area.vertical}</span>}
                   <h3 className="research-title">{area.title}</h3>
@@ -78,11 +75,14 @@ const Research = () => {
                   <div className="projects-container">
                     <span className="projects-label">Projects & Focus Areas:</span>
                     <div className="projects-pills">
-                      {area.projects.map((proj, pIdx) => (
-                        <span key={pIdx} className="project-pill">
-                          {proj}
-                        </span>
-                      ))}
+                      {area.projects.map((proj, pIdx) => {
+                        const name = typeof proj === 'object' && proj !== null ? (proj.name || proj.title || '') : String(proj);
+                        return (
+                          <span key={pIdx} className="project-pill">
+                            {name}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

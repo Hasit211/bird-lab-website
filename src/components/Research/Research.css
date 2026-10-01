@@ -113,8 +113,12 @@
   transform: scale(1.1) rotate(5deg);
 }
 
-.icon-emoji {
-  font-size: 1.8rem;
+.icon-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  text-transform: uppercase;
 }
 
 .research-title {
@@ -564,23 +568,32 @@
   }
 }
 
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
 /* Research Verticals & Projects Styling */
 .header-text-container {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  width: 100%;
 }
 
 .vertical-badge {
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: #4f46e5;
-  background: rgba(79, 70, 229, 0.08);
-  padding: 0.2rem 0.6rem;
-  border-radius: 12px;
+  background: rgba(79, 70, 229, 0.1);
+  border: 1px solid rgba(79, 70, 229, 0.25);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
   width: fit-content;
+  margin-bottom: 0.35rem;
 }
 
 .projects-container {

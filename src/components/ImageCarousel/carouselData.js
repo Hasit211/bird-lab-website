@@ -1,36 +1,36 @@
-// Banner images for the carousel
-// You can replace these with actual BIRD Lab research images
+// High-resolution robotics laboratory images for the homepage carousel
+// Pure research and campus visuals — zero advertisement posters
 
 const carouselImages = [
   {
-    src: 'https://iitj.ac.in/PageImages/Gallery/12-2025/Slider-639002072672577194.png',
-    alt: 'Bio-Inspired Robotics Research',
-    caption: 'Advanced Bio-Inspired Robotics Research',
-    description: 'Pioneering nature-inspired robotic systems and mechanisms'
+    src: '/assets/Picture1.png',
+    alt: 'Bio-Inspired Robotic Mechanisms',
+    caption: 'Bio-Inspired Mechanisms & Robotic Manipulation',
+    description: 'Pioneering artificial muscle actuators, biomimetic grippers, and compliant robotic structures'
   },
   {
-    src: 'https://iitj.ac.in/PageImages/Gallery/12-2025/Slider-639002069380230127.png',
-    alt: 'Collaborative Robotics',
-    caption: 'Collaborative Robotics Systems',
-    description: 'Developing intelligent multi-robot collaboration frameworks'
+    src: '/assets/Picture3.png',
+    alt: 'Wearable Assistive Robotics',
+    caption: 'Wearable Robotics & Assistive Exoskeletons',
+    description: 'Designing neuromuscular assistive devices and intelligent rehabilitation exosuits'
   },
   {
-    src: 'https://iitj.ac.in/PageImages/Gallery/12-2025/Slider-639002065678558175.png',
-    alt: 'Wearable Robotics',
-    caption: 'Wearable Robotics Innovation',
-    description: 'Creating next-generation wearable robotic devices'
+    src: '/assets/pic1.jpg',
+    alt: 'Autonomous Robotic Systems',
+    caption: 'Robotics Perception & Control',
+    description: 'Advanced mobile manipulation, real-time vision guidance, and autonomous navigation'
   },
   {
-    src: 'https://iitj.ac.in/PageImages/Gallery/10-2025/Slider-638974414137745773.png',
-    alt: 'Research Excellence',
-    caption: 'Research Excellence at BIRD Lab',
-    description: 'Leading the way in bio-inspired design and robotics'
+    src: '/assets/wing.png',
+    alt: 'Reconfigurable & Aerial Robotics',
+    caption: 'Reconfigurable & Flapping Wing Robotics',
+    description: 'Developing bio-inspired flight mechanisms and adaptive metamorphic aerial systems'
   },
   {
-    src: 'https://iitj.ac.in/PageImages/Gallery/10-2025/Slider-638974201508268880.jpg',
-    alt: 'Innovation and Discovery',
-    caption: 'Innovation and Discovery',
-    description: 'Transforming ideas into breakthrough technologies'
+    src: '/facilities/bamboo-labs-x1e.jpg',
+    alt: 'Advanced Fabrication & Testing',
+    caption: 'State-of-the-Art Prototyping Infrastructure',
+    description: 'Precision multi-material 3D printing and advanced mechatronic testing facilities'
   }
 ];
 

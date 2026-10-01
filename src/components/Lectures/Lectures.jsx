@@ -118,14 +118,15 @@ const Lectures = () => {
     }
   }, [filteredCourses]);
 
+  // Returns a short department abbreviation for the badge — no emojis.
   const getDepartmentIcon = (department) => {
-    const icons = {
-      'AIDE': '🤖',
-      'IDRP-RMS': '🔬',
-      'MedTech': '⚕️',
-      'ME': '⚙️'
+    const map = {
+      'AIDE':    'AR/VR',
+      'IDRP-RMS':'RMS',
+      'MedTech': 'MED',
+      'ME':      'MECH',
     };
-    return icons[department] || '📚';
+    return map[department] ?? 'DEPT';
   };
 
   const getTypeColor = (type) => {
