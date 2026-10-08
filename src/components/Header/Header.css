@@ -51,6 +51,57 @@
     }
 
 /* ------------------------------------------------------------------ */
+/* Floating IIT Logo (Constant top-right on every page)               */
+/* ------------------------------------------------------------------ */
+.top-right-iit-logo-link {
+    position: fixed;
+    top: 18px;
+    right: 20px;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 14px;
+    padding: 6px 12px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+}
+
+.top-right-iit-logo-link:hover {
+    background: #ffffff;
+    border-color: rgba(79, 70, 229, 0.35);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.16);
+    transform: translateY(-2px);
+}
+
+.top-right-iit-logo {
+    height: 40px;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+    .top-right-iit-logo-link {
+        top: 14px;
+        right: 14px;
+        padding: 4px 8px;
+        border-radius: 10px;
+    }
+    .top-right-iit-logo {
+        height: 32px;
+        max-width: 100px;
+    }
+}
+
+/* ------------------------------------------------------------------ */
 /* Full-screen dimming overlay behind the sidebar                      */
 /* ------------------------------------------------------------------ */
 .mobile-nav-overlay {

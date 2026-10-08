@@ -29,10 +29,6 @@
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #0891b2 0%, #4f46e5 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .section-subtitle {
@@ -310,7 +306,7 @@
   content: '';
   width: 4px;
   height: 20px;
-  background: linear-gradient(135deg, #0891b2 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   border-radius: 2px;
 }
 
@@ -366,7 +362,7 @@
   justify-content: center;
   gap: 10px;
   padding: 15px 30px;
-  background: linear-gradient(135deg, #0891b2 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
   border: none;
   border-radius: 25px;
   color: #ffffff;
@@ -379,7 +375,7 @@
 }
 
 .apply-btn:hover {
-  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
+  background: linear-gradient(135deg, #0891b2 0%, #4f46e5 100%);
   transform: translateY(-3px);
   box-shadow: 0 15px 30px rgba(8, 145, 178, 0.25);
 }

@@ -57,6 +57,7 @@ const Header = () => {
 
     return (
         <>
+            {/* Top-Left Floating Hamburger Menu Toggle */}
             <button
                 type="button"
                 className={`mobile-menu-toggle ${isMobileMenuOpen ? 'hidden' : ''}`}
@@ -72,6 +73,23 @@ const Header = () => {
                 </svg>
             </button>
 
+            {/* Top-Right Constant IIT Logo */}
+            <a
+                href="https://iitj.ac.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="top-right-iit-logo-link"
+                title="Indian Institute of Technology Jodhpur"
+                aria-label="IIT Jodhpur"
+            >
+                <img
+                    src="/iit_logo.jpeg"
+                    alt="IIT Jodhpur Logo"
+                    className="top-right-iit-logo"
+                />
+            </a>
+
+            {/* Sidebar Navigation */}
             <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu} />
             <div className="mobile-nav" id="site-sidebar" aria-hidden={!isMobileMenuOpen}>
                 <div className="mobile-nav-content">

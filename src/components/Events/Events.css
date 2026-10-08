@@ -33,10 +33,6 @@
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #0f172a 0%, #334155 50%, #4f46e5 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .events .section-subtitle {

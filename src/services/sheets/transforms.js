@@ -84,8 +84,6 @@ export function transformEvents(rows) {
       description: cell(row, at('Description')),
       image: resolveImageUrl(cell(row, at('Image'))),
       category: cell(row, at('Category')) || 'Event',
-      // Upcoming/Past is derived from Date at render time (see utils/eventStatus).
-      // A non-empty Status here is an optional manual override that wins over the date.
       status: cell(row, at('Status')),
     };
   });
@@ -126,26 +124,64 @@ function isUrlString(s) {
   );
 }
 
-/** Collaborations tab: Name, Category, Image, (optional) URL OR freeform National/International. */
+/** Collaborations tab: Category, Institute / Industry, Photo Link, Description, Website Link */
 export function transformCollaborations(rows) {
   if (!rows || rows.length === 0) return [];
-  const at = headerIndex(rows[0]);
-  const nameIdx = at('Name') !== -1 ? at('Name') : at('Title');
 
-  if (nameIdx !== -1 && at('Category') !== -1) {
-    return rows.slice(1).map((row) => {
-      const title = cell(row, nameIdx);
-      if (!title || isUrlString(title)) return null;
-      return {
-        title,
-        category: cell(row, at('Category')) || 'Collaboration',
-        src: resolveCollaborationLogo(title, cell(row, at('Image'))),
-        url: cell(row, at('URL')),
-      };
-    }).filter(Boolean);
+  const at = headerIndex(rows[0]);
+  let titleIdx = at('Institute / Industry') !== -1
+    ? at('Institute / Industry')
+    : (at('Institute or Industry') !== -1
+      ? at('Institute or Industry')
+      : (at('Institute') !== -1
+        ? at('Institute')
+        : (at('Industry') !== -1
+          ? at('Industry')
+          : (at('Partner') !== -1
+            ? at('Partner')
+            : (at('Name') !== -1 ? at('Name') : at('Title'))))));
+
+  let catIdx = at('Category') !== -1 ? at('Category') : (at('Type') !== -1 ? at('Type') : at('Region'));
+  let photoIdx = at('Photo Link') !== -1 ? at('Photo Link') : (at('Photo') !== -1 ? at('Photo') : (at('Image') !== -1 ? at('Image') : at('Logo')));
+  let descIdx = at('Description') !== -1 ? at('Description') : (at('Details') !== -1 ? at('Details') : at('Overview'));
+  let urlIdx = at('Website Link') !== -1 ? at('Website Link') : (at('Website') !== -1 ? at('Website') : (at('Link') !== -1 ? at('Link') : at('URL')));
+
+  // Positional fallback if row 0 starts with 'Category'
+  if (titleIdx === -1 && rows[0] && cell(rows[0], 0).toLowerCase() === 'category') {
+    catIdx = 0;
+    titleIdx = 1;
+    photoIdx = 2;
+    descIdx = 3;
+    urlIdx = 4;
   }
 
-  // Freeform National / International layout (as in user sheet)
+  // Standard Header-Based / Positional Tabular Structure (Recommended)
+  if (titleIdx !== -1) {
+    const list = [];
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const title = cell(row, titleIdx);
+      if (!title || isUrlString(title)) continue;
+      const lower = title.toLowerCase();
+      if (lower === 'institute / industry' || lower === 'institute or industry' || lower === 'institute' || lower === 'industry') continue;
+
+      const category = cell(row, catIdx) || 'National Academia';
+      const photoLink = cell(row, photoIdx);
+      const description = cell(row, descIdx);
+      const url = cell(row, urlIdx);
+
+      list.push({
+        title,
+        category,
+        src: resolveCollaborationLogo(title, photoLink),
+        url: isUrlString(url) ? url : '',
+        description: description || `Active research collaboration between ${title} and NextGen BIRD Robotics Lab at IIT Jodhpur focusing on bio-inspired mechanisms, wearable robotics, and intelligent autonomous systems.`,
+      });
+    }
+    if (list.length > 0) return list;
+  }
+
+  // Fallback: Legacy grouped National / International layout
   const result = [];
   let currentRegion = 'National';
   let currentType = 'Academia';
@@ -155,6 +191,8 @@ export function transformCollaborations(rows) {
     const col0 = cell(row, 0);
     const col1 = cell(row, 1);
     const col2 = cell(row, 2);
+    const col3 = cell(row, 3);
+    const col4 = cell(row, 4);
 
     if (col0.toLowerCase().includes('national')) currentRegion = 'National';
     if (col0.toLowerCase().includes('international')) currentRegion = 'International';
@@ -178,13 +216,24 @@ export function transformCollaborations(rows) {
       continue;
     }
 
-    // Find any image URL in subsequent columns of the same row (e.g. column 3, 4)
-    let extraImageUrl = '';
-    for (let c = 3; c < row.length; c++) {
-      const cellVal = cell(row, c);
-      if (isUrlString(cellVal)) {
-        extraImageUrl = cellVal;
-        break;
+    let academiaDesc = '';
+    let academiaImg = '';
+    let industryDesc = '';
+    let industryImg = '';
+
+    if (col3) {
+      if (isUrlString(col3)) {
+        academiaImg = col3;
+      } else if (!col3.toLowerCase().includes('detail') && !col3.toLowerCase().includes('description') && !col3.toLowerCase().includes('academia')) {
+        academiaDesc = col3;
+      }
+    }
+
+    if (col4) {
+      if (isUrlString(col4)) {
+        industryImg = col4;
+      } else if (!col4.toLowerCase().includes('detail') && !col4.toLowerCase().includes('description') && !col4.toLowerCase().includes('industry')) {
+        industryDesc = col4;
       }
     }
 
@@ -192,8 +241,9 @@ export function transformCollaborations(rows) {
       result.push({
         title: col1,
         category: `${currentRegion} ${currentType}`,
-        src: resolveCollaborationLogo(col1, extraImageUrl),
+        src: resolveCollaborationLogo(col1, academiaImg),
         url: '',
+        description: academiaDesc || `Active research collaboration between ${col1} and NextGen BIRD Robotics Lab at IIT Jodhpur focusing on bio-inspired mechanisms, wearable robotics, and intelligent autonomous systems.`,
       });
     }
 
@@ -201,13 +251,13 @@ export function transformCollaborations(rows) {
       result.push({
         title: col2,
         category: `${currentRegion} Industry`,
-        src: resolveCollaborationLogo(col2, extraImageUrl),
+        src: resolveCollaborationLogo(col2, industryImg),
         url: '',
+        description: industryDesc || `Joint industry collaboration with ${col2} focusing on translational robotics, innovative prosthetics, and applied biomechanical technologies.`,
       });
     }
   }
 
-  // Final safety filter: remove any remaining entry where title is a raw URL
   return result.filter(item => !isUrlString(item.title));
 }
 

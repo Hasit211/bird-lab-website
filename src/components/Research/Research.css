@@ -31,10 +31,6 @@
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .section-subtitle {
@@ -74,7 +70,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #4f46e5, #0891b2);
+  background: #0f172a;
   transform: scaleX(0);
   transition: transform 0.4s ease;
   border-radius: 20px 20px 0 0;
@@ -340,11 +336,11 @@
 }
 
 .learn-more-btn:hover {
-  background: linear-gradient(135deg, #4f46e5 0%, #0891b2 100%);
+  background: #0f172a;
   color: white;
-  border-color: #4f46e5;
+  border-color: #0f172a;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
 }
 
 .learn-more-btn svg {
@@ -373,7 +369,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #4f46e5, #0891b2, #4f46e5);
+  background: #0f172a;
 }
 
 .highlight-content {
@@ -388,10 +384,6 @@
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #4f46e5, #0891b2);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .highlight-text p {
@@ -654,10 +646,10 @@
 }
 
 .explore-btn:hover {
-  background: linear-gradient(135deg, #4f46e5, #0891b2);
+  background: #0f172a;
   color: #ffffff;
   border-color: transparent;
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25);
   transform: translateY(-2px);
 }
 

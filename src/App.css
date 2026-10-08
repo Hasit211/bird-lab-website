@@ -1,9 +1,11 @@
 /* Global Styles */
 :root {
   /* Color Palette */
-  --primary: #4f46e5;
-  --secondary: #0891b2;
-  --accent: #7c3aed;
+  --primary: #0f172a;
+  --secondary: #1e3a8a;
+  --accent: #1e40af;
+  --gradient-main: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  --gradient-bar: linear-gradient(90deg, #0f172a 0%, #1e3a8a 100%);
   
   /* Backgrounds */
   --background-dark: #ffffff;
@@ -161,10 +163,7 @@ body {
   font-weight: 800;
   letter-spacing: -0.02em;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #0f172a 0%, #4f46e5 50%, #0891b2 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #0f172a;
   text-align: center;
 }
 
@@ -256,12 +255,9 @@ body {
   border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
-/* Gradient Text */
+/* Solid Text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #0f172a;
 }
 
 /* Loading Animation */
