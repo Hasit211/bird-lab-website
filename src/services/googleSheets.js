@@ -4,9 +4,9 @@
 // so no API key ships in the bundle. Photos come from the sheet's `Photo`
 // column (plain image URL or Google Drive share link); if that's blank we fall
 // back to a bundled /assets/<name>.png, and finally to a neutral placeholder.
-import { FALLBACK_TEAM_DATA } from '../utils/fallbackData';
-import { fetchTabRows, resolveImageUrl, PLACEHOLDER_IMG } from './sheets/client';
-import { TABS } from '../config/sheets';
+import { FALLBACK_TEAM_DATA } from '../utils/fallbackData.js';
+import { fetchTabRows, resolveImageUrl, PLACEHOLDER_IMG } from './sheets/client.js';
+import { TABS } from '../config/sheets.js';
 
 const emptyTeam = () => ({
   professor: [],
@@ -86,7 +86,7 @@ export const transformSheetData = (rawData) => {
 
   // Helper function to safely get cell value
   const getCellValue = (row, index) => {
-    return index >= 0 && index < row.length ? row[index] || '' : '';
+    return index >= 0 && index < row.length ? String(row[index] || '').trim() : '';
   };
 
   // Helper function to parse research interests

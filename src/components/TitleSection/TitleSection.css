@@ -6,8 +6,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 4rem 1.5rem;
+  min-height: 72vh;
+  padding: 3rem 1.5rem 2rem;
   /* Light blue fade at the top mixing smoothly into pure white at the bottom. */
   background: linear-gradient(180deg, #bae6fd 0%, #f0f9ff 50%, #ffffff 100%);
   overflow: hidden;
@@ -15,11 +15,6 @@
 
 /* ------------------------------------------------------------------ */
 /* TYPOGRAPHY TUNING                                                   */
-/*                                                                     */
-/* font-size : clamp() keeps the word readable on every viewport.      */
-/*             Adjust the middle value for the overall scale.          */
-/* gradient  : the whole word fades from light blue into green.        */
-/*             Edit the stops below to restyle the fade.               */
 /* ------------------------------------------------------------------ */
 .title-headline {
   display: inline-block;
@@ -28,20 +23,16 @@
   z-index: 1;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-weight: 900;
-  font-size: clamp(3.25rem, 11vw, 9rem);
-  line-height: 1;
-  margin-bottom: 0;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
+  font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.01em;
+  text-align: center;
+  max-width: 1050px;
   cursor: default;
   user-select: none;
 }
 
-/* The gradient lives on each letter span (NOT the parent) so it survives
-   GSAP transforms on the letters - clipping on the parent breaks in Chrome
-   once children are transformed. Each letter renders a slice of an 800%-wide
-   gradient; `--pos` (set inline from JSX) slides the slice so the whole word
-   reads as one continuous light-blue -> green fade. */
 .title-headline .letter {
   display: inline-block;
   will-change: transform, opacity;
@@ -50,30 +41,33 @@
 
 /* ------------------------------------------------------------------ */
 /* SUBHEADING                                                          */
-/*                                                                     */
-/* Same font + centring as the heading, black, and 20% of the title's  */
-/* clamp() size (3.25rem -> 0.65rem, 11vw -> 2.2vw, 9rem -> 1.8rem).   */
-/* Hidden until GSAP reveals it after the title animation completes.   */
 /* ------------------------------------------------------------------ */
 .title-subheading {
   position: relative;
   z-index: 1;
-  margin-top: 0;
+  margin-top: 0.5rem;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-weight: 600;
-  font-size: clamp(0.65rem, 2.2vw, 1.8rem);
-  line-height: 1.4;
-  letter-spacing: 0.08em;
+  font-size: clamp(0.85rem, 1.35vw, 1.25rem);
+  line-height: 1.45;
+  letter-spacing: 0.04em;
   text-align: center;
-  color: #000000;
-  max-width: 90%;
+  color: #334155;
+  max-width: 820px;
   opacity: 0; /* hidden until shown by GSAP */
 }
 
-/* Small screens: prevent the thin clamp() from overflowing. */
-@media (max-width: 380px) {
+/* Small screens */
+@media (max-width: 640px) {
+  .title-section {
+    min-height: 60vh;
+    padding: 2.5rem 1rem 1.5rem;
+  }
   .title-headline {
-    font-size: 3.25rem;
+    font-size: 2.1rem;
     letter-spacing: 0rem;
+  }
+  .title-subheading {
+    font-size: 0.85rem;
   }
 }

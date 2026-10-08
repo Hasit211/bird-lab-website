@@ -1,43 +1,43 @@
 .features-section-redesigned {
   width: 100%;
-  margin-top: 3.5rem;
+  margin-top: 2rem;
 }
 
 /* Header */
 .section-header-compact {
   text-align: center;
   max-width: 780px;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto 2rem auto;
   padding: 0 1rem;
 }
 
 .section-kicker {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #4f46e5;
   background: rgba(79, 70, 229, 0.08);
-  padding: 0.35rem 0.9rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   border: 1px solid rgba(79, 70, 229, 0.2);
 }
 
 .section-headline {
-  font-size: 2.25rem;
+  font-size: 1.85rem;
   font-weight: 800;
   color: #0f172a;
   letter-spacing: -0.02em;
-  margin: 0 0 0.85rem 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.25;
 }
 
 .section-lead {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: #64748b;
-  line-height: 1.6;
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -45,15 +45,15 @@
 .thrusts-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .thrust-card {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
   overflow: hidden;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
@@ -61,16 +61,16 @@
 }
 
 .thrust-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-5px);
   border-color: rgba(79, 70, 229, 0.35);
-  box-shadow: 0 20px 35px -8px rgba(79, 70, 229, 0.12);
+  box-shadow: 0 16px 30px -8px rgba(79, 70, 229, 0.12);
 }
 
 /* Thrust Image Container */
 .thrust-image-container {
   position: relative;
   width: 100%;
-  height: 260px;
+  height: 200px;
   overflow: hidden;
   background: #0b0f19;
   cursor: pointer;
@@ -113,9 +113,9 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: #ffffff;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 9999px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -129,61 +129,61 @@
 
 .thrust-category-tag {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: 0.75rem;
+  left: 0.75rem;
   background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #ffffff;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 0.35rem 0.75rem;
-  border-radius: 8px;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
   letter-spacing: 0.02em;
 }
 
 /* Thrust Card Body */
 .thrust-body {
-  padding: 1.75rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 .thrust-title {
-  font-size: 1.35rem;
+  font-size: 1.18rem;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.35;
 }
 
 .thrust-desc {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: #475569;
-  line-height: 1.6;
-  margin: 0 0 1.25rem 0;
+  line-height: 1.55;
+  margin: 0 0 1rem 0;
   flex: 1;
 }
 
 .thrust-highlights {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-top: 1rem;
+  gap: 0.4rem;
+  padding-top: 0.75rem;
   border-top: 1px solid rgba(241, 245, 249, 1);
 }
 
 .highlight-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
+  gap: 0.35rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #334155;
   background: #f8fafc;
-  padding: 0.35rem 0.75rem;
+  padding: 0.25rem 0.65rem;
   border-radius: 9999px;
   border: 1px solid #e2e8f0;
 }
@@ -225,12 +225,12 @@
 
 /* SECTION 2: Collaborations Ribbon */
 .collaborations-ribbon-section {
-  margin-top: 4.5rem;
-  padding: 2.5rem 2rem;
+  margin-top: 2.75rem;
+  padding: 1.75rem 1.5rem;
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
 }
 
 .collab-header {

@@ -449,6 +449,32 @@ export function transformFacilities(rows) {
   });
 }
 
+/** Carousel / Slideshow tab: Title, Description, Image / Photo (supports Google Drive share links). */
+export function transformCarousel(rows) {
+  if (!rows || rows.length < 2) return [];
+  const at = headerIndex(rows[0]);
+  const titleIdx = at('Title') !== -1 ? at('Title') : at('Heading');
+  const descIdx = at('Description') !== -1 ? at('Description') : (at('Caption') !== -1 ? at('Caption') : at('Subtitle'));
+  const imgIdx = at('Image') !== -1 ? at('Image') : (at('Photo') !== -1 ? at('Photo') : (at('URL') !== -1 ? at('URL') : (at('Link') !== -1 ? at('Link') : 2)));
+
+  const items = [];
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    const imageVal = cell(row, imgIdx);
+    if (!imageVal) continue;
+    const resolvedImg = resolveImageUrl(imageVal);
+    items.push({
+      id: i,
+      src: resolvedImg,
+      title: cell(row, titleIdx) || '',
+      caption: cell(row, titleIdx) || '',
+      description: cell(row, descIdx) || '',
+      alt: cell(row, titleIdx) || `Slide ${i}`,
+    });
+  }
+  return items;
+}
+
 export { headerIndex, cell, splitList, resolveImageUrl, PLACEHOLDER_IMG };
 
 // Required header columns per tab.
@@ -459,3 +485,4 @@ transformPositions.required = [];
 transformCourses.required = [['Title', 'Course Name']];
 transformResearchAreas.required = [];
 transformFacilities.required = ['Name', 'Category'];
+transformCarousel.required = [];

@@ -1,13 +1,16 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { useContent } from '../../hooks/useContent';
 import './TitleSection.css';
 
-const WORD = 'BIRDLabs';
-const SUBHEADING = 'BIO INSPIRED ROBOTICS DESIGN LABORATORY';
+const DEFAULT_WORD = 'BIRDLabs';
+const DEFAULT_SUBHEADING = 'BIO INSPIRED ROBOTICS DESIGN LABORATORY';
 
 const TitleSection = () => {
+  const t = useContent();
+  const word = t(['hero.title', 'hero.word', 'hero.brand', 'hero.title.short'], DEFAULT_WORD);
+  const subheading = t(['hero.subtitle', 'hero.subheading'], DEFAULT_SUBHEADING);
   const sectionRef = useRef(null);
-  const inited = useRef(false);
 
   // Vanta Birds animated background for the title section. Depends on the
   // global window.VANTA.BIRDS (loaded via script tags in index.html).
@@ -35,103 +38,80 @@ const TitleSection = () => {
   }, []);
 
   useEffect(() => {
-    if (inited.current) return;
-    inited.current = true;
-
     const section = sectionRef.current;
     const headline = section?.querySelector('.title-headline');
-    const subheading = section?.querySelector('.title-subheading');
+    const subheadingEl = section?.querySelector('.title-subheading');
     const letters = headline ? headline.querySelectorAll('.letter') : [];
     if (!section || !headline || !letters.length) return;
 
-    // Respect users who prefer reduced motion: skip the animation sequence and
-    // show the title + subheading at their final positions immediately.
+    // Respect users who prefer reduced motion
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       gsap.set(letters, { x: 0, y: 0, scale: 1, opacity: 1 });
-      if (subheading) gsap.set(subheading, { opacity: 1 });
+      if (subheadingEl) gsap.set(subheadingEl, { opacity: 1 });
       return;
     }
 
-    /* ------------------------------------------------------------------ */
-    /* ANIMATION TUNING                                                    */
-    /*                                                                     */
-    /* DURATION : seconds each individual letter takes to fly from the     */
-    /*            center outward to its final slot (try 0.6 - 1.4).        */
-    /* STAGGER  : delay between the start of one letter and the next       */
-    /*            (try 0.08 - 0.25 for a faster/slower cascade).           */
-    /* EASING   : GSAP solve type - "power3.out" feels fluid,              */
-    /*            "back.out(1.6)" adds a subtle overshoot pop.             */
-    /*                                                                     */
-    /* The title keeps its layout position (top-aligned, no vertical move) */
-    /* and only plays the letter fly-in animation below.                   */
-    /* ------------------------------------------------------------------ */
-    const DURATION = 1.0;
-    const STAGGER = 0.16;
+    const DURATION = 0.8;
+    const STAGGER = 0.08;
     const EASING = 'power3.out';
 
-    // Wait for Inter to load so letter positions are measured with the
-    // final font (prevents a mis-seeded intro on first paint).
-    document.fonts.ready.then(() => {
-      if (!sectionRef.current) return;
+    // Center point of the whole word (which is centered on the screen).
+    const headlineRect = headline.getBoundingClientRect();
+    const centerX = headlineRect.left + headlineRect.width / 2;
+    const centerY = headlineRect.top + headlineRect.height / 2;
 
-      // Center point of the whole word (which is centered on the screen).
-      const headlineRect = headline.getBoundingClientRect();
-      const centerX = headlineRect.left + headlineRect.width / 2;
-      const centerY = headlineRect.top + headlineRect.height / 2;
-
-      // Hide letters, then shift each one onto the word's center point.
-      gsap.set(letters, { scale: 0, opacity: 0 });
-      letters.forEach((letter) => {
-        const rect = letter.getBoundingClientRect();
-        const letterX = rect.left + rect.width / 2;
-        const letterY = rect.top + rect.height / 2;
-        gsap.set(letter, { x: letterX - centerX, y: letterY - centerY });
-      });
-
-      // Hide the subheading until the title animation finishes.
-      if (subheading) gsap.set(subheading, { opacity: 0 });
-
-      /* Single timeline chains the whole hero so each stage waits for the
-         previous one to finish instead of all playing at once. */
-      const tl = gsap.timeline();
-
-      // STEP 1 - EXISTING TITLE ANIMATION (kept exactly as it was).
-      tl.to(letters, {
-        x: 0,
-        y: 0,
-        scale: 1,
-        opacity: 1,
-        duration: DURATION,
-        stagger: STAGGER,
-        ease: EASING,
-      });
-
-      // STEP 2 - SUBHEADING APPEARS only after the title animation completes.
-      if (subheading) {
-        tl.to(
-          subheading,
-          { opacity: 1, duration: 0.5, ease: 'power2.out' },
-          '>0.1'
-        );
-      }
+    // Hide letters, then shift each one onto the word's center point.
+    gsap.set(letters, { scale: 0, opacity: 0 });
+    letters.forEach((letter) => {
+      const rect = letter.getBoundingClientRect();
+      const letterX = rect.left + rect.width / 2;
+      const letterY = rect.top + rect.height / 2;
+      gsap.set(letter, { x: letterX - centerX, y: letterY - centerY });
     });
-  }, []);
+
+    if (subheadingEl) gsap.set(subheadingEl, { opacity: 0 });
+
+    const tl = gsap.timeline();
+    tl.to(letters, {
+      x: 0,
+      y: 0,
+      scale: 1,
+      opacity: 1,
+      duration: DURATION,
+      stagger: STAGGER,
+      ease: EASING,
+    });
+
+    if (subheadingEl) {
+      tl.to(
+        subheadingEl,
+        { opacity: 1, duration: 0.4, ease: 'power2.out' },
+        '>0.05'
+      );
+    }
+
+    return () => {
+      tl.kill();
+    };
+  }, [word, subheading]);
+
+
 
   return (
     <section className="title-section" ref={sectionRef}>
-      <h1 className="title-headline" aria-label={WORD}>
-        {WORD.split('').map((letter, index) => (
+      <h1 className="title-headline" aria-label={word}>
+        {word.split('').map((letter, index) => (
           <span
             key={index}
             className="letter"
-            style={{ '--pos': `${(index / (WORD.length - 1)) * 100}%` }}
+            style={{ '--pos': `${(index / Math.max(1, word.length - 1)) * 100}%` }}
             aria-hidden="true"
           >
             {letter}
           </span>
         ))}
       </h1>
-      <h2 className="title-subheading">{SUBHEADING}</h2>
+      <h2 className="title-subheading">{subheading}</h2>
     </section>
   );
 };

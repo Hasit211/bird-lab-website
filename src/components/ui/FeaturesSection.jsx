@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContent } from '../../hooks/useContent';
+import { useSheetTab } from '../../hooks/useSheetTab';
+import { transformCollaborations } from '../../services/sheets/transforms';
+import { TABS } from '../../config/sheets';
 import ImageLightbox from './ImageLightbox';
 import './FeaturesSection.css';
 
@@ -43,16 +46,24 @@ const RESEARCH_THRUSTS = [
   }
 ];
 
-const COLLABORATORS = [
-  { name: 'IIT Delhi', logo: '/assets/IITD.png', type: 'Academic Partner' },
-  { name: 'IIT Gandhinagar', logo: '/assets/IITGN.png', type: 'Academic Partner' },
-  { name: 'Jaipur Foot', logo: '/assets/JaipurFoot.png', type: 'Clinical & Industry Partner' },
-  { name: 'University of Siena', logo: '/assets/UniversityOfSiena.png', type: 'International Partner' },
+const FALLBACK_COLLABORATORS = [
+  { title: 'IIT Delhi', src: '/assets/IITD.png', category: 'Academic Partner' },
+  { title: 'IIT Gandhinagar', src: '/assets/IITGN.png', category: 'Academic Partner' },
+  { title: 'Jaipur Foot', src: '/assets/JaipurFoot.png', category: 'Clinical & Industry Partner' },
+  { title: 'University of Siena', src: '/assets/UniversityOfSiena.png', category: 'International Partner' },
 ];
 
 const FeaturesSection = () => {
   const t = useContent();
+  const { data: collaborations } = useSheetTab(TABS.collaborations, {
+    transform: transformCollaborations,
+    fallback: FALLBACK_COLLABORATORS,
+  });
   const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  const displayCollaborators = (collaborations && collaborations.length > 0)
+    ? collaborations.slice(0, 4)
+    : FALLBACK_COLLABORATORS;
 
   const total = RESEARCH_THRUSTS.length;
 
@@ -142,12 +153,12 @@ const FeaturesSection = () => {
         </div>
 
         <div className="collab-logos-grid">
-          {COLLABORATORS.map((collab, index) => (
+          {displayCollaborators.map((collab, index) => (
             <div key={index} className="collab-card">
               <div className="collab-logo-wrapper">
                 <img
-                  src={collab.logo}
-                  alt={collab.name}
+                  src={collab.src || collab.logo}
+                  alt={collab.title || collab.name}
                   className="collab-logo"
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -155,8 +166,8 @@ const FeaturesSection = () => {
                 />
               </div>
               <div className="collab-info">
-                <div className="collab-partner-name">{collab.name}</div>
-                <div className="collab-partner-type">{collab.type}</div>
+                <div className="collab-partner-name">{collab.title || collab.name}</div>
+                <div className="collab-partner-type">{collab.category || collab.type}</div>
               </div>
             </div>
           ))}

@@ -25,6 +25,7 @@ export const TABS = {
   courses: ['Lectures', 'Courses'],
   researchAreas: ['Research', 'ResearchAreas'],
   facilities: ['Facilities'],
+  carousel: ['Carousel', 'Slideshow', 'Banners', 'Home Carousel'],
 };
 
 // How long a fetched tab is considered "fresh" in localStorage before the site
