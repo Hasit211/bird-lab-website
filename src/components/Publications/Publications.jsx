@@ -7,6 +7,8 @@ import './Publications.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const SCHOLAR_PROFILE_URL = 'https://scholar.google.com/citations?user=3KZSSEIAAAAJ&hl=en';
+
 const Publications = () => {
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
@@ -17,15 +19,17 @@ const Publications = () => {
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
-    totalCitations: 0,
-    hIndex: 0,
-    i10Index: 0,
+    totalCitations: 640,
+    hIndex: 13,
+    i10Index: 20,
     journalCount: 0,
-    conferenceCount: 0
+    conferenceCount: 0,
+    totalCount: 78
   });
   const [lastUpdated, setLastUpdated] = useState(null);
   const [cacheInfo, setCacheInfo] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(10); // Show 10 by default (was missing before)
+  const [visibleCount, setVisibleCount] = useState(20);
+  const [copiedId, setCopiedId] = useState(null);
   const pubsRef = useRef(null);
   const cardsRef = useRef([]);
 
@@ -41,7 +45,7 @@ const Publications = () => {
         setStats(pubStats);
         setFilteredPubs(pubs);
         setCacheInfo(googleScholarService.getCacheInfo());
-        setLastUpdated(new Date().toLocaleString());
+        setLastUpdated(new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
       } catch {
         setPublications([]);
         setFilteredPubs([]);
@@ -61,7 +65,7 @@ const Publications = () => {
       setStats(pubStats);
       setFilteredPubs(pubs);
       setCacheInfo(googleScholarService.getCacheInfo());
-      setLastUpdated(new Date().toLocaleString());
+      setLastUpdated(new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
     } finally {
       setLoading(false);
     }
@@ -76,38 +80,34 @@ const Publications = () => {
       filtered = filtered.filter(pub => pub.type && pub.type.toLowerCase() === selectedType);
     }
     if (searchTerm) {
+      const term = searchTerm.toLowerCase();
       filtered = filtered.filter(pub =>
-        (pub.title && pub.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (pub.title && pub.title.toLowerCase().includes(term)) ||
         (typeof pub.authors === 'string'
-          ? pub.authors.toLowerCase().includes(searchTerm.toLowerCase())
+          ? pub.authors.toLowerCase().includes(term)
           : Array.isArray(pub.authors)
-            ? pub.authors.some(author => author.toLowerCase().includes(searchTerm.toLowerCase()))
+            ? pub.authors.some(author => author.toLowerCase().includes(term))
             : false) ||
-        (pub.journal && pub.journal.toLowerCase().includes(searchTerm.toLowerCase()))
+        (pub.journal && pub.journal.toLowerCase().includes(term))
       );
     }
     setFilteredPubs(filtered);
   }, [publications, selectedYear, selectedType, searchTerm]);
 
   useEffect(() => {
-    if (cardsRef.current.length > 0) {
-      gsap.fromTo(cardsRef.current,
-        { y: 50, opacity: 0 },
+    if (cardsRef.current.length > 0 && pubsRef.current) {
+      gsap.fromTo(cardsRef.current.filter(Boolean),
+        { y: 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: pubsRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-          }
+          duration: 0.45,
+          stagger: 0.03,
+          ease: "power2.out"
         }
       );
     }
-  }, [filteredPubs]);
+  }, [filteredPubs, visibleCount]);
 
   const getUniqueYears = () => {
     const years = publications.map(pub => pub.year).filter(Boolean);
@@ -119,18 +119,19 @@ const Publications = () => {
     return [...new Set(types)];
   };
 
-  const handleDownload = (pdfUrl) => {
-    if (pdfUrl) window.open(pdfUrl, '_blank');
-  };
-
   const copyCitation = (publication) => {
-    const citation = `${(typeof publication.authors === 'string'
+    const authorsStr = typeof publication.authors === 'string'
       ? publication.authors
-      : (publication.authors || []).join(', '))}. "${publication.title}." ${publication.journal || publication.venue}, ${publication.year}.`;
+      : (publication.authors || []).join(', ');
+    const yearStr = publication.year ? `, ${publication.year}` : '';
+    const venueStr = publication.journal || publication.venue ? ` ${publication.journal || publication.venue}` : '';
+    const citation = `${authorsStr}. "${publication.title}."${venueStr}${yearStr}.`;
+
     navigator.clipboard.writeText(citation);
+    setCopiedId(publication.id);
+    setTimeout(() => setCopiedId(null), 2000);
   };
 
-  // Update displayed publications to support "Load More"
   const displayedPubs = filteredPubs.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPubs.length;
 
@@ -138,66 +139,82 @@ const Publications = () => {
     <section id="publications" className="publications-section">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Publications</h2>
+          <div className="section-badge-wrapper">
+            <span className="section-badge">Academic Output</span>
+          </div>
+          <h2 className="section-title">Publications & Research Papers</h2>
           <p className="section-subtitle">
-            Our latest research contributions and academic publications
+            All peer-reviewed journal articles, conference proceedings, and patents directly synchronized with Dr. Bhivraj Suthar&apos;s Google Scholar profile.
           </p>
         </div>
 
-        {/* Metrics and refresh */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '2rem' }}>
-          <div className="publications-metrics2">
-            <div className="metrics-card2">
-              <div className="metric-item">
-                <span className="metric-number" data-value={stats.totalCitations || 0}>
-                  {isNaN(stats.totalCitations) ? '0' : stats.totalCitations}
-                </span>
-                <span className="metric-label">Total Citations</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-number" data-value={stats.hIndex}>{stats.hIndex}</span>
-                <span className="metric-label">H-index</span>
-              </div>
-              <div className="metric-item">
-                <span className="metric-number" data-value={stats.i10Index}>{stats.i10Index}</span>
-                <span className="metric-label">i10-index</span>
-              </div>
+        {/* Scholar Metrics & Profile Header */}
+        <div className="scholar-overview-bar">
+          <div className="publications-metrics-grid">
+            <div className="pub-metric-card">
+              <span className="pub-metric-number">
+                {stats.totalCitations || 640}
+              </span>
+              <span className="pub-metric-label">Total Citations</span>
+            </div>
+            <div className="pub-metric-card">
+              <span className="pub-metric-number">{stats.hIndex || 13}</span>
+              <span className="pub-metric-label">H-index</span>
+            </div>
+            <div className="pub-metric-card">
+              <span className="pub-metric-number">{stats.i10Index || 20}</span>
+              <span className="pub-metric-label">i10-index</span>
+            </div>
+            <div className="pub-metric-card">
+              <span className="pub-metric-number">{publications.length || 78}</span>
+              <span className="pub-metric-label">Total Papers</span>
             </div>
           </div>
-          <div>
+
+          <div className="scholar-actions-row">
+            <a
+              href={SCHOLAR_PROFILE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="scholar-profile-btn"
+              title="View full profile on Google Scholar"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/>
+              </svg>
+              <span>Google Scholar Profile</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+
             <button
-              className="refresh-btn"
+              className="pub-refresh-btn"
               onClick={handleRefresh}
               disabled={loading}
-              style={{ marginRight: 8 }}
-              title="Refresh publications from Google Scholar"
+              title="Synchronize publications"
             >
-              <svg className={`refresh-icon ${loading ? 'spinning' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M4 4V9H4.58152M4.58152 9C5.80611 6.78392 8.18951 5.19621 11.0174 5.19621C15.0138 5.19621 18.25 8.43241 18.25 12.4288C18.25 16.4252 15.0138 19.6614 11.0174 19.6614C8.18951 19.6614 5.80611 18.0737 4.58152 15.8576M4.58152 9H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <svg className={`refresh-icon ${loading ? 'spinning' : ''}`} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-1.19" />
               </svg>
-              Refresh
+              <span>{loading ? 'Syncing...' : 'Sync Data'}</span>
             </button>
-            {lastUpdated && (
-              <span style={{ fontSize: '0.95em', color: '#888' }}>
-                Last updated: {lastUpdated}
-                {cacheInfo && cacheInfo.hasCache && (
-                  <span style={{ color: cacheInfo.isValid ? '#0a0' : '#a00' }}>
-                    {cacheInfo.isValid ? ' (cached)' : ' (cache expired)'}
-                  </span>
-                )}
-              </span>
-            )}
           </div>
         </div>
 
-        {/* Filters and Search */}
+        {/* Filters, Search, and Results Count */}
         <div className="publications-controls">
           <div className="search-container">
             <input
               type="text"
-              placeholder="Search publications..."
+              placeholder="Search by title, author, or journal..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setVisibleCount(20);
+              }}
               className="search-input"
             />
             <svg className="search-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -208,10 +225,13 @@ const Publications = () => {
           <div className="filter-controls">
             <select
               value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
+              onChange={(e) => {
+                setSelectedYear(e.target.value);
+                setVisibleCount(20);
+              }}
               className="filter-select"
             >
-              <option value="all">All Years</option>
+              <option value="all">All Years ({getUniqueYears().length})</option>
               {getUniqueYears().map(year => (
                 <option key={year} value={year}>{year}</option>
               ))}
@@ -219,7 +239,10 @@ const Publications = () => {
 
             <select
               value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
+              onChange={(e) => {
+                setSelectedType(e.target.value);
+                setVisibleCount(20);
+              }}
               className="filter-select"
             >
               <option value="all">All Types</option>
@@ -232,80 +255,162 @@ const Publications = () => {
           </div>
         </div>
 
-        {/* Publications Grid */}
-        <div ref={pubsRef} className="publications-grid">
-          {displayedPubs.map((publication, index) => (
-            <div
-              key={`${publication.title}-${index}`}
-              ref={el => cardsRef.current[index] = el}
-              className="publication-card"
-            >
-              <div className="publication-header">
-                <span className={`publication-type ${publication.type ? publication.type.toLowerCase() : 'other'}`}>
-                  {publication.type}
-                </span>
-                <span className="publication-year">{publication.year}</span>
-              </div>
-
-              <h3 className="publication-title">{publication.title}</h3>
-              
-              <div className="publication-authors">
-                {typeof publication.authors === 'string'
-                  ? publication.authors
-                  : (publication.authors || []).join(', ')}
-              </div>
-
-              <div className="publication-venue">{publication.journal || publication.venue}</div>
-
-              {publication.abstract && (
-                <div className="publication-abstract">
-                  <p>{publication.abstract}</p>
-                </div>
-              )}
-
-              <div className="publication-actions">
-                <button
-                  onClick={() => handleDownload(publication.pdf || publication.url)}
-                  className="action-btn download-btn"
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
-                  </svg>
-                  PDF
-                </button>
-                
-                <button
-                  onClick={() => copyCitation(publication)}
-                  className="action-btn cite-btn"
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                  </svg>
-                  Cite
-                </button>
-              </div>
-            </div>
-          ))}
+        {/* Count summary bar */}
+        <div className="publications-counter-row">
+          <span className="counter-text">
+            Showing <strong>{displayedPubs.length}</strong> of <strong>{filteredPubs.length}</strong> publications
+            {selectedYear !== 'all' && ` from ${selectedYear}`}
+            {selectedType !== 'all' && ` (${selectedType})`}
+          </span>
+          {lastUpdated && (
+            <span className="counter-sync-date">
+              Synced with Google Scholar: {lastUpdated}
+            </span>
+          )}
         </div>
 
-        {hasMore && (
-          <div className="load-more-controls" style={{ textAlign: 'center', margin: '2rem 0' }}>
-            <button className="load-more-btn" onClick={() => setVisibleCount(v => v + 10)}>
-              Load More Publications
+        {/* Publications Grid */}
+        <div ref={pubsRef} className="publications-grid">
+          {displayedPubs.map((publication, index) => {
+            const citeCount = publication.citations !== undefined ? publication.citations : (publication.citation || 0);
+            const targetUrl = publication.doiUrl || publication.url || (publication.title ? `https://scholar.google.com/scholar?q=${encodeURIComponent(publication.title)}` : null);
+
+            return (
+              <div
+                key={`${publication.title}-${publication.id || index}`}
+                ref={el => cardsRef.current[index] = el}
+                className="publication-card"
+              >
+                <div className="publication-header">
+                  <div className="publication-badges">
+                    <span className={`publication-type ${(publication.type || 'journal').toLowerCase().replace(/\s+/g, '-')}`}>
+                      {publication.type || 'Journal'}
+                    </span>
+                    {publication.year && (
+                      <span className="publication-year">{publication.year}</span>
+                    )}
+                  </div>
+
+                  {citeCount > 0 && (
+                    <span className="publication-citations" title="Citations on Google Scholar">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+                      </svg>
+                      Cited by {citeCount}
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="publication-title">
+                  {publication.title}
+                </h3>
+                
+                <div className="publication-authors">
+                  {typeof publication.authors === 'string'
+                    ? publication.authors
+                    : (publication.authors || []).join(', ')}
+                </div>
+
+                {publication.journal && (
+                  <div className="publication-venue">{publication.journal}</div>
+                )}
+
+                {publication.abstract && (
+                  <div className="publication-abstract">
+                    <p>{publication.abstract}</p>
+                  </div>
+                )}
+
+                <div className="publication-actions">
+                  {targetUrl && targetUrl !== '#' && (
+                    <a
+                      href={targetUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="action-btn download-btn"
+                      title="Open publication or Scholar citation page"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      <span>{publication.doiUrl ? 'View Paper' : 'View on Scholar'}</span>
+                    </a>
+                  )}
+                  
+                  <button
+                    onClick={() => copyCitation(publication)}
+                    className="action-btn cite-btn"
+                    title="Copy APA-style citation"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                    <span>{copiedId === publication.id ? 'Copied!' : 'Cite'}</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Load More & Show All Controls */}
+        <div className="pagination-bar">
+          {hasMore && (
+            <div className="load-more-controls">
+              <button
+                className="load-more-btn"
+                onClick={() => setVisibleCount(v => Math.min(v + 20, filteredPubs.length))}
+              >
+                Load More (+20)
+              </button>
+              <button
+                className="show-all-btn"
+                onClick={() => setVisibleCount(filteredPubs.length)}
+              >
+                Show All ({filteredPubs.length})
+              </button>
+            </div>
+          )}
+
+          {!hasMore && filteredPubs.length > 20 && (
+            <div className="all-loaded-indicator">
+              <span>All {filteredPubs.length} publications displayed</span>
+              <button
+                className="collapse-btn"
+                onClick={() => {
+                  setVisibleCount(20);
+                  if (pubsRef.current) pubsRef.current.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                Show First 20
+              </button>
+            </div>
+          )}
+        </div>
+
+        {filteredPubs.length === 0 && !loading && (
+          <div className="no-results">
+            <p>No publications found matching your search or filters.</p>
+            <button
+              className="pub-refresh-btn"
+              onClick={() => {
+                setSelectedYear('all');
+                setSelectedType('all');
+                setSearchTerm('');
+                setVisibleCount(20);
+              }}
+            >
+              Reset Filters
             </button>
           </div>
         )}
 
-        {filteredPubs.length === 0 && !loading && (
-          <div className="no-results">
-            <p>No publications found matching your criteria.</p>
-            <button className="refresh-btn" onClick={handleRefresh}>Try Again</button>
-          </div>
-        )}
         {loading && (
-          <div className="loading-indicator" style={{ margin: '2rem 0' }}>
+          <div className="loading-indicator">
             <div className="loading-spinner"></div>
-            <span>Loading publication data...</span>
+            <span>Loading publications from Google Scholar...</span>
           </div>
         )}
       </div>

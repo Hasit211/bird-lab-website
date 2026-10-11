@@ -1,5 +1,6 @@
 // Google Scholar Service for fetching publications
 import axios from "axios";
+import scholarData from "../data/scholar_publications.js";
 
 class GoogleScholarService {
   constructor() {
@@ -14,9 +15,9 @@ class GoogleScholarService {
 
     this.baseUrl = "https://serpapi.com/search.json";
 
-    // Cache key for localStorage
-    this.cacheKey = "scholar_publications_v2";
-    this.statsKey = "scholar_stats_v2";
+    // Cache key for localStorage - v3 forces fresh sync from Scholar dataset
+    this.cacheKey = "scholar_publications_v3";
+    this.statsKey = "scholar_stats_v3";
 
     // Cache duration: 1 month (30 days)
     this.cacheDuration = 30 * 24 * 60 * 60 * 1000;
@@ -27,272 +28,26 @@ class GoogleScholarService {
     this.isLoading = false;
     this.fetchPromise = null;
 
-    // Comprehensive publications list with direct DOIs / paper URLs & topic keywords
-    this.mockData = [
-      {
-        id: 1,
-        title:
-          "Design of Adaptive Sensor Coupling-based Upper Limb 7-DOF Exoskeleton for Smooth Human Motion Tracking: ASC-EXO",
-        authors: "Suthar, B., Mohd.Zubair, Kansal, S. and Mukherjee, S.",
-        journal: "IEEE Sensors Journal",
-        year: 2023,
-        type: "journal",
-        url: "https://doi.org/10.1109/JSEN.2023.3270172",
-        citation: 5,
-        keywords: [
-          "exoskeleton",
-          "upper limb",
-          "asc-exo",
-          "wearable robotics",
-          "motion tracking",
-          "sensor coupling",
-          "human motion"
-        ],
-      },
-      {
-        id: 2,
-        title:
-          "Design of Twisted String Actuated Flexure Joint for Supernumerary Robotic Arm for Bi-manual Tasks",
-        authors:
-          "Suthar, B., Hasanen, B., Seneviratnea, L., Zweiria, Y. and Hussain, I.",
-        journal: "IEEE Sensors Journal",
-        year: 2024,
-        type: "journal",
-        url: "https://doi.org/10.1109/JSEN.2024.3422791",
-        citation: 3,
-        keywords: [
-          "supernumerary robotic arm",
-          "supernumerary robotic limbs",
-          "flexure joint",
-          "bi-manual tasks",
-          "twisted string actuated",
-          "tsa",
-          "wearable"
-        ],
-      },
-      {
-        id: 3,
-        title:
-          "Novel Robotic Finger Using Twisted String Actuator with Modular Passive Return Rotational Joints to Achieve High Grasping Force",
-        authors:
-          "Suthar, B., Awada, M.I., Seneviratnea, L., Zweiria, Y. and Hussain, I.",
-        journal: "Journal of Mechatronics, Elsevier",
-        year: 2023,
-        type: "journal",
-        url: "https://doi.org/10.1016/j.mechatronics.2024.103157",
-        citation: 4,
-        keywords: [
-          "artificial muscle-based robotic finger",
-          "robotic finger",
-          "finger",
-          "twisted string actuator",
-          "tsa",
-          "passive return",
-          "grasping force",
-          "human-like fingers",
-          "artificial muscle"
-        ],
-      },
-      {
-        id: 4,
-        title:
-          "A Soft Twisted String Actuation System for Exosuit: Undesirable Behaviors and the Effect of Pre-twists",
-        authors: "Suthar, B. and Ryu, J.H.",
-        journal: "Journal of Mechatronics, Elsevier",
-        year: 2023,
-        type: "journal",
-        url: "https://doi.org/10.1016/j.mechatronics.2023.103084",
-        citation: 6,
-        keywords: [
-          "bio-inspired muscles-tsa",
-          "bio-inspired muscles",
-          "exosuits",
-          "exosuit",
-          "soft twisted string actuation",
-          "pre-twists",
-          "artificial muscle",
-          "wearable"
-        ],
-      },
-      {
-        id: 5,
-        title:
-          "Design and Feasibility Analysis of a Foldable Robot Arm for Drones Using a Twisted String Actuator: FRAD",
-        authors: "Suthar, B. and Jung, S.",
-        journal: "IEEE Robotics and Automation Letters",
-        year: 2021,
-        type: "journal",
-        url: "https://doi.org/10.1115/1.4050813",
-        citation: 12,
-        keywords: [
-          "extendable drone arm",
-          "foldable robot arm for drones",
-          "drone arm",
-          "drones",
-          "drone",
-          "frad",
-          "aerial manipulation",
-          "metamorphic drone arm"
-        ],
-      },
-      {
-        id: 6,
-        title:
-          "Design and Bending Analysis of a Metamorphic Parallel Twisted-Scissor Mechanism",
-        authors: "Suthar, B. and Jung, S.",
-        journal: "Transactions of ASME-Journal of Mechanisms and Robotics",
-        year: 2021,
-        type: "journal",
-        url: "https://doi.org/10.1109/LRA.2021.3084890",
-        citation: 8,
-        keywords: [
-          "metamorphic parallel twisted-scissor mechanism",
-          "metamorphic",
-          "reconfigurable and growing robotics",
-          "growing robotics",
-          "scissor mechanism",
-          "folding"
-        ],
-      },
-      {
-        id: 7,
-        title:
-          "Development of a Compliant Joint Based Upper Limb Exoskeleton for Stable Tele-manipulation: CJ EXO",
-        authors: "Suthar, B., Zubair, M., Kansal, S. and Mukherjee, S.",
-        journal:
-          "IEEE RAS/EMBS International Conference on Biomedical Robotics and Biomechatronics",
-        year: 2022,
-        type: "conference",
-        url: "https://doi.org/10.1109/BioRob52686.2022.9925432",
-        citation: 7,
-        keywords: [
-          "tele-robotics and haptics",
-          "tele-robotics",
-          "haptics",
-          "tele-manipulation",
-          "master device",
-          "slave device",
-          "haptic feedback",
-          "cj exo",
-          "compliant joint"
-        ],
-      },
-      {
-        id: 8,
-        title:
-          "Conceptual Design of an Extendable Rope-inspired Module Space Orbit Arm for Maneuvering: ERM-SOA",
-        authors: "Suthar, B. and Jung, S.",
-        journal: "46th NASA Aerospace Mechanisms Symposium",
-        year: 2022,
-        type: "conference",
-        url: "https://ntrs.nasa.gov/citations/20220008544",
-        citation: 4,
-        keywords: [
-          "extendable space arm",
-          "space arm",
-          "space orbit arm",
-          "erm-soa",
-          "rope-inspired",
-          "maneuvering",
-          "reconfigurable"
-        ],
-      },
-      {
-        id: 9,
-        title:
-          "Design and Experimental Evaluation of Foldable Robot Arms for holding and Installation Work: FRAHI",
-        authors: "Suthar, B., Chio, Y.J., and Jung, S.",
-        journal:
-          "IEEE International Conference on Robot and Human Interactive Communication",
-        year: 2021,
-        type: "conference",
-        url: "https://doi.org/10.1109/RO-MAN50785.2021.9515438",
-        citation: 9,
-        keywords: [
-          "foldable supernumerary robotic arms",
-          "foldable robot arms",
-          "frahi",
-          "holding and installation",
-          "supernumerary"
-        ],
-      },
-      {
-        id: 10,
-        title:
-          "Single Motor-based Bidirectional Twisted String Actuation with Variable Radius Pulleys",
-        authors: "Khan, M.A., Suthar, B., Gaponov, I. and Ryu, J.H.",
-        journal: "IEEE Robotics and Automation Letters",
-        year: 2019,
-        type: "journal",
-        url: "https://doi.org/10.1109/LRA.2019.2900747",
-        citation: 22,
-        keywords: [
-          "twisted string actuation",
-          "bidirectional",
-          "variable radius pulleys",
-          "tsa",
-          "actuation"
-        ],
-      },
-      {
-        id: 11,
-        title:
-          "Development of Bio-Inspired Multi-Articulated Robotic Hand with Artificial Tendon Routing",
-        authors: "Suthar, B., Awada, M.I., Seneviratnea, L. and Hussain, I.",
-        journal: "IEEE Transactions on Medical Robotics and Bionics",
-        year: 2024,
-        type: "journal",
-        url: "https://doi.org/10.1016/j.mechatronics.2024.103157",
-        citation: 5,
-        keywords: [
-          "artificial muscle-based robotic hand",
-          "robotic hand",
-          "prosthetic limbs",
-          "prosthetics",
-          "jaipur foot",
-          "bio-inspired mechanisms"
-        ],
-      },
-      {
-        id: 12,
-        title:
-          "Perching and Dynamic Grasping for Aerial Robots: Bio-Inspired Avian Hawk Mechanism",
-        authors: "Suthar, B. and Jung, S.",
-        journal: "IEEE Robotics and Automation Letters",
-        year: 2022,
-        type: "journal",
-        url: "https://doi.org/10.1109/LRA.2021.3084890",
-        citation: 8,
-        keywords: [
-          "hawk gripper",
-          "bio-inspired cat-leap parkour rolling mechanism",
-          "cat-leap",
-          "parkour",
-          "gripper",
-          "avian",
-          "perching"
-        ],
-      },
-      {
-        id: 13,
-        title:
-          "Learning-Based Adaptive Motion Control and Computer Vision for Autonomous Robotic Manipulation",
-        authors: "Suthar, B., Mohd.Zubair and Mukherjee, S.",
-        journal: "IEEE Transactions on Industrial Informatics",
-        year: 2024,
-        type: "journal",
-        url: "https://doi.org/10.1109/JSEN.2023.3270172",
-        citation: 6,
-        keywords: [
-          "applied ai in robotics",
-          "computer vision for robotics",
-          "machine learning models",
-          "autonomous decision making",
-          "vision",
-          "ai in robotics"
-        ],
-      }
-    ];
+// Google Scholar verified profile stats
+    this.scholarStats = scholarData.stats || {
+      totalCitations: 640,
+      recentCitations: 588,
+      hIndex: 13,
+      recentHIndex: 12,
+      i10Index: 20,
+      recentI10Index: 18,
+      scholarId: "3KZSSEIAAAAJ",
+      scholarUrl: "https://scholar.google.com/citations?user=3KZSSEIAAAAJ&hl=en"
+    };
+
+    // Full 78 publications dataset from Google Scholar
+    this.mockData = (scholarData.publications || []).map((pub, idx) => ({
+      ...pub,
+      id: pub.id || idx + 1,
+      citation: pub.citations !== undefined ? pub.citations : (pub.citation || 0),
+      citations: pub.citations !== undefined ? pub.citations : (pub.citation || 0),
+      pdf: pub.pdf || pub.doiUrl || pub.url
+    }));
   }
 
   /**
@@ -596,36 +351,45 @@ class GoogleScholarService {
    * Calculate statistics from publications
    */
   async calculateStats(publications) {
+    const defaultStats = this.scholarStats || {
+      totalCitations: 640,
+      recentCitations: 588,
+      hIndex: 13,
+      i10Index: 20,
+    };
+
     const stats = {
-      totalCitations: 0,
-      hIndex: 0,
-      i10Index: 0,
+      totalCitations: defaultStats.totalCitations || 640,
+      recentCitations: defaultStats.recentCitations || 588,
+      hIndex: defaultStats.hIndex || 13,
+      i10Index: defaultStats.i10Index || 20,
+      totalCount: publications ? publications.length : 78,
       journalCount: 0,
       conferenceCount: 0,
+      scholarUrl: defaultStats.scholarUrl || "https://scholar.google.com/citations?user=3KZSSEIAAAAJ&hl=en",
     };
 
     if (publications && publications.length > 0) {
-      // Calculate total citations
-      stats.totalCitations = publications.reduce((total, pub) => {
-        const citations = parseInt(pub.citation) || 0;
+      const sumCitations = publications.reduce((total, pub) => {
+        const citations = parseInt(pub.citations !== undefined ? pub.citations : pub.citation) || 0;
         return total + citations;
       }, 0);
+      stats.totalCitations = Math.max(sumCitations, defaultStats.totalCitations || 0);
 
-      // Count publication types
       stats.journalCount = publications.filter(
-        (pub) => pub.type === "journal"
+        (pub) => (pub.type || "").toLowerCase() === "journal"
       ).length;
       stats.conferenceCount = publications.filter(
-        (pub) => pub.type === "conference"
+        (pub) => (pub.type || "").toLowerCase() === "conference"
       ).length;
 
-      // Calculate H-index
       const citationCounts = publications
-        .map((pub) => parseInt(pub.citation) || 0)
+        .map((pub) => parseInt(pub.citations !== undefined ? pub.citations : pub.citation) || 0)
         .sort((a, b) => b - a);
 
-      stats.hIndex = this.calculateHIndex(citationCounts);
-      stats.i10Index = citationCounts.filter((count) => count >= 10).length;
+      const calculatedH = this.calculateHIndex(citationCounts);
+      stats.hIndex = Math.max(calculatedH, defaultStats.hIndex || 0);
+      stats.i10Index = Math.max(citationCounts.filter((count) => count >= 10).length, defaultStats.i10Index || 0);
     }
 
     return stats;
@@ -636,11 +400,14 @@ class GoogleScholarService {
    */
   calculateDefaultStats() {
     return {
-      totalCitations: 0,
-      hIndex: 0,
-      i10Index: 0,
+      totalCitations: this.scholarStats?.totalCitations || 640,
+      recentCitations: this.scholarStats?.recentCitations || 588,
+      hIndex: this.scholarStats?.hIndex || 13,
+      i10Index: this.scholarStats?.i10Index || 20,
+      totalCount: this.mockData?.length || 78,
       journalCount: 0,
       conferenceCount: 0,
+      scholarUrl: "https://scholar.google.com/citations?user=3KZSSEIAAAAJ&hl=en"
     };
   }
 
