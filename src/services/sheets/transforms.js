@@ -261,57 +261,6 @@ export function transformCollaborations(rows) {
   return result.filter(item => !isUrlString(item.title));
 }
 
-/** Positions tab: Title, Type, Department, Summary, Details, Email, Contact, Status OR freeform. */
-export function transformPositions(rows) {
-  if (!rows || rows.length === 0) return [];
-  const at = headerIndex(rows[0]);
-  const titleIdx = at('Title');
-
-  if (titleIdx !== -1) {
-    return mapRows(rows, (row, at, i) => {
-      const title = cell(row, titleIdx);
-      if (!title) return null;
-      return {
-        id: i + 1,
-        title,
-        type: cell(row, at('Type')) || 'Available',
-        department: cell(row, at('Department')),
-        summary: cell(row, at('Summary')),
-        details: cell(row, at('Details')),
-        email: cell(row, at('Email')),
-        contact: cell(row, at('Contact')),
-        status: cell(row, at('Status')),
-      };
-    });
-  }
-
-  // Paragraph/freeform style as in Open Positions tab
-  const textLines = [];
-  rows.forEach((row) => {
-    row.forEach((c) => {
-      const trimmed = String(c ?? '').trim();
-      if (trimmed && trimmed.toLowerCase() !== 'open positions') {
-        textLines.push(trimmed);
-      }
-    });
-  });
-
-  if (textLines.length > 0) {
-    return [{
-      id: 1,
-      title: 'Open Positions',
-      type: 'Available',
-      department: 'Robotics & Intelligent Systems',
-      summary: textLines[0],
-      details: textLines.slice(1).join(' '),
-      email: 'bhivraj@iitj.ac.in',
-      contact: 'Dr. Bhivraj Suthar',
-      status: 'Open',
-    }];
-  }
-
-  return [];
-}
 
 /** Courses tab: Code, Title, Credits, Department, Level, Description OR Lectures format. */
 export function transformCourses(rows) {
@@ -481,7 +430,6 @@ export { headerIndex, cell, splitList, resolveImageUrl, PLACEHOLDER_IMG };
 transformContent.required = [];
 transformEvents.required = ['Title', 'Date'];
 transformCollaborations.required = [];
-transformPositions.required = [];
 transformCourses.required = [['Title', 'Course Name']];
 transformResearchAreas.required = [];
 transformFacilities.required = ['Name', 'Category'];

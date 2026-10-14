@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { staggerAnimation } from '../../utils/gsapAnimations';
 import { getTeamData } from '../../services/googleSheets';
 import { useContent } from '../../hooks/useContent';
@@ -212,8 +213,8 @@ const People = () => {
               )}
             </p>
             <div className="join-us-actions">
-              <button className="btn-primary">{t('people.join.btnPrimary', 'View Open Positions')}</button>
-              <button className="btn-secondary">{t('people.join.btnSecondary', 'Contact Us')}</button>
+              <Link to="/contact" className="btn-primary">{t('people.join.btnPrimary', 'View Open Positions')}</Link>
+              <Link to="/contact" className="btn-secondary">{t('people.join.btnSecondary', 'Contact Us')}</Link>
             </div>
           </div>
           <div className="join-us-visual">

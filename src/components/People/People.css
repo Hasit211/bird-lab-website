@@ -400,6 +400,9 @@
 }
 
 .btn-primary, .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.8rem 2rem;
   border-radius: 8px;
   font-weight: 500;

@@ -21,7 +21,6 @@ export const TABS = {
   people: ['People'],
   events: ['Events'],
   collaborations: ['Collaborations'],
-  positions: ['Open Positions', 'Positions'],
   courses: ['Lectures', 'Courses'],
   researchAreas: ['Research', 'ResearchAreas'],
   facilities: ['Facilities'],

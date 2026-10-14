@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { useContent } from '../../hooks/useContent';
+import heroVideo from '../../assets/Video Project 2.mp4';
 import './TitleSection.css';
 
 const DEFAULT_WORD = 'BIRDLabs';
@@ -11,6 +12,15 @@ const TitleSection = () => {
   const word = t(['hero.title', 'hero.word', 'hero.brand', 'hero.title.short'], DEFAULT_WORD);
   const subheading = t(['hero.subtitle', 'hero.subheading'], DEFAULT_SUBHEADING);
   const sectionRef = useRef(null);
+  const videoRef = useRef(null);
+
+  // Ensure video autoplays and continuously loops smoothly
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.play().catch(() => {});
+  }, []);
 
   // Vanta Birds animated background for the title section. Depends on the
   // global window.VANTA.BIRDS (loaded via script tags in index.html).
@@ -42,12 +52,14 @@ const TitleSection = () => {
     const headline = section?.querySelector('.title-headline');
     const subheadingEl = section?.querySelector('.title-subheading');
     const letters = headline ? headline.querySelectorAll('.letter') : [];
+    const videoEl = section?.querySelector('.title-hero-video');
     if (!section || !headline || !letters.length) return;
 
     // Respect users who prefer reduced motion
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       gsap.set(letters, { x: 0, y: 0, scale: 1, opacity: 1 });
       if (subheadingEl) gsap.set(subheadingEl, { opacity: 1 });
+      if (videoEl) gsap.set(videoEl, { opacity: 1, x: 0, y: 0 });
       return;
     }
 
@@ -90,8 +102,70 @@ const TitleSection = () => {
       );
     }
 
+    // ── Video: entrance + repeating left→right patrol with fade ──
+    let patrolTl = null;
+    const handleResize = () => {
+      if (patrolTl) patrolTl.invalidate();
+    };
+
+    if (videoEl) {
+      // How far the video can travel: section width minus video width minus margins
+      const getTravelDistance = () => {
+        const secW = section.clientWidth || section.offsetWidth;
+        const vidW = videoEl.offsetWidth || 0;
+        const margin = window.innerWidth <= 640 ? 24 : 64;
+        return Math.max(0, secW - vidW - margin);
+      };
+
+      // Initial entrance: fade-in at the left edge
+      tl.fromTo(
+        videoEl,
+        { opacity: 0, x: 0, y: 10 },
+        { opacity: 1, x: 0, y: 0, duration: 0.5, ease: 'power2.out' },
+        '>0.05'
+      );
+
+      // After entrance, kick off the repeating patrol timeline
+      tl.call(() => {
+        // Build a timeline that plays once per cycle, then repeats forever
+        patrolTl = gsap.timeline({ repeat: -1, onRepeat: () => {
+          // Reset video playback at the start of each new cycle
+          if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play().catch(() => {});
+          }
+        }});
+
+        // 1) Slide from left edge to right edge (4s linear walk)
+        patrolTl.fromTo(
+          videoEl,
+          { x: 0 },
+          { x: () => getTravelDistance(), duration: 4, ease: 'none' }
+        );
+
+        // 2) Fade out at the right edge (0.4s)
+        patrolTl.to(
+          videoEl,
+          { opacity: 0, duration: 0.4, ease: 'power2.in' }
+        );
+
+        // 3) Snap back to left instantly (0 duration)
+        patrolTl.set(videoEl, { x: 0 });
+
+        // 4) Fade back in at the left edge (0.4s)
+        patrolTl.to(
+          videoEl,
+          { opacity: 1, duration: 0.4, ease: 'power2.out' }
+        );
+      });
+
+      window.addEventListener('resize', handleResize);
+    }
+
     return () => {
       tl.kill();
+      if (patrolTl) patrolTl.kill();
+      window.removeEventListener('resize', handleResize);
     };
   }, [word, subheading]);
 
@@ -112,6 +186,15 @@ const TitleSection = () => {
         ))}
       </h1>
       <h2 className="title-subheading">{subheading}</h2>
+      <video
+        ref={videoRef}
+        className="title-hero-video"
+        src={heroVideo}
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
     </section>
   );
 };

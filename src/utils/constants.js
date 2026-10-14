@@ -7,9 +7,8 @@ export const NAV_ITEMS = [
   { label: 'Lectures', href: '/lectures', section: 'lectures' },
   { label: 'Collaboration', href: '/gallery', section: 'gallery' },
   { label: 'Facilities', href: '/facilities', section: 'facilities' },
-  { label: 'Open Positions', href: '/positions', section: 'positions' },
   { label: 'Events', href: '/events', section: 'events' },
-  // { label: 'Contact', href: '/contact', section: 'contact' }
+  { label: 'Contact', href: '/contact', section: 'contact' },
 
 ];
 

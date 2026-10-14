@@ -6,15 +6,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 72vh;
-  padding: 3rem 1.5rem 2rem;
+  /* Scaled by 1.25x (72vh * 1.25 = 90vh) */
+  min-height: 90vh;
+  /* Scaled padding by 1.25x */
+  padding: 3.75rem 1.875rem 2.5rem;
   /* Light blue fade at the top mixing smoothly into pure white at the bottom. */
   background: linear-gradient(180deg, #bae6fd 0%, #f0f9ff 50%, #ffffff 100%);
   overflow: hidden;
 }
 
 /* ------------------------------------------------------------------ */
-/* TYPOGRAPHY TUNING                                                   */
+/* TYPOGRAPHY TUNING (Scaled 1.5x)                                    */
 /* ------------------------------------------------------------------ */
 .title-headline {
   display: inline-block;
@@ -23,12 +25,14 @@
   z-index: 1;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-weight: 900;
-  font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+  /* 1.5x scale: clamp(2.25rem * 1.5, 5.5vw * 1.5, 4.25rem * 1.5) */
+  font-size: clamp(3.375rem, 8.25vw, 6.375rem);
   line-height: 1.15;
   margin-bottom: 0.75rem;
   letter-spacing: 0.01em;
   text-align: center;
-  max-width: 1050px;
+  /* Scaled max-width by 1.5x from 1050px */
+  max-width: 1575px;
   cursor: default;
   user-select: none;
 }
@@ -40,7 +44,7 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* SUBHEADING                                                          */
+/* SUBHEADING (Scaled 1.5x)                                           */
 /* ------------------------------------------------------------------ */
 .title-subheading {
   position: relative;
@@ -48,26 +52,65 @@
   margin-top: 0.5rem;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-weight: 600;
-  font-size: clamp(0.85rem, 1.35vw, 1.25rem);
+  /* 1.5x scale: clamp(0.85rem * 1.5, 1.35vw * 1.5, 1.25rem * 1.5) */
+  font-size: clamp(1.275rem, 2.025vw, 1.875rem);
   line-height: 1.45;
   letter-spacing: 0.04em;
   text-align: center;
   color: #334155;
-  max-width: 820px;
+  /* Scaled max-width by 1.5x from 820px */
+  max-width: 1230px;
   opacity: 0; /* hidden until shown by GSAP */
+}
+
+/* ------------------------------------------------------------------ */
+/* MERGED HERO VIDEO (Loop, 1.1x Scale)                               */
+/* Seamlessly merged with background - no separate box or white bg     */
+/* Starts at left edge; GSAP slides it left→right then fades & resets  */
+/* ------------------------------------------------------------------ */
+.title-hero-video {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 2rem;
+  display: block;
+  /* 0.7x scale height */
+  height: clamp(130px, 18.2vh, 186px);
+  width: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
+  /* Blend pure white video background completely into the page */
+  mix-blend-mode: multiply;
+  filter: contrast(1.05) brightness(1.02);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0; /* hidden until GSAP entrance */
 }
 
 /* Small screens */
 @media (max-width: 640px) {
   .title-section {
-    min-height: 60vh;
-    padding: 2.5rem 1rem 1.5rem;
+    /* 60vh * 1.25 = 75vh */
+    min-height: 75vh;
+    padding: 3.125rem 1.25rem 1.875rem;
   }
   .title-headline {
-    font-size: 2.1rem;
+    /* 2.1rem * 1.5 = 3.15rem */
+    font-size: 3.15rem;
     letter-spacing: 0rem;
   }
   .title-subheading {
-    font-size: 0.85rem;
+    /* 0.85rem * 1.5 = 1.275rem */
+    font-size: 1.275rem;
+  }
+  .title-hero-video {
+    bottom: 0.75rem;
+    left: 0.75rem;
+    /* 0.7x scale */
+    height: clamp(84px, 12.6vh, 112px);
   }
 }

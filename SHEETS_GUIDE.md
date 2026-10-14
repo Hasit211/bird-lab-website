@@ -55,7 +55,6 @@ someone needs to do the following **once**:
 | `Collaborations` tab | ⚠️ Exists but **wrong layout** | Rebuild it with the columns shown in [Collaborations](#tab-collaborations). Its current layout (National/International groupings) is not readable by the site. |
 | `Content` tab | ❌ Does not exist yet | Create it — this controls **all headings and paragraphs**. See [Content](#tab-content). |
 | `Events` tab | ❌ Does not exist yet | Create it. See [Events](#tab-events). |
-| `Positions` tab | ❌ Does not exist yet | Create it. See [Positions](#tab-positions). |
 | `Courses` tab | ❌ Does not exist yet | Create it. See [Courses](#tab-courses). |
 | `ResearchAreas` tab | ❌ Does not exist yet | Create it. See [ResearchAreas](#tab-researchareas). |
 | `Facilities` tab | ❌ Does not exist yet | Create it. See [Facilities](#tab-facilities). |
@@ -218,11 +217,6 @@ actually want to change (though adding all of them makes future edits easier).
 | `facilities.title` | Lab Facilities |
 | `facilities.subtitle` | State-of-the-art equipment and infrastructure for cutting-edge research |
 
-#### Page: Open Positions
-| Key | Text (current value) |
-|---|---|
-| `positions.title` | Open Positions |
-| `positions.subtitle` | Join our research team and contribute to cutting-edge robotics research |
 
 #### Page: Events
 | Key | Text (current value) |
@@ -377,33 +371,6 @@ layout below.
 
 ---
 
-<a name="tab-positions"></a>
-### `Positions` — open positions
-
-**Required columns:** `Title`, `Summary`
-
-| Column | Required | Notes |
-|---|---|---|
-| `Title` | ✅ | Position title. A row with no Title is skipped. |
-| `Summary` | ✅ | Short line of available positions. |
-| `Type` | | Small badge label. Defaults to `Available`. |
-| `Department` | | e.g. `Multiple Positions Available`. |
-| `Details` | | Longer paragraph. |
-| `Email` | | Contact email; also becomes the "Send Email" button. |
-| `Contact` | | Contact person's name. |
-| `Status` | | Optional label. |
-
-**Starting row (current built-in position):**
-
-| Title | Type | Department | Summary | Contact | Email |
-|---|---|---|---|---|---|
-| Research Opportunities | Available | Multiple Positions Available | Undergraduate internship, Master's/Ph.D. courses, post-doc and Research positions | Dr. Bhivraj Suthar | bhivraj@iitj.ac.in |
-
-(Details for that row: *"We have open positions for students interested in applying
-for undergraduate internship, Master's/Ph.D. courses, post-doc and Research
-positions."*)
-
----
 
 <a name="tab-courses"></a>
 ### `Courses` — lectures & curriculum
