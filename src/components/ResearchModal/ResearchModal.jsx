@@ -293,6 +293,13 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
                           src={getThumb(project, researchArea.title)}
                           alt={name}
                           className="sidebar-project-thumb"
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            const fb = '/assets/image.png';
+                            if (!e.currentTarget.src.includes(fb)) {
+                              e.currentTarget.src = fb;
+                            }
+                          }}
                         />
                         <span className="sidebar-project-name">{name}</span>
                       </button>
@@ -315,6 +322,13 @@ const ResearchModal = ({ isOpen, onClose, researchArea }) => {
                       src={projectInfo.image}
                       alt={projectInfo.title}
                       className="project-image"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const fb = '/assets/image.png';
+                        if (!e.currentTarget.src.includes(fb)) {
+                          e.currentTarget.src = fb;
+                        }
+                      }}
                     />
                   </div>
                   <div className="project-info redesigned">

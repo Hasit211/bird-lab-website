@@ -71,6 +71,19 @@ const ImageCarousel = ({ images = [], interval = 3200 }) => {
                     src={image.src}
                     alt={image.alt || `Slide ${index + 1}`}
                     loading={index === 0 ? 'eager' : 'lazy'}
+                    onError={(e) => {
+                      const fallbacks = [
+                        '/assets/Picture1.png',
+                        '/assets/Picture3.png',
+                        '/assets/pic1.jpg',
+                        '/assets/wing.png',
+                        '/facilities/bamboo-labs-x1e.jpg',
+                      ];
+                      const fb = fallbacks[index % fallbacks.length];
+                      if (!e.currentTarget.src.includes(fb)) {
+                        e.currentTarget.src = fb;
+                      }
+                    }}
                   />
 
                   {/* Expand Zoom Pill Indicator on Hover */}

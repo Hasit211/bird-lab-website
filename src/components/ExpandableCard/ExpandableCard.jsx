@@ -36,27 +36,37 @@ const ExpandableCard = ({ cards }) => {
 
   const getImageSrc = (card) => {
     const cardKey = card.name;
-    
-    // If we've had an error with this card's image, use placeholder
-    if (imageErrors[cardKey]) {
-      return PLACEHOLDER_IMG;
+    const errors = imageErrors[cardKey] || 0;
+
+    const primaryUrl = card.image || card.Photo;
+    const fallbackUrl = card.fallbackImage || PLACEHOLDER_IMG;
+
+    // First attempt: use primary resolved URL (Drive CDN / provided URL)
+    if (errors === 0 && primaryUrl && primaryUrl !== PLACEHOLDER_IMG && primaryUrl !== '/api/placeholder/300/300') {
+      return primaryUrl;
     }
-    
-    // Use the processed image URL from the card data
-    const imageUrl = card.image || card.Photo;
-    
-    if (imageUrl && imageUrl !== '/api/placeholder/300/300') {
-      return imageUrl;
+
+    // Second attempt if primary Google Drive CDN failed: try the Google thumbnail endpoint
+    if (errors === 1 && primaryUrl && primaryUrl.includes('googleusercontent.com/d/')) {
+      const driveIdMatch = primaryUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (driveIdMatch) {
+        return `https://drive.google.com/thumbnail?id=${driveIdMatch[1]}&sz=w1000`;
+      }
     }
-    
-    // Fallback to placeholder
+
+    // Third attempt: fall back to the person's local bundled image
+    if (errors <= 2 && fallbackUrl && fallbackUrl !== PLACEHOLDER_IMG) {
+      return fallbackUrl;
+    }
+
+    // Final fallback: placeholder image
     return PLACEHOLDER_IMG;
   };
 
   const handleImageError = (cardName) => {
     setImageErrors(prev => ({
       ...prev,
-      [cardName]: true
+      [cardName]: (prev[cardName] || 0) + 1
     }));
   };
 
@@ -141,6 +151,7 @@ const ExpandableCard = ({ cards }) => {
                       src={getImageSrc(active)}
                       alt={active.name}
                       className="modal-image"
+                      referrerPolicy="no-referrer"
                       onError={() => handleImageError(active.name)}
                     />
                   </motion.div>
@@ -387,6 +398,7 @@ const ExpandableCard = ({ cards }) => {
                   src={getImageSrc(card)}
                   alt={card.name}
                   className="card-image"
+                  referrerPolicy="no-referrer"
                   onError={() => handleImageError(card.name)}
                 />
                 <div className="card-image-overlay">

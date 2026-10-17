@@ -309,17 +309,33 @@ export function transformResearchAreas(rows) {
       if (isUrlString(maybeUrl)) url = maybeUrl;
     }
 
-    const checkUrl = (val) => {
-      if (!val || !isUrlString(val)) return;
-      if (val.match(/\.(png|jpe?g|webp|gif|svg)(\?.*)?$/i)) {
-        image = resolveImageUrl(val);
-      } else {
-        url = val;
-      }
+    const isImageVal = (val) => {
+      if (!val || typeof val !== 'string') return false;
+      const s = val.trim();
+      return (
+        /\.(png|jpe?g|webp|gif|svg)(\?.*)?$/i.test(s) ||
+        s.includes('drive.google.com') ||
+        s.includes('googleusercontent.com') ||
+        s.startsWith('/assets/') ||
+        s.startsWith('/facilities/')
+      );
     };
 
-    if (extraVal) checkUrl(extraVal);
-    if (extraVal2) checkUrl(extraVal2);
+    if (extraVal2) {
+      if (isImageVal(extraVal2)) {
+        image = resolveImageUrl(extraVal2);
+      } else if (isUrlString(extraVal2) && !url) {
+        url = extraVal2;
+      }
+    }
+
+    if (extraVal) {
+      if (isImageVal(extraVal) && !image) {
+        image = resolveImageUrl(extraVal);
+      } else if (isUrlString(extraVal) && !url) {
+        url = extraVal;
+      }
+    }
 
     return {
       name,
@@ -404,14 +420,28 @@ export function transformCarousel(rows) {
   const at = headerIndex(rows[0]);
   const titleIdx = at('Title') !== -1 ? at('Title') : at('Heading');
   const descIdx = at('Description') !== -1 ? at('Description') : (at('Caption') !== -1 ? at('Caption') : at('Subtitle'));
-  const imgIdx = at('Image') !== -1 ? at('Image') : (at('Photo') !== -1 ? at('Photo') : (at('URL') !== -1 ? at('URL') : (at('Link') !== -1 ? at('Link') : 2)));
+  const imgIdx = at('Image') !== -1
+    ? at('Image')
+    : (at('Photo') !== -1
+      ? at('Photo')
+      : (at('URL') !== -1
+        ? at('URL')
+        : (at('Link') !== -1
+          ? at('Link')
+          : (at('Picture') !== -1
+            ? at('Picture')
+            : (at('Src') !== -1 ? at('Src') : -1)))));
+
+  // If there's no recognizable image column, do not attempt to parse arbitrary columns
+  if (imgIdx === -1) return [];
 
   const items = [];
   for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
     const imageVal = cell(row, imgIdx);
     if (!imageVal) continue;
-    const resolvedImg = resolveImageUrl(imageVal);
+    const resolvedImg = resolveImageUrl(imageVal, { fallback: '' });
+    if (!resolvedImg || resolvedImg === PLACEHOLDER_IMG) continue;
     items.push({
       id: i,
       src: resolvedImg,
@@ -427,10 +457,10 @@ export function transformCarousel(rows) {
 export { headerIndex, cell, splitList, resolveImageUrl, PLACEHOLDER_IMG };
 
 // Required header columns per tab.
-transformContent.required = [];
+transformContent.required = [['Key']];
 transformEvents.required = ['Title', 'Date'];
-transformCollaborations.required = [];
+transformCollaborations.required = [['Category', 'Institute / Industry', 'Institute or Industry', 'Partner', 'Name']];
 transformCourses.required = [['Title', 'Course Name']];
-transformResearchAreas.required = [];
+transformResearchAreas.required = [['Vertical', 'Title']];
 transformFacilities.required = ['Name', 'Category'];
-transformCarousel.required = [];
+transformCarousel.required = [['Image', 'Photo', 'URL', 'Link', 'Picture', 'Src']];

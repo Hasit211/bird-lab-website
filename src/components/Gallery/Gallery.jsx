@@ -7,6 +7,7 @@ import { TABS } from '../../config/sheets';
 import arrowLeftIcon from '../../assets/arrow-left-5-svgrepo-com.svg';
 import arrowRightIcon from '../../assets/right-chevron-svgrepo-com.svg';
 import closeCircleIcon from '../../assets/close-circle-svgrepo-com.svg';
+import { PLACEHOLDER_IMG } from '../../services/sheets/client';
 import './Gallery.css';
 
 function useItemsPerPage() {
@@ -44,6 +45,10 @@ function CollabCard({ card, onClick }) {
           alt={card.title}
           className="collab-card-image"
           loading="lazy"
+          referrerPolicy="no-referrer"
+          onError={(e) => {
+            e.currentTarget.src = PLACEHOLDER_IMG;
+          }}
         />
         <span className="collab-card-badge">{card.category}</span>
       </div>
@@ -127,6 +132,10 @@ function CollabModal({ card, onClose }) {
                 src={card.src}
                 alt={card.title}
                 className="collab-modal-image"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.src = PLACEHOLDER_IMG;
+                }}
               />
             </div>
           </div>

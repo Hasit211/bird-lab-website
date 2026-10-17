@@ -5,6 +5,7 @@ import { useContent } from '../../hooks/useContent';
 import { transformEvents } from '../../services/sheets/transforms';
 import { deriveEventStatus } from '../../utils/eventStatus';
 import { TABS } from '../../config/sheets';
+import { PLACEHOLDER_IMG } from '../../services/sheets/client';
 import './Events.css';
 
 // Shown if the Google Sheet "Events" tab is unreachable. Edit events in the
@@ -122,7 +123,15 @@ const Events = () => {
           {filteredEvents.map((event, index) => (
             <div key={event.id} className="event-card" style={{ animationDelay: `${index * 0.1}s` }}>
               <div className="event-image-container">
-                <img src={event.image} alt={event.title} className="event-image" />
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="event-image"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.src = PLACEHOLDER_IMG;
+                  }}
+                />
                 <div className="event-category-badge">{event.category}</div>
                 <div className={`event-status-badge ${event.status.toLowerCase()}`}>
                   {event.status}

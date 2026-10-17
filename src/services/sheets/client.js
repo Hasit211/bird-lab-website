@@ -116,6 +116,15 @@ async function fetchSingleTab(tabName) {
   if (firstCell.includes('logo image') || firstCell.includes('*please add')) {
     throw new Error(`Sheet tab "${tabName}" returned Google fallback content`);
   }
+
+  // Google Sheets quirk: when a requested tab doesn't exist, Google silently serves
+  // the first tab of the spreadsheet. In this spreadsheet, the first tab is Content/Welcome
+  // with header 'Key'. If the requested tab is NOT a content tab but returned 'Key',
+  // it is Google's silent wrong-tab fallback.
+  const isContentTab = ['welcome', 'content'].includes(tabName.toLowerCase());
+  if (!isContentTab && firstCell === 'key') {
+    throw new Error(`Sheet tab "${tabName}" does not exist (Google returned first tab fallback)`);
+  }
   return rows;
 }
 
@@ -185,7 +194,21 @@ export function assertHeaders(tab, rows, required) {
 
 // ---- localStorage cache (raw rows, so transforms can evolve safely) --------
 
-const cacheKeyFor = (tab) => `birdlab:v4:sheet:${SHEET_ID}:${Array.isArray(tab) ? tab.join('_') : tab}`;
+const cacheKeyFor = (tab) => `birdlab:v5:sheet:${SHEET_ID}:${Array.isArray(tab) ? tab.join('_') : tab}`;
+
+// Clean up any stale v4 or older cache entries from localStorage on module load
+if (typeof window !== 'undefined' && window.localStorage) {
+  try {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const k = localStorage.key(i);
+      if (k && (k.startsWith('birdlab:v1:') || k.startsWith('birdlab:v2:') || k.startsWith('birdlab:v3:') || k.startsWith('birdlab:v4:'))) {
+        localStorage.removeItem(k);
+      }
+    }
+  } catch {
+    // Ignore localStorage errors
+  }
+}
 
 /**
  * Read cached rows for a tab.
@@ -215,19 +238,21 @@ export function writeCache(tab, rows) {
 // ---- image resolution ------------------------------------------------------
 
 // Pull a Drive file id out of the common share-link shapes or raw ID strings.
-function extractDriveId(url) {
+export function extractDriveId(url) {
   if (!url) return null;
-  const str = String(url).trim();
+  const str = String(url).trim().replace(/^["']|["']$/g, '');
   const patterns = [
-    /\/file\/d\/([a-zA-Z0-9_-]+)/, // .../file/d/<id>/view
-    /[?&]id=([a-zA-Z0-9_-]+)/, //     ...open?id=<id>  /  uc?id=<id>
-    /\/d\/([a-zA-Z0-9_-]+)/, //       generic /d/<id>
+    /\/file\/d\/([a-zA-Z0-9_-]+)/, // .../file/d/<id>/view, .../file/d/<id>/
+    /[?&]id=([a-zA-Z0-9_-]+)/,     // ...open?id=<id> or uc?id=<id>
+    /\/d\/([a-zA-Z0-9_-]+)/,       // generic /d/<id>
     /lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/,
     /drive\.google\.com\/thumbnail\?id=([a-zA-Z0-9_-]+)/,
+    /\/document\/d\/([a-zA-Z0-9_-]+)/,
+    /\/presentation\/d\/([a-zA-Z0-9_-]+)/,
   ];
   for (const re of patterns) {
     const m = str.match(re);
-    if (m) return m[1];
+    if (m && m[1]) return m[1];
   }
   if (/^[a-zA-Z0-9_-]{25,50}$/.test(str)) {
     return str;
@@ -238,7 +263,7 @@ function extractDriveId(url) {
 /**
  * Turn whatever the professor pasted in an image cell into a usable <img src>.
  * - empty            -> the provided fallback (or a neutral placeholder)
- * - Google Drive link -> high-res thumbnail CDN URL that bypasses CORS/cookie blocks
+ * - Google Drive link -> high-res direct Google CDN URL (lh3.googleusercontent.com/d/<id>)
  * - http(s) URL       -> passed through
  * - protocol-relative -> https:-prefixed
  * - bare filename/path -> served from /assets (back-compat with bundled images)
@@ -247,16 +272,23 @@ function extractDriveId(url) {
  * @returns {string}
  */
 export function resolveImageUrl(raw, { fallback = PLACEHOLDER_IMG } = {}) {
-  const v = String(raw ?? '').trim();
+  const v = String(raw ?? '').trim().replace(/^["']|["']$/g, '');
   if (!v) return fallback || PLACEHOLDER_IMG;
 
   const driveId = extractDriveId(v);
   if (driveId) {
-    return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
+    return `https://lh3.googleusercontent.com/d/${driveId}`;
   }
 
   if (/^https?:\/\//i.test(v)) return v;
   if (v.startsWith('//')) return `https:${v}`;
   if (v.startsWith('/')) return v; // already an absolute site path
-  return `/assets/${v}`; // bare filename -> bundled asset
+
+  // Bare filename with an image extension (back-compat with bundled images)
+  if (/\.(?:png|jpe?g|webp|svg|gif|avif)$/i.test(v)) {
+    return `/assets/${v}`;
+  }
+
+  // If it doesn't look like a URL, path, or image file, return fallback
+  return fallback || PLACEHOLDER_IMG;
 }

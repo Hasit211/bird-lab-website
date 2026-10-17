@@ -5,6 +5,7 @@ import { useSheetTab } from '../../hooks/useSheetTab';
 import { useContent } from '../../hooks/useContent';
 import { transformFacilities } from '../../services/sheets/transforms';
 import { TABS } from '../../config/sheets';
+import { PLACEHOLDER_IMG } from '../../services/sheets/client';
 import './Facilities.css';
 
 const Facilities = () => {
@@ -78,8 +79,9 @@ const Facilities = () => {
                   src={facility.thumbnail}
                   alt={facility.name}
                   className="facility-image"
+                  referrerPolicy="no-referrer"
                   onError={(e) => {
-                    e.target.src = '/api/placeholder/400/300';
+                    e.currentTarget.src = PLACEHOLDER_IMG;
                   }}
                 />
                 <div className="facility-overlay">
@@ -127,8 +129,9 @@ const Facilities = () => {
                     src={selectedFacility.image}
                     alt={selectedFacility.name}
                     className="lightbox-image"
+                    referrerPolicy="no-referrer"
                     onError={(e) => {
-                      e.target.src = '/api/placeholder/800/600';
+                      e.currentTarget.src = PLACEHOLDER_IMG;
                     }}
                   />
                 </div>

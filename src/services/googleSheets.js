@@ -22,7 +22,7 @@ const emptyTeam = () => ({
 
 // Bundled-asset path derived from a person's name (back-compat fallback for
 // people who don't yet have a Photo value in the sheet).
-const nameToAssetPath = (name) => {
+export const nameToAssetPath = (name) => {
   if (!name) return PLACEHOLDER_IMG;
   const rawClean = String(name).trim();
   const slug = rawClean
@@ -33,6 +33,7 @@ const nameToAssetPath = (name) => {
 
   if (!slug) return PLACEHOLDER_IMG;
   if (slug === 'parul') return '/assets/-parul.png';
+  if (slug.includes('ashwin')) return '/assets/nsai-ashwin.jpeg';
   return `/assets/${slug}.png`;
 };
 
@@ -152,6 +153,7 @@ export const transformSheetData = (rawData) => {
       title: getCellValue(row, headerMap.title),
       image,
       Photo: image,
+      fallbackImage: nameToAssetPath(name),
       research: parseResearch(getCellValue(row, headerMap.research)),
       email: getCellValue(row, headerMap.email),
       postAffiliation: getCellValue(row, headerMap.postAffiliation),

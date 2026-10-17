@@ -83,7 +83,17 @@ const ImageLightbox = ({
           )}
 
           <div className="lightbox-img-frame">
-            <img src={imgSrc} alt={imgAlt} className="lightbox-main-img" />
+            <img
+              src={imgSrc}
+              alt={imgAlt}
+              className="lightbox-main-img"
+              onError={(e) => {
+                const fb = '/assets/Picture1.png';
+                if (!e.currentTarget.src.includes(fb)) {
+                  e.currentTarget.src = fb;
+                }
+              }}
+            />
           </div>
 
           {hasNext && (

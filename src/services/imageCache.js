@@ -24,7 +24,7 @@ export async function cacheImage(url) {
   try {
     // 1. In-memory prefetch
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    img.referrerPolicy = 'no-referrer';
     img.src = url;
 
     // 2. Persist in CacheStorage if supported by the browser
@@ -33,7 +33,7 @@ export async function cacheImage(url) {
       const cachedResponse = await cache.match(url);
       if (!cachedResponse) {
         // Fetch and store in cache in the background (no-cors for external domains)
-        fetch(url, { mode: 'no-cors' })
+        fetch(url, { mode: 'no-cors', referrerPolicy: 'no-referrer' })
           .then((res) => {
             if (res) cache.put(url, res);
           })

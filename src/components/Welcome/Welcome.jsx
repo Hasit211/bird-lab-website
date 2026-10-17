@@ -17,7 +17,10 @@ const Welcome = () => {
     fallback: carouselImages,
   });
 
-  const activeCarouselImages = (carouselList && carouselList.length > 0) ? carouselList : carouselImages;
+  const validCarouselList = Array.isArray(carouselList)
+    ? carouselList.filter((item) => item && typeof item.src === 'string' && item.src.trim() !== '')
+    : [];
+  const activeCarouselImages = validCarouselList.length > 0 ? validCarouselList : carouselImages;
 
   useEffect(() => {
     if (sectionRef.current) {
