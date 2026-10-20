@@ -17,17 +17,18 @@ export const SHEET_ID = '1rfeP7ny6xYqEe-5fVLqKpXLHGI2rGeQ8oZK0us6ADtE';
 // tab expects.
 // Tab (worksheet) names. Supports both exact guide names and common sheet tab aliases.
 export const TABS = {
-  content: ['Welcome', 'Content'],
+  content: ['Welcome'],
   people: ['People'],
   events: ['Events'],
   collaborations: ['Collaborations'],
   courses: ['Lectures', 'Courses'],
   researchAreas: ['Research', 'ResearchAreas'],
   facilities: ['Facilities'],
-  carousel: ['Carousel', 'Slideshow', 'Banners', 'Home Carousel'],
+  carousel: ['Carousel'],
+  contact: ['Contact', 'Contacts'],
 };
 
 // How long a fetched tab is considered "fresh" in localStorage before the site
-// revalidates it in the background. Kept to 30 seconds so edits in Google Sheets
-// show up almost immediately without excessive network traffic.
-export const CACHE_TTL_MS = 30 * 1000; // 30 seconds
+// revalidates it in the background. Kept to 3 seconds so edits in Google Sheets
+// show up almost immediately upon reload.
+export const CACHE_TTL_MS = 3 * 1000; // 3 seconds

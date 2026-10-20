@@ -41,11 +41,11 @@ const Welcome = () => {
       <div className="container">
         <div className="section-header">
           <h2 className="section-title">
-            {t(['about.title', 'welcome.title', 'hero.title'], 'Welcome to BIRD Lab for your research')}
+            {t(['welcome.title', 'about.title', 'hero.title'], 'Welcome to NextGen BIRD Robotics Lab')}
           </h2>
           <p className="section-subtitle">
             {t(
-              ['about.description', 'welcome.subtitle', 'hero.tagline'],
+              ['welcome.subtitle', 'about.description', 'hero.tagline'],
               'Leading the advancement of bio-inspired robotics through innovative research, nature-inspired design, and cutting-edge technology solutions'
             )}
           </p>

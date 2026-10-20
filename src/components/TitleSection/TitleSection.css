@@ -19,7 +19,12 @@
 /* TYPOGRAPHY TUNING (Scaled 1.5x)                                    */
 /* ------------------------------------------------------------------ */
 .title-headline {
-  display: inline-block;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  column-gap: 0.35em;
+  row-gap: 0.15em;
   /* Keep the title above the Vanta Birds canvas (z-index 0). */
   position: relative;
   z-index: 1;
@@ -37,10 +42,16 @@
   user-select: none;
 }
 
+.title-headline .title-word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
 .title-headline .letter {
   display: inline-block;
   will-change: transform, opacity;
   color: #0f172a;
+  white-space: pre;
 }
 
 /* ------------------------------------------------------------------ */
@@ -102,6 +113,7 @@
     /* 2.1rem * 1.5 = 3.15rem */
     font-size: 3.15rem;
     letter-spacing: 0rem;
+    column-gap: 0.28em;
   }
   .title-subheading {
     /* 0.85rem * 1.5 = 1.275rem */

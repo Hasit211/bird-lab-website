@@ -13,19 +13,23 @@ export const PROF_NAME = 'Prof. Bhivraj Suthar';
 
 const Contact = () => {
   const t = useContent();
+  const fullAddress = t('contact.address.full', '');
   const address = {
     building: t('contact.address.building', CONTACT_INFO.address.building),
     street: t('contact.address.street', CONTACT_INFO.address.street),
     city: t('contact.address.city', CONTACT_INFO.address.city),
     country: t('contact.address.country', CONTACT_INFO.address.country),
   };
-  const phone = t('contact.phone', CONTACT_INFO.phone);
+  const mapUrl = t('contact.mapUrl', '');
+  const phone = t('contact.phone', '+91 291 280 1500');
   const email = t('contact.email', CONTACT_INFO.email);
-  const officeHours = t('contact.officeHours', CONTACT_INFO.officeHours);
-  const contactName = t('contact.banner.contactName', PROF_NAME);
-  const contactEmail = t('contact.banner.contactEmail', PROF_EMAIL);
-  const linkedin = t('social.linkedin', '');
-  const youtube = t('social.youtube', CONTACT_INFO.social.youtube || '');
+  const officeHours = t('contact.officeHours', 'Monday - Friday: 9:00 AM - 6:00 PM');
+  const contactName = t('contact.banner.contactName', t('director.name', PROF_NAME));
+  const contactEmail = t('contact.banner.contactEmail', t('director.email', PROF_EMAIL));
+  const contactTitle = t('contact.banner.contactTitle', 'Principal Investigator • BIRD Lab, IIT Jodhpur');
+  const googleFormUrl = t('contact.join.url', t('contact.banner.formUrl', GOOGLE_FORM_URL));
+  const linkedin = t('social.linkedin', 'https://www.linkedin.com/in/bhivraj-suthar-6a56b432/');
+  const youtube = t('social.youtube', CONTACT_INFO.social.youtube || 'https://www.youtube.com/@bhivrajsuthar2234');
 
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -128,7 +132,11 @@ const Contact = () => {
   };
 
   const openMap = () => {
-    const query = encodeURIComponent(`${address.building}, ${address.street}, ${address.city}`);
+    if (mapUrl && mapUrl.startsWith('http')) {
+      window.open(mapUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    const query = encodeURIComponent(fullAddress || `${address.building}, ${address.street}, ${address.city}`);
     window.open(`https://maps.google.com/?q=${query}`, '_blank');
   };
 
@@ -160,7 +168,7 @@ const Contact = () => {
               </p>
               <div className="banner-actions">
                 <a
-                  href={GOOGLE_FORM_URL}
+                  href={googleFormUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="banner-primary-btn"
@@ -170,7 +178,7 @@ const Contact = () => {
                     <polyline points="15 3 21 3 21 9"></polyline>
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                   </svg>
-                  Want to Join →
+                  {t('contact.card.join.btn', 'Want to Join →')}
                 </a>
 
                 <button
@@ -181,7 +189,7 @@ const Contact = () => {
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                   </svg>
-                  Send a Mail
+                  {t('contact.card.mail.btn', 'Send a Mail')}
                 </button>
 
                 <div className="banner-contact-info">
@@ -205,7 +213,7 @@ const Contact = () => {
             <div className="contact-actions-cards">
               {/* Card 1: Want to Join */}
               <div className="contact-action-card join-card">
-                <div className="action-card-badge">Applications Open</div>
+                <div className="action-card-badge">{t('contact.card.join.badge', 'Applications Open')}</div>
                 <div className="action-card-icon join-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -215,17 +223,20 @@ const Contact = () => {
                   </svg>
                 </div>
                 <div className="action-card-body">
-                  <h4>Want to Join</h4>
+                  <h4>{t('contact.card.join.title', 'Want to Join')}</h4>
                   <p>
-                    Apply for Undergraduate Internships, Master&apos;s / Ph.D. research, or Post-Doctoral fellowships. Submit your resume, research interests, and qualifications.
+                    {t(
+                      'contact.card.join.text',
+                      "Apply for Undergraduate Internships, Master's / Ph.D. research, or Post-Doctoral fellowships. Submit your resume, research interests, and qualifications."
+                    )}
                   </p>
                   <a
-                    href={GOOGLE_FORM_URL}
+                    href={googleFormUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="action-btn join-btn"
                   >
-                    <span>Want to Join</span>
+                    <span>{t('contact.card.join.btn', 'Want to Join')}</span>
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="5" y1="12" x2="19" y2="12"></line>
                       <polyline points="12 5 19 12 12 19"></polyline>
@@ -236,7 +247,7 @@ const Contact = () => {
 
               {/* Card 2: Send a Mail */}
               <div className="contact-action-card mail-card">
-                <div className="action-card-badge mail-badge">Direct Inquiries</div>
+                <div className="action-card-badge mail-badge">{t('contact.card.mail.badge', 'Direct Inquiries')}</div>
                 <div className="action-card-icon mail-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -244,9 +255,12 @@ const Contact = () => {
                   </svg>
                 </div>
                 <div className="action-card-body">
-                  <h4>Send a Mail</h4>
+                  <h4>{t('contact.card.mail.title', 'Send a Mail')}</h4>
                   <p>
-                    Have research questions, collaboration proposals, or academic discussions? Contact <strong>{contactName}</strong> directly at <strong>{contactEmail}</strong>.
+                    {t(
+                      'contact.card.mail.text',
+                      `Have research questions, collaboration proposals, or academic discussions? Contact ${contactName} directly at ${contactEmail}.`
+                    )}
                   </p>
                   <button
                     type="button"
@@ -256,12 +270,13 @@ const Contact = () => {
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                       <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                     </svg>
-                    <span>Send a Mail</span>
+                    <span>{t('contact.card.mail.btn', 'Send a Mail')}</span>
                   </button>
                 </div>
               </div>
             </div>
           </div>
+
 
           {/* Contact Information */}
           <div ref={infoRef} className="contact-info-container">
@@ -279,12 +294,16 @@ const Contact = () => {
                 </div>
                 <div className="contact-details">
                   <h4>Address</h4>
-                  <p>
-                    {address.building}<br />
-                    {address.street}<br />
-                    {address.city}<br />
-                    {address.country}
-                  </p>
+                  {fullAddress ? (
+                    <p style={{ whiteSpace: 'pre-line' }}>{fullAddress}</p>
+                  ) : (
+                    <p>
+                      {address.building}<br />
+                      {address.street}<br />
+                      {address.city}<br />
+                      {address.country}
+                    </p>
+                  )}
                   <button onClick={openMap} className="map-btn">
                     View on Map
                   </button>
@@ -388,8 +407,8 @@ const Contact = () => {
                 </svg>
               </div>
               <div className="email-header-text">
-                <h3 id="email-modal-title">Mail Prof. Bhivraj Suthar</h3>
-                <p>Principal Investigator &bull; BIRD Lab, IIT Jodhpur</p>
+                <h3 id="email-modal-title">{t('contact.modal.title', `Mail ${contactName}`)}</h3>
+                <p>{t('contact.modal.subtitle', contactTitle)}</p>
               </div>
             </div>
 

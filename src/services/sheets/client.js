@@ -121,8 +121,8 @@ async function fetchSingleTab(tabName) {
   // the first tab of the spreadsheet. In this spreadsheet, the first tab is Content/Welcome
   // with header 'Key'. If the requested tab is NOT a content tab but returned 'Key',
   // it is Google's silent wrong-tab fallback.
-  const isContentTab = ['welcome', 'content'].includes(tabName.toLowerCase());
-  if (!isContentTab && firstCell === 'key') {
+  const isContentTab = ['welcome', 'content', 'contact', 'contacts'].includes(tabName.toLowerCase());
+  if (!isContentTab && (firstCell === 'key' || firstCell === 'page')) {
     throw new Error(`Sheet tab "${tabName}" does not exist (Google returned first tab fallback)`);
   }
   return rows;

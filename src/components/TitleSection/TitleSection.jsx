@@ -4,7 +4,7 @@ import { useContent } from '../../hooks/useContent';
 import heroVideo from '../../assets/Video Project 2.mp4';
 import './TitleSection.css';
 
-const DEFAULT_WORD = 'BIRDLabs';
+const DEFAULT_WORD = 'Next GEN BIRD LAB';
 const DEFAULT_SUBHEADING = 'BIO INSPIRED ROBOTICS DESIGN LABORATORY';
 
 const TitleSection = () => {
@@ -171,17 +171,29 @@ const TitleSection = () => {
 
 
 
+  const displayWord = (word && word.trim()) || DEFAULT_WORD;
+  const words = displayWord.trim().split(/\s+/);
+  const totalLetters = words.reduce((acc, w) => acc + w.length, 0);
+  let charCounter = 0;
+
   return (
     <section className="title-section" ref={sectionRef}>
-      <h1 className="title-headline" aria-label={word}>
-        {word.split('').map((letter, index) => (
-          <span
-            key={index}
-            className="letter"
-            style={{ '--pos': `${(index / Math.max(1, word.length - 1)) * 100}%` }}
-            aria-hidden="true"
-          >
-            {letter}
+      <h1 className="title-headline" aria-label={displayWord}>
+        {words.map((singleWord, wordIndex) => (
+          <span key={wordIndex} className="title-word">
+            {singleWord.split('').map((letter, letterIndex) => {
+              const charIndex = charCounter++;
+              return (
+                <span
+                  key={letterIndex}
+                  className="letter"
+                  style={{ '--pos': `${(charIndex / Math.max(1, totalLetters - 1)) * 100}%` }}
+                  aria-hidden="true"
+                >
+                  {letter}
+                </span>
+              );
+            })}
           </span>
         ))}
       </h1>

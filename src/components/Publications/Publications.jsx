@@ -3,13 +3,16 @@ import { useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import googleScholarService from '../../services/scholarPublications';
+import { useContent } from '../../hooks/useContent';
 import './Publications.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SCHOLAR_PROFILE_URL = 'https://scholar.google.com/citations?user=3KZSSEIAAAAJ&hl=en';
+const DEFAULT_SCHOLAR_PROFILE_URL = 'https://scholar.google.com/citations?user=3KZSSEIAAAAJ&hl=en';
 
 const Publications = () => {
+  const t = useContent();
+  const scholarUrl = t('publications.scholarUrl', DEFAULT_SCHOLAR_PROFILE_URL);
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   const [publications, setPublications] = useState([]);
@@ -140,11 +143,14 @@ const Publications = () => {
       <div className="container">
         <div className="section-header">
           <div className="section-badge-wrapper">
-            <span className="section-badge">Academic Output</span>
+            <span className="section-badge">{t('publications.badge', 'Academic Output')}</span>
           </div>
-          <h2 className="section-title">Publications & Research Papers</h2>
+          <h2 className="section-title">{t('publications.title', 'Publications & Research Papers')}</h2>
           <p className="section-subtitle">
-            All peer-reviewed journal articles, conference proceedings, and patents directly synchronized with Dr. Bhivraj Suthar&apos;s Google Scholar profile.
+            {t(
+              'publications.subtitle',
+              "All peer-reviewed journal articles, conference proceedings, and patents directly synchronized with Dr. Bhivraj Suthar's Google Scholar profile."
+            )}
           </p>
         </div>
 
@@ -173,7 +179,7 @@ const Publications = () => {
 
           <div className="scholar-actions-row">
             <a
-              href={SCHOLAR_PROFILE_URL}
+              href={scholarUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="scholar-profile-btn"

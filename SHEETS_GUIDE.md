@@ -52,12 +52,13 @@ someone needs to do the following **once**:
 |---|---|---|
 | Share the sheet | **Required once** | Share → General access → **Anyone with the link → Viewer**. Without this the site can't read the sheet at all. |
 | `People` tab | ✅ Already exists and works | — |
-| `Collaborations` tab | ⚠️ Exists but **wrong layout** | Rebuild it with the columns shown in [Collaborations](#tab-collaborations). Its current layout (National/International groupings) is not readable by the site. |
-| `Content` tab | ❌ Does not exist yet | Create it — this controls **all headings and paragraphs**. See [Content](#tab-content). |
-| `Events` tab | ❌ Does not exist yet | Create it. See [Events](#tab-events). |
-| `Courses` tab | ❌ Does not exist yet | Create it. See [Courses](#tab-courses). |
-| `ResearchAreas` tab | ❌ Does not exist yet | Create it. See [ResearchAreas](#tab-researchareas). |
-| `Facilities` tab | ❌ Does not exist yet | Create it. See [Facilities](#tab-facilities). |
+| `Contact` tab | ✅ Already exists, formatted & live | Controls address, location map, phone, emails, join link, and all contact info. See [Contact](#tab-contact). |
+| `Collaborations` tab | ⚠️ Exists but **wrong layout** | Rebuild it with the columns shown in [Collaborations](#tab-collaborations). |
+| `Content` tab | ✅ Exists (`Welcome` / `Content`) | Controls headings, about text, and director message. See [Content](#tab-content). |
+| `Events` tab | ✅ Exists | See [Events](#tab-events). |
+| `Lectures` / `Courses` tab | ✅ Exists | See [Courses](#tab-courses). |
+| `Research` tab | ✅ Exists | See [ResearchAreas](#tab-researchareas). |
+| `Facilities` tab | ✅ Exists | See [Facilities](#tab-facilities). |
 
 Until a tab is created correctly, its section just keeps showing the built-in
 default content — nothing breaks.
@@ -140,6 +141,7 @@ actually want to change (though adding all of them makes future edits easier).
 #### Page: Hero (top of home page)
 | Key | Text (current value) |
 |---|---|
+| `hero.title` | Next GEN BIRD LAB |
 | `hero.badge` | Next-Gen BIRD Lab |
 | `hero.subtitle` | Pioneering the future through nature-inspired robotics research. From bio-inspired mechanisms to collaborative systems, we're developing the next generation of adaptive robotics technology. |
 | `hero.scroll` | Discover Our Innovation |
@@ -224,29 +226,59 @@ actually want to change (though adding all of them makes future edits easier).
 | `events.title` | Recent Events |
 | `events.subtitle` | Stay updated with our latest conferences, workshops, and academic activities |
 
-#### Page: Contact
-| Key | Text (current value) |
-|---|---|
-| `contact.title` | Contact Us & Open Positions |
-| `contact.subtitle` | Get in touch with our research team for collaborations, questions, or opportunities |
-| `contact.banner.title` | Open Research Positions Available |
-| `contact.banner.text` | We are accepting applications for Undergraduate Internships, Master's/Ph.D. Programs, Post-Doctoral Positions, and Research Positions. Use the form below to apply or inquire about opportunities. |
-| `contact.banner.contactName` | Dr. Bhivraj Suthar |
-| `contact.banner.contactEmail` | bhivraj@iitj.ac.in |
-| `contact.form.title` | Send us a Message |
-| `contact.form.subtitle` | We'll get back to you as soon as possible |
-| `contact.info.title` | Get in Touch |
-| `contact.info.subtitle` | Find us at our campus location or reach out directly |
-| `contact.address.building` | SAIDE ,IIT Jodhpur Permanent Campus |
-| `contact.address.street` | National Highway 65, Nagaur Road, Karwar |
-| `contact.address.city` | Jodhpur |
-| `contact.address.country` | India |
-| `contact.phone` | +1 (555) 123-4567 |
-| `contact.email` | info@birdlab.edu |
-| `contact.officeHours` | Monday - Friday: 9:00 AM - 5:00 PM |
+<a name="tab-contact"></a>
+### `Contact` — Lab address, location map, phone, emails, join link, and action cards *(already set up & live)*
 
-> **Note:** `contact.phone` and `contact.email` are placeholder values. Add these
-> rows with the lab's real phone and email — they also appear in the footer.
+The `Contact` tab in Google Sheets controls **all contact information and recruitment links** across the website and footer. You can edit any value at any time, and the live site updates within 30–45 seconds.
+
+**Columns in row 1:**
+`Key` | `Field Name` | `Value` | `Description / Where It Appears on Website`
+
+- **`Key`**: The technical key (e.g. `contact.phone`, `contact.address.full`).
+- **`Field Name`**: Human-readable label (e.g. `Phone Number`, `Full Lab Address`).
+- **`Value`**: **What you edit!** Type your updated address, phone number, email, or Google Map URL here.
+- **`Description / Where It Appears`**: Helpful context on where that item appears.
+
+#### All Editable Contact Fields in the Sheet:
+
+| Key | Field Name | Value (in your sheet right now) | Where It Appears |
+|---|---|---|---|
+| `contact.title` | Section Main Title | `Contact Us & Join the Lab` | Top main heading |
+| `contact.subtitle` | Section Subtitle | `Explore open research positions or get in touch...` | Subtitle text |
+| `contact.banner.title` | Positions Banner Title | `Open Research Positions Available` | Heading in top positions banner box |
+| `contact.banner.text` | Positions Banner Description | `We are actively seeking motivated students and researchers...` | Positions announcement description |
+| `contact.join.url` | Application Form URL (Google Form) | `https://docs.google.com/forms/d/e/1FAIpQLSeQCNLWkViTCIVRWg24MjbWe57Bfe3gP09mpixHttKqII5yUg/viewform` | Link opened by "Want to Join" buttons |
+| `people.alumni.btnText` | Alumni Button Label | `Were you Part of the team?` | Text for the past members button in People and Alumni sections |
+| `people.alumni.formUrl` | Alumni Form URL (Google Form) | `https://docs.google.com/forms/d/e/1FAIpQLSe0nQh5TmEqAlNzNZYDtVTVa4XeJ9Td--G9pyqXz5QLDxSe5A/viewform?usp=dialog` | Link opened by "Were you Part of the team?" buttons |
+| `people.alumni.badgeText` | Alumni Badge Label | `Alumni` | Badge on the top CTA in the People section |
+| `people.alumni.bannerText` | Alumni Section Subtitle | `Celebrating our previous researchers, student interns, and lab members who contributed to BIRD Lab.` | Subtitle text in Alumni section |
+| `contact.banner.contactName` | PI / Professor Name | `Prof. Bhivraj Suthar` | Name shown in banner, cards, & email modal |
+| `contact.banner.contactEmail` | PI / Professor Email | `bhivraj@iitj.ac.in` | Direct recipient email for inquiries |
+| `contact.banner.contactTitle` | PI Designation & Role | `Principal Investigator & Assistant Professor, BIRD Lab` | Subtitle in email modal |
+| `contact.hub.title` | Action Hub Title | `Connect with BIRD Lab` | Header above left action cards |
+| `contact.hub.subtitle` | Action Hub Subtitle | `Choose how you would like to reach out to us below.` | Subtitle above left action cards |
+| `contact.card.join.badge` | Join Card Badge | `Applications Open` | Badge on Want to Join card |
+| `contact.card.join.title` | Join Card Title | `Want to Join` | Title of Want to Join card |
+| `contact.card.join.text` | Join Card Description | `Apply for Undergraduate Internships, Master's / Ph.D....` | Text in Want to Join card |
+| `contact.card.join.btn` | Join Card Button Label | `Want to Join` | Button text in Want to Join card |
+| `contact.card.mail.badge` | Mail Card Badge | `Direct Inquiries` | Badge on Send a Mail card |
+| `contact.card.mail.title` | Mail Card Title | `Send a Mail` | Title of Send a Mail card |
+| `contact.card.mail.text` | Mail Card Description | `Have research questions, collaboration proposals...?` | Text in Send a Mail card |
+| `contact.card.mail.btn` | Mail Card Button Label | `Send a Mail` | Button text opening email modal |
+| `contact.address.building` | Building & Lab Room | `W-10 Berm, SAIDE Building` | Building name on campus |
+| `contact.address.street` | Campus & Street | `Indian Institute of Technology Jodhpur, NH 65 Nagaur Road, Karwar` | Campus street/highway |
+| `contact.address.city` | City & PIN Code | `Jodhpur 342037` | City and postal code |
+| `contact.address.state` | State & District | `Rajasthan, India` | State & country |
+| `contact.address.country` | Country | `India` | Country |
+| `contact.address.full` | Full Lab Address | `W-10 Berm, SAIDE, Indian Institute of Technology Jodhpur, NH 65 Nagaur Road, Karwar 342037, Jodhpur District, Rajasthan, India.` | Complete address in card & footer |
+| `contact.mapUrl` | Google Maps Location Link | `https://maps.google.com/?q=Indian+Institute+of+Technology+Jodhpur` | Link opened by "View on Map" button |
+| `contact.phone` | Phone Number | `+91 291 280 1500` | Contact phone in card & footer |
+| `contact.officeHours` | Lab Office Hours | `Monday - Friday: 9:00 AM - 6:00 PM` | Office hours on Contact card |
+| `contact.email` | Lab / Secondary Email | `bhivraj@iitj.ac.in` | Lab general email |
+| `social.linkedin` | LinkedIn Profile URL | `https://www.linkedin.com/in/bhivraj-suthar-6a56b432/` | LinkedIn link |
+| `social.youtube` | YouTube Channel URL | `https://www.youtube.com/@bhivrajsuthar2234` | YouTube channel link |
+| `contact.modal.title` | Email Modal Header | `Mail Prof. Bhivraj Suthar` | Heading in email popup |
+| `contact.modal.subtitle` | Email Modal Subtitle | `Principal Investigator • BIRD Lab, IIT Jodhpur` | Role/subtitle in email popup |
 
 #### Page: Social links
 | Key | Text (current value) |

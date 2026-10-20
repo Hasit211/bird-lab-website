@@ -8,7 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "sync-scholar": "node scripts/sync_scholar.js"
+    "sync-scholar": "node scripts/sync_scholar.js",
+    "sync-contact-sheet": "node scripts/update_contact_sheet.js",
+    "sync-content-sheet": "node scripts/sync_all_content_sheet.js"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

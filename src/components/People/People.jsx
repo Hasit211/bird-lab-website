@@ -6,8 +6,17 @@ import { useContent } from '../../hooks/useContent';
 import ExpandableCard from '../ExpandableCard/ExpandableCard';
 import './People.css';
 
+export const ALUMNI_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSe0nQh5TmEqAlNzNZYDtVTVa4XeJ9Td--G9pyqXz5QLDxSe5A/viewform?usp=dialog';
+
 const People = () => {
   const t = useContent();
+  const alumniFormUrl = t('people.alumni.formUrl', ALUMNI_FORM_URL);
+  const alumniBtnText = t('people.alumni.btnText', 'Were you Part of the team?');
+  const alumniBadgeText = t('people.alumni.badgeText', 'Alumni');
+  const alumniBannerText = t(
+    'people.alumni.bannerText',
+    'Celebrating our previous researchers, student interns, and lab members who contributed to BIRD Lab.'
+  );
   const sectionRef = useRef(null);
   const [teamData, setTeamData] = useState({
     professor: [],
@@ -110,6 +119,21 @@ const People = () => {
           <p className="section-subtitle">
             {t('people.subtitle', 'Meet the brilliant minds driving innovation in robotics research')}
           </p>
+          <div className="people-top-cta">
+            <a
+              href={alumniFormUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="top-alumni-btn"
+            >
+              <span className="top-alumni-badge">{alumniBadgeText}</span>
+              <span className="top-alumni-text">{alumniBtnText}</span>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
         </div>
 
         <div className="team-sections-container">
@@ -194,7 +218,29 @@ const People = () => {
           {/* Alumni */}
           {teamData.alumni && teamData.alumni.length > 0 && (
             <div className="team-section alumni-section">
-              <h3 className="team-category-title">Alumni</h3>
+              <div className="alumni-header-banner">
+                <h3 className="team-category-title">Alumni</h3>
+                <p className="alumni-banner-subtitle">
+                  {alumniBannerText}
+                </p>
+                <a
+                  href={alumniFormUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-alumni-action"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7.5" r="4"></circle>
+                    <polyline points="17 11 19 13 23 9"></polyline>
+                  </svg>
+                  <span>{alumniBtnText}</span>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </a>
+              </div>
               <div className="team-grid-horizontal">
                 <ExpandableCard cards={teamData.alumni} />
               </div>
@@ -215,6 +261,20 @@ const People = () => {
             <div className="join-us-actions">
               <Link to="/contact" className="btn-primary">{t('people.join.btnPrimary', 'View Open Positions')}</Link>
               <Link to="/contact" className="btn-secondary">{t('people.join.btnSecondary', 'Contact Us')}</Link>
+              <a
+                href={alumniFormUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-alumni-pill"
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>{alumniBtnText}</span>
+              </a>
             </div>
           </div>
           <div className="join-us-visual">

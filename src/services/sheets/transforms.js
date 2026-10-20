@@ -8,15 +8,33 @@
 
 import { resolveImageUrl, PLACEHOLDER_IMG } from './client.js';
 
-// Build a header-name -> column-index lookup. First occurrence of a name wins;
-// blank headers are ignored.
+// Build a header-name -> column-index lookup.
+// Supports exact match, case-insensitive match, and token/prefix matching.
 function headerIndex(headerRow) {
   const idx = {};
-  (headerRow || []).forEach((h, i) => {
-    const key = String(h ?? '').trim();
+  const rawHeaders = (headerRow || []).map((h) => String(h ?? '').trim());
+  rawHeaders.forEach((key, i) => {
     if (key && !(key in idx)) idx[key] = i;
   });
-  return (name) => (name in idx ? idx[name] : -1);
+
+  return (name) => {
+    if (name in idx) return idx[name];
+    const lowerName = String(name).toLowerCase();
+    // Case-insensitive match
+    for (let i = 0; i < rawHeaders.length; i++) {
+      if (rawHeaders[i].toLowerCase() === lowerName) return i;
+    }
+    // Substring / slash-delimited token match (e.g. 'Value' matches 'Value / Text / URL')
+    for (let i = 0; i < rawHeaders.length; i++) {
+      const parts = rawHeaders[i].toLowerCase().split(/[\s/|_-]+/).filter(Boolean);
+      if (parts.includes(lowerName)) return i;
+    }
+    // Prefix match
+    for (let i = 0; i < rawHeaders.length; i++) {
+      if (rawHeaders[i].toLowerCase().startsWith(lowerName)) return i;
+    }
+    return -1;
+  };
 }
 
 // Safe trimmed cell read by column index.
@@ -61,13 +79,131 @@ function mapRows(rows, build) {
 export function transformContent(rows) {
   if (!rows || rows.length < 2) return {};
   const at = headerIndex(rows[0]);
-  const ki = at('Key');
-  const ti = at('Text') !== -1 ? at('Text') : (at('Value') !== -1 ? at('Value') : 1);
+  let ki = at('Key');
+  if (ki === -1) ki = rows[0].findIndex(h => String(h || '').trim().toLowerCase() === 'key');
+  if (ki === -1) ki = 0;
+
+  let ti = at('Value');
+  if (ti === -1) ti = at('Text');
+  if (ti === -1) ti = at('Content');
+  if (ti === -1) ti = rows[0].findIndex((h, idx) => idx !== ki && (
+    String(h || '').toLowerCase().includes('value') ||
+    String(h || '').toLowerCase().includes('text') ||
+    String(h || '').toLowerCase().includes('content')
+  ));
+  if (ti === -1) ti = rows[0].length > 3 ? 3 : (ki === 0 ? 1 : 0);
+
   const map = {};
   for (const row of rows.slice(1)) {
     const key = cell(row, ki);
     if (key) map[key] = cell(row, ti);
   }
+
+  // Ensure home page key aliases stay synchronized so editing either one updates the UI
+  if (map['welcome.title'] && !map['about.title']) map['about.title'] = map['welcome.title'];
+  if (map['about.title'] && !map['welcome.title']) map['welcome.title'] = map['about.title'];
+  if (map['welcome.subtitle'] && !map['about.description']) map['about.description'] = map['welcome.subtitle'];
+  if (map['about.description'] && !map['welcome.subtitle']) map['welcome.subtitle'] = map['about.description'];
+  if (map['hero.title'] && !map['hero.word']) map['hero.word'] = map['hero.title'];
+
+  return map;
+}
+
+/**
+ * Contact tab: Key | Field Name | Value | Description
+ * Maps both technical keys ('contact.phone', 'contact.address.full', etc.)
+ * and human-friendly field names so the professor can edit smoothly.
+ * @param {string[][]} rows
+ * @returns {Record<string,string>}
+ */
+export function transformContact(rows) {
+  if (!rows || rows.length < 2) return {};
+  const at = headerIndex(rows[0]);
+  const ki = at('Key');
+  const fi = at('Field Name') !== -1 ? at('Field Name') : (at('Field') !== -1 ? at('Field') : at('Contacts'));
+  let vi = at('Value');
+  if (vi === -1) vi = at('Text');
+  if (vi === -1) vi = at('Details');
+  if (vi === -1) vi = rows[0].findIndex((h, idx) => idx !== ki && idx !== fi && (
+    String(h || '').toLowerCase().includes('value') ||
+    String(h || '').toLowerCase().includes('text') ||
+    String(h || '').toLowerCase().includes('detail')
+  ));
+  if (vi === -1) vi = 2;
+
+  const map = {};
+
+  const friendlyAliases = {
+    'lab address': 'contact.address.full',
+    'address': 'contact.address.full',
+    'full address': 'contact.address.full',
+    'full lab address': 'contact.address.full',
+    'building': 'contact.address.building',
+    'building & lab room': 'contact.address.building',
+    'street': 'contact.address.street',
+    'campus & street': 'contact.address.street',
+    'city': 'contact.address.city',
+    'city & pin code': 'contact.address.city',
+    'state': 'contact.address.state',
+    'state & district': 'contact.address.state',
+    'country': 'contact.address.country',
+    'phone': 'contact.phone',
+    'phone number': 'contact.phone',
+    'mobile': 'contact.phone',
+    'email': 'contact.email',
+    'lab email': 'contact.email',
+    'secondary email': 'contact.email',
+    'pi email': 'contact.banner.contactEmail',
+    'professor email': 'contact.banner.contactEmail',
+    'director email': 'contact.banner.contactEmail',
+    'pi name': 'contact.banner.contactName',
+    'professor name': 'contact.banner.contactName',
+    'director name': 'contact.banner.contactName',
+    'pi designation & role': 'contact.banner.contactTitle',
+    'pi designation': 'contact.banner.contactTitle',
+    'office hours': 'contact.officeHours',
+    'lab office hours': 'contact.officeHours',
+    'how to reach': 'contact.mapUrl',
+    'google map': 'contact.mapUrl',
+    'google maps': 'contact.mapUrl',
+    'google maps location link': 'contact.mapUrl',
+    'location link': 'contact.mapUrl',
+    'map': 'contact.mapUrl',
+    'application form': 'contact.join.url',
+    'application form url': 'contact.join.url',
+    'application form url (google form)': 'contact.join.url',
+    'google form': 'contact.join.url',
+    'join link': 'contact.join.url',
+    'linkedin': 'social.linkedin',
+    'linkedin url': 'social.linkedin',
+    'linkedin profile url': 'social.linkedin',
+    'youtube': 'social.youtube',
+    'youtube channel url': 'social.youtube',
+  };
+
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    const key = ki !== -1 ? cell(row, ki) : '';
+    const fieldName = fi !== -1 ? cell(row, fi) : cell(row, 0);
+    let val = cell(row, vi);
+
+    // Fallback if cell was empty in vi but present in col 1 or 2
+    if (!val && row.length > 2 && vi !== 2) val = cell(row, 2);
+    if (!val && row.length > 1 && vi !== 1) val = cell(row, 1);
+
+    if (key) {
+      map[key] = val;
+    }
+
+    if (fieldName) {
+      const lower = fieldName.toLowerCase().trim();
+      const aliasKey = friendlyAliases[lower];
+      if (aliasKey && !map[aliasKey]) {
+        map[aliasKey] = val;
+      }
+    }
+  }
+
   return map;
 }
 
@@ -458,6 +594,7 @@ export { headerIndex, cell, splitList, resolveImageUrl, PLACEHOLDER_IMG };
 
 // Required header columns per tab.
 transformContent.required = [['Key']];
+transformContact.required = [['Key', 'Field Name', 'Field', 'Contacts', 'Contact', 'Value']];
 transformEvents.required = ['Title', 'Date'];
 transformCollaborations.required = [['Category', 'Institute / Industry', 'Institute or Industry', 'Partner', 'Name']];
 transformCourses.required = [['Title', 'Course Name']];

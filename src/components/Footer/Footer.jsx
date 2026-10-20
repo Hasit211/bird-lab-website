@@ -7,12 +7,13 @@ const Footer = () => {
   const t = useContent();
   const currentYear = new Date().getFullYear();
 
-  // Shared with the Contact page via the same `Content` keys.
-  const building = t('contact.address.building', CONTACT_INFO.address.building);
-  const email = t('contact.email', CONTACT_INFO.email);
-  const phone = t('contact.phone', CONTACT_INFO.phone);
-  const linkedin = t('social.linkedin', '');
-  const youtube = t('social.youtube', CONTACT_INFO.social.youtube || '');
+  // Shared with the Contact page via the Google Sheet Contact tab.
+  const fullAddress = t('contact.address.full', '');
+  const building = fullAddress || t('contact.address.building', CONTACT_INFO.address.building);
+  const email = t('contact.email', t('contact.banner.contactEmail', CONTACT_INFO.email));
+  const phone = t('contact.phone', '+91 291 280 1500');
+  const linkedin = t('social.linkedin', 'https://www.linkedin.com/in/bhivraj-suthar-6a56b432/');
+  const youtube = t('social.youtube', CONTACT_INFO.social.youtube || 'https://www.youtube.com/@bhivrajsuthar2234');
 
   const scrollToTop = () => {
     window.scrollTo({
